@@ -4,6 +4,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
+	"github.com/qtumproject/janus/pkg/utils"
+	"strings"
 )
 
 // ProxyETHGetBlockByNumber implements ETHProxy
@@ -33,16 +35,46 @@ func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*e
 		return nil, errors.WithMessage(err, "couldn't get block hash")
 	}
 
-	var (
-		getBlockByHashReq = &eth.GetBlockByHashRequest{
-			BlockHash:       string(blockHash),
-			FullTransaction: req.FullTransaction,
+	if blockHeaderResp.Previousblockhash == "" {
+		blockHeaderResp.Previousblockhash = "0000000000000000000000000000000000000000000000000000000000000000"
+	}
+
+	nonce := hexutil.EncodeUint64(uint64(blockHeaderResp.Nonce))
+
+	if len(strings.TrimLeft(nonce, "0x")) < 16 {
+		res := strings.TrimLeft(nonce, "0x")
+		for i := 0; i < 16 - len(res); {
+			res = "0" + res
 		}
-		proxy = &ProxyETHGetBlockByHash{Qtum: p.Qtum}
-	)
-	block, err := proxy.request(getBlockByHashReq)
+		nonce = res
+	}
+
+	blockResp, err := p.GetBlock(string(blockHash))
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't get block by hash")
 	}
-	return block, nil
+
+	return &eth.GetBlockByNumberResponse{
+		Hash:             utils.AddHexPrefix(blockHeaderResp.Hash),
+		Nonce:            utils.AddHexPrefix(nonce),
+		Number:           hexutil.EncodeUint64(uint64(blockHeaderResp.Height)),
+		ParentHash:       utils.AddHexPrefix(blockHeaderResp.Previousblockhash),
+		Difficulty:       hexutil.EncodeUint64(uint64(blockHeaderResp.Difficulty)),
+		Timestamp:        hexutil.EncodeUint64(blockHeaderResp.Time),
+		StateRoot:        utils.AddHexPrefix(blockHeaderResp.HashStateRoot),
+		Size:             hexutil.EncodeUint64(uint64(blockResp.Size)),
+		Transactions:     txs,
+		TransactionsRoot: utils.AddHexPrefix(blockResp.Merkleroot),
+		ReceiptsRoot:     utils.AddHexPrefix(blockResp.Merkleroot),
+
+		ExtraData:       "0x00",
+		Miner:           "0x0000000000000000000000000000000000000000",
+		TotalDifficulty: "0x00",
+		GasLimit:        "0x00",
+		GasUsed:         "0x00",
+		LogsBloom:       "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+
+		Sha3Uncles:      "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+		Uncles:          []string{},
+	}, nil
 }
