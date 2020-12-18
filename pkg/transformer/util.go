@@ -7,6 +7,8 @@ import (
 	"math/big"
 	"strconv"
 
+	"strings"
+
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 
@@ -73,147 +75,267 @@ func unmarshalRequest(data []byte, v interface{}) error {
 	return nil
 }
 
-// NOTE:
-// 	- is not for reward transactions
-// 	- Vin[i].N (vout number) -> get Transaction(txID).Vout[N].Address
-// 	- returning address already has 0x prefix
-func getNonContractTxSenderAddress(p *qtum.Qtum, vins []*qtum.DecodedRawTransactionInV) (string, error) {
-	for _, vin := range vins {
-		prevQtumTx, err := p.GetRawTransaction(vin.TxID, false)
-		if err != nil {
-			return "", errors.WithMessage(err, "couldn't get vin's previous transaction")
-		}
-		for _, out := range prevQtumTx.Vouts {
-			for _, address := range out.Details.Addresses {
-				return utils.AddHexPrefix(address), nil
-			}
-		}
-	}
-	return "", errors.New("not found")
-}
-
-// NOTE:
-// 	- is not for reward transactions
-// 	- returning address already has 0x prefix
-//
-// 	TODO: researching
-// 	- Vout[0].Addresses[i] != "" - temporary solution
-func findNonContractTxReceiverAddress(vouts []*qtum.DecodedRawTransactionOutV) (string, error) {
-	for _, vout := range vouts {
-		for _, address := range vout.ScriptPubKey.Addresses {
-			if address != "" {
-				return utils.AddHexPrefix(address), nil
-			}
-		}
-	}
-	return "", errors.New("not found")
-}
-
-func getBlockNumberByHash(p *qtum.Qtum, hash string) (uint64, error) {
-	block, err := p.GetBlock(hash)
+func (p *ProxyETHGetBlockByNumber) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
+	txData, err := p.GetTransaction(hash)
 	if err != nil {
-		return 0, errors.WithMessage(err, "couldn't get block")
+		return nil, err
 	}
-	return uint64(block.Height), nil
-}
 
-func getTransactionIndexInBlock(p *qtum.Qtum, txHash string, blockHash string) (int64, error) {
-	block, err := p.GetBlock(blockHash)
+	ethVal, err := formatQtumAmount(txData.Amount)
 	if err != nil {
-		return -1, errors.WithMessage(err, "couldn't get block")
+		return nil, err
 	}
-	for i, blockTx := range block.Txs {
-		if txHash == blockTx {
-			return int64(i), nil
+
+	decodedRawTx, err := p.Qtum.DecodeRawTransaction(txData.Hex)
+	if err != nil {
+		return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+	}
+
+	/// TODO: Correct to normal values
+	ethTx := eth.GetTransactionByHashResponse{
+		Hash:             utils.AddHexPrefix(txData.Txid),
+		Nonce:            "0x01",
+		BlockHash:        utils.AddHexPrefix(txData.Blockhash),
+		BlockNumber:      hexutil.EncodeUint64(uint64(height)),
+		TransactionIndex: hexutil.EncodeUint64(uint64(position)),
+		From:             "0x0000000000000000000000000000000000000000",
+		To:               "0x0000000000000000000000000000000000000000",
+		Value:            ethVal,
+		GasPrice:         hexutil.EncodeUint64(txData.Fee.BigInt().Uint64()),
+		Gas:              "0x01",
+		Input:            "0x00",
+	}
+
+	var invokeInfo *qtum.ContractInvokeInfo
+
+	// We assume that this tx is a contract invokation (create or call), if we can
+	// find a create or call script.
+	for _, out := range decodedRawTx.Vout {
+		script := strings.Split(out.ScriptPubKey.Asm, " ")
+		finalOp := script[len(script)-1]
+
+		// switch out.ScriptPubKey.Type
+		switch finalOp {
+		case "OP_CALL":
+			info, err := qtum.ParseCallSenderASM(script)
+			// OP_CALL with OP_SENDER has the script type "nonstandard"
+			if err != nil {
+				return nil, err
+			}
+
+			invokeInfo = info
+
+			break
+		case "OP_CREATE":
+			// OP_CALL with OP_SENDER has the script type "create_sender"
+			info, err := qtum.ParseCreateSenderASM(script)
+			if err != nil {
+				return nil, err
+			}
+
+			invokeInfo = info
+
+			break
 		}
 	}
-	return -1, errors.New("not found")
+
+	if invokeInfo != nil {
+		ethTx.From = utils.AddHexPrefix(invokeInfo.From)
+		ethTx.Gas = utils.AddHexPrefix(invokeInfo.GasLimit) // not really "gas sent by user", but ¯\_(ツ)_/¯
+		ethTx.GasPrice = utils.AddHexPrefix(invokeInfo.GasPrice)
+		ethTx.Input = utils.AddHexPrefix(invokeInfo.CallData)
+
+		// receipt, err := p.Qtum.GetTransactionReceipt(txData.Txid)
+		// if err != nil && err != qtum.EmptyResponseErr {
+		// 	return nil, err
+		// }
+
+		// if receipt != nil {
+		// 	ethTx.BlockNumber = hexutil.EncodeUint64(receipt.BlockNumber)
+		// 	ethTx.TransactionIndex = hexutil.EncodeUint64(receipt.TransactionIndex)
+
+		// 	if receipt.ContractAddress != "0000000000000000000000000000000000000000" {
+		// 		ethTx.To = utils.AddHexPrefix(receipt.ContractAddress)
+		// 	}
+		// }
+	}
+
+	return &ethTx, nil
 }
 
-func formatQtumNonce(nonce int) string {
-	var (
-		hexedNonce     = strconv.FormatInt(int64(nonce), 16)
-		missedCharsNum = 16 - len(hexedNonce)
-	)
-	for i := 0; i < missedCharsNum; i++ {
-		hexedNonce = "0" + hexedNonce
-	}
-	return "0x" + hexedNonce
-}
-
-// Returns Qtum block number. Result depends on a passed raw param. Raw param's slice of bytes should
-// has one of the following values:
-// 	- hex string representation of a number of a specific block
-// 	- string "latest" - for the latest mined block
-// 	- string "earliest" for the genesis block
-// 	- string "pending" - for the pending state/transactions
-func getBlockNumberByParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*big.Int, error) {
-	if len(rawParam) < 1 {
-		return nil, errors.Errorf("empty parameter value")
-	}
-	if !isBytesOfString(rawParam) {
-		return nil, errors.Errorf("invalid parameter format - string is expected")
+// TODO: Remove repetition
+func (p *ProxyETHGetTransactionByHash) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
+	txData, err := p.GetTransaction(hash)
+	if err != nil {
+		return nil, err
 	}
 
-	param := string(rawParam[1 : len(rawParam)-1]) // trim \" runes
-	switch param {
-	case "latest":
-		res, err := p.GetBlockChainInfo()
-		if err != nil {
-			return nil, err
+	ethVal, err := formatQtumAmount(txData.Amount)
+	if err != nil {
+		return nil, err
+	}
+
+	decodedRawTx, err := p.Qtum.DecodeRawTransaction(txData.Hex)
+	if err != nil {
+		return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+	}
+
+	/// TODO: Correct to normal values
+	ethTx := eth.GetTransactionByHashResponse{
+		Hash:             utils.AddHexPrefix(txData.Txid),
+		Nonce:            "0x01",
+		BlockHash:        utils.AddHexPrefix(txData.Blockhash),
+		BlockNumber:      hexutil.EncodeUint64(uint64(height)),
+		TransactionIndex: hexutil.EncodeUint64(uint64(position)),
+		From:             "0x0000000000000000000000000000000000000000",
+		To:               "0x0000000000000000000000000000000000000000",
+		Value:            ethVal,
+		GasPrice:         hexutil.EncodeUint64(txData.Fee.BigInt().Uint64()),
+		Gas:              "0x01",
+		Input:            "0x00",
+	}
+
+	var invokeInfo *qtum.ContractInvokeInfo
+
+	// We assume that this tx is a contract invokation (create or call), if we can
+	// find a create or call script.
+	for _, out := range decodedRawTx.Vout {
+		script := strings.Split(out.ScriptPubKey.Asm, " ")
+		finalOp := script[len(script)-1]
+
+		// switch out.ScriptPubKey.Type
+		switch finalOp {
+		case "OP_CALL":
+			info, err := qtum.ParseCallSenderASM(script)
+			// OP_CALL with OP_SENDER has the script type "nonstandard"
+			if err != nil {
+				return nil, err
+			}
+
+			invokeInfo = info
+
+			break
+		case "OP_CREATE":
+			// OP_CALL with OP_SENDER has the script type "create_sender"
+			info, err := qtum.ParseCreateSenderASM(script)
+			if err != nil {
+				return nil, err
+			}
+
+			invokeInfo = info
+
+			break
 		}
-		return big.NewInt(res.Blocks), nil
-
-	case "earliest":
-		// TODO: discuss
-		// ! Genesis block cannot be retreived
-		return big.NewInt(0), nil
-
-	case "pending":
-		// TODO: discuss
-		// 	! Researching
-		return nil, errors.New("TODO: tag is in implementation")
-
-	default: // hex number
-		n, err := utils.DecodeBig(param)
-		if err != nil {
-			return nil, errors.Wrap(err, "couldn't decode hex number to big int")
-		}
-		return n, nil
 	}
+
+	if invokeInfo != nil {
+		ethTx.From = utils.AddHexPrefix(invokeInfo.From)
+		ethTx.Gas = utils.AddHexPrefix(invokeInfo.GasLimit) // not really "gas sent by user", but ¯\_(ツ)_/¯
+		ethTx.GasPrice = utils.AddHexPrefix(invokeInfo.GasPrice)
+		ethTx.Input = utils.AddHexPrefix(invokeInfo.CallData)
+
+		// receipt, err := p.Qtum.GetTransactionReceipt(txData.Txid)
+		// if err != nil && err != qtum.EmptyResponseErr {
+		// 	return nil, err
+		// }
+
+		// if receipt != nil {
+		// 	ethTx.BlockNumber = hexutil.EncodeUint64(receipt.BlockNumber)
+		// 	ethTx.TransactionIndex = hexutil.EncodeUint64(receipt.TransactionIndex)
+
+		// 	if receipt.ContractAddress != "0000000000000000000000000000000000000000" {
+		// 		ethTx.To = utils.AddHexPrefix(receipt.ContractAddress)
+		// 	}
+		// }
+	}
+
+	return &ethTx, nil
 }
 
-func isBytesOfString(v json.RawMessage) bool {
-	println(string(v))
-	dQuote := []byte{'"'}
-	if !bytes.HasPrefix(v, dQuote) && !bytes.HasSuffix(v, dQuote) {
-		return false
+func (p *ProxyETHGetTransactionReceipt) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
+	txData, err := p.GetTransaction(hash)
+	if err != nil {
+		return nil, err
 	}
-	if bytes.Count(v, dQuote) != 2 {
-		return false
-	}
-	// TODO: decide
-	// ? Should we iterate over v to check if v[1:len(v)-2] is in a range of a-A, z-Z, 0-9
-	return true
-}
 
-func extractETHLogsFromTransactionReceipt(receipt *qtum.TransactionReceipt) []eth.Log {
-	logs := make([]eth.Log, 0, len(receipt.Log))
-	for i, log := range receipt.Log {
-		topics := make([]string, 0, len(log.Topics))
-		for _, topic := range log.Topics {
-			topics = append(topics, utils.AddHexPrefix(topic))
-		}
-		logs = append(logs, eth.Log{
-			TransactionHash:  utils.AddHexPrefix(receipt.TransactionHash),
-			TransactionIndex: hexutil.EncodeUint64(receipt.TransactionIndex),
-			BlockHash:        utils.AddHexPrefix(receipt.BlockHash),
-			BlockNumber:      hexutil.EncodeUint64(receipt.BlockNumber),
-			Data:             utils.AddHexPrefix(log.Data),
-			Address:          utils.AddHexPrefix(log.Address),
-			Topics:           topics,
-			LogIndex:         hexutil.EncodeUint64(uint64(i)),
-		})
+	ethVal, err := formatQtumAmount(txData.Amount)
+	if err != nil {
+		return nil, err
 	}
-	return logs
+
+	decodedRawTx, err := p.Qtum.DecodeRawTransaction(txData.Hex)
+	if err != nil {
+		return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+	}
+
+	/// TODO: Correct to normal values
+	ethTx := eth.GetTransactionByHashResponse{
+		Hash:             utils.AddHexPrefix(txData.Txid),
+		Nonce:            "0x01",
+		BlockHash:        utils.AddHexPrefix(txData.Blockhash),
+		BlockNumber:      hexutil.EncodeUint64(uint64(height)),
+		TransactionIndex: hexutil.EncodeUint64(uint64(position)),
+		From:             "0x0000000000000000000000000000000000000000",
+		To:               "0x0000000000000000000000000000000000000000",
+		Value:            ethVal,
+		GasPrice:         hexutil.EncodeUint64(txData.Fee.BigInt().Uint64()),
+		Gas:              "0x01",
+		Input:            "0x00",
+	}
+
+	var invokeInfo *qtum.ContractInvokeInfo
+
+	// We assume that this tx is a contract invokation (create or call), if we can
+	// find a create or call script.
+	for _, out := range decodedRawTx.Vout {
+		script := strings.Split(out.ScriptPubKey.Asm, " ")
+		finalOp := script[len(script)-1]
+
+		// switch out.ScriptPubKey.Type
+		switch finalOp {
+		case "OP_CALL":
+			info, err := qtum.ParseCallSenderASM(script)
+			// OP_CALL with OP_SENDER has the script type "nonstandard"
+			if err != nil {
+				return nil, err
+			}
+
+			invokeInfo = info
+
+			break
+		case "OP_CREATE":
+			// OP_CALL with OP_SENDER has the script type "create_sender"
+			info, err := qtum.ParseCreateSenderASM(script)
+			if err != nil {
+				return nil, err
+			}
+
+			invokeInfo = info
+
+			break
+		}
+	}
+
+	if invokeInfo != nil {
+		ethTx.From = utils.AddHexPrefix(invokeInfo.From)
+		ethTx.Gas = utils.AddHexPrefix(invokeInfo.GasLimit) // not really "gas sent by user", but ¯\_(ツ)_/¯
+		ethTx.GasPrice = utils.AddHexPrefix(invokeInfo.GasPrice)
+		ethTx.Input = utils.AddHexPrefix(invokeInfo.CallData)
+
+		// receipt, err := p.Qtum.GetTransactionReceipt(txData.Txid)
+		// if err != nil && err != qtum.EmptyResponseErr {
+		// 	return nil, err
+		// }
+
+		// if receipt != nil {
+		// 	ethTx.BlockNumber = hexutil.EncodeUint64(receipt.BlockNumber)
+		// 	ethTx.TransactionIndex = hexutil.EncodeUint64(receipt.TransactionIndex)
+
+		// 	if receipt.ContractAddress != "0000000000000000000000000000000000000000" {
+		// 		ethTx.To = utils.AddHexPrefix(receipt.ContractAddress)
+		// 	}
+		// }
+	}
+
+	return &ethTx, nil
 }
