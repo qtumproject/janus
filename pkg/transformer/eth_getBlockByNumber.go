@@ -93,6 +93,7 @@ func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*e
 				break
 			}
 
+			/// TODO: Correct to normal values
 			ethTx, err := p.GetTransactionByHash(tx, blockHeaderResp.Height, i)
 			if err != nil {
 				return nil, err
