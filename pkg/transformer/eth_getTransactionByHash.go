@@ -42,9 +42,7 @@ func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) 
 	return ethTx, nil
 }
 
-// TODO: think of returning flag if it's a rewrad transaction for miner
-func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, error) {
-	qtumTx, err := p.GetTransaction(hash)
+	ethVal, err := formatQtumAmount(tx.Amount)
 	if err != nil {
 		if errors.Cause(err) != qtum.ErrInvalidAddress {
 			return nil, err
