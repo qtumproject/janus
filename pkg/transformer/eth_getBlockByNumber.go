@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -56,12 +55,14 @@ func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*e
 		return nil, err
 	}
 
+	// TODO: Remove repetition
 	if !req.FullTransaction {
 		txs := make([]string, 0, len(blockResp.Tx))
 		for _, tx := range blockResp.Tx {
 			txs = append(txs, utils.AddHexPrefix(tx))
 		}
 
+		/// TODO: Correct to normal values
 		return &eth.GetBlockByNumberResponse{
 			Hash:             utils.AddHexPrefix(blockHeaderResp.Hash),
 			Nonce:            utils.AddHexPrefix(nonce),
@@ -92,91 +93,15 @@ func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*e
 				break
 			}
 
-			txData, err := p.GetTransaction(tx)
+			ethTx, err := p.GetTransactionByHash(tx, blockHeaderResp.Height, i)
 			if err != nil {
 				return nil, err
 			}
 
-			ethVal, err := formatQtumAmount(txData.Amount)
-			if err != nil {
-				return nil, err
-			}
-
-			decodedRawTx, err := p.Qtum.DecodeRawTransaction(txData.Hex)
-			if err != nil {
-				return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
-			}
-
-			ethTx := eth.GetTransactionByHashResponse{
-				Hash:             utils.AddHexPrefix(txData.Txid),
-				Nonce:            "0x01",
-				BlockHash:        utils.AddHexPrefix(txData.Blockhash),
-				BlockNumber:      hexutil.EncodeUint64(uint64(blockHeaderResp.Height)),
-				TransactionIndex: hexutil.EncodeUint64(uint64(i)),
-				From:             "0x0000000000000000000000000000000000000000",
-				To:               "0x0000000000000000000000000000000000000000",
-				Value:            ethVal,
-				GasPrice:         hexutil.EncodeUint64(txData.Fee.BigInt().Uint64()),
-				Gas:              "0x01",
-				Input:            "0x00",
-			}
-
-			var invokeInfo *qtum.ContractInvokeInfo
-
-			// We assume that this tx is a contract invokation (create or call), if we can
-			// find a create or call script.
-			for _, out := range decodedRawTx.Vout {
-				script := strings.Split(out.ScriptPubKey.Asm, " ")
-				finalOp := script[len(script)-1]
-
-				// switch out.ScriptPubKey.Type
-				switch finalOp {
-				case "OP_CALL":
-					info, err := qtum.ParseCallSenderASM(script)
-					// OP_CALL with OP_SENDER has the script type "nonstandard"
-					if err != nil {
-						return nil, err
-					}
-
-					invokeInfo = info
-
-					break
-				case "OP_CREATE":
-					// OP_CALL with OP_SENDER has the script type "create_sender"
-					info, err := qtum.ParseCreateSenderASM(script)
-					if err != nil {
-						return nil, err
-					}
-
-					invokeInfo = info
-
-					break
-				}
-			}
-
-			if invokeInfo != nil {
-				ethTx.From = utils.AddHexPrefix(invokeInfo.From)
-				ethTx.Gas = utils.AddHexPrefix(invokeInfo.GasLimit) // not really "gas sent by user", but ¯\_(ツ)_/¯
-				ethTx.GasPrice = utils.AddHexPrefix(invokeInfo.GasPrice)
-				ethTx.Input = utils.AddHexPrefix(invokeInfo.CallData)
-
-				// receipt, err := p.Qtum.GetTransactionReceipt(txData.Txid)
-				// if err != nil && err != qtum.EmptyResponseErr {
-				// 	return nil, err
-				// }
-
-				// if receipt != nil {
-				// 	ethTx.BlockNumber = hexutil.EncodeUint64(receipt.BlockNumber)
-				// 	ethTx.TransactionIndex = hexutil.EncodeUint64(receipt.TransactionIndex)
-
-				// 	if receipt.ContractAddress != "0000000000000000000000000000000000000000" {
-				// 		ethTx.To = utils.AddHexPrefix(receipt.ContractAddress)
-				// 	}
-				// }
-			}
-			txs = append(txs, ethTx)
+			txs = append(txs, *ethTx)
 		}
 
+		/// TODO: Correct to normal values
 		return &eth.GetBlockByNumberResponse{
 			Hash:             utils.AddHexPrefix(blockHeaderResp.Hash),
 			Nonce:            utils.AddHexPrefix(nonce),

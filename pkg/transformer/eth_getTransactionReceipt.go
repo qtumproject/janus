@@ -33,11 +33,29 @@ func (p *ProxyETHGetTransactionReceipt) Request(rawreq *eth.JSONRPCRequest) (int
 }
 
 func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptRequest) (*eth.GetTransactionReceiptResponse, error) {
-	qtumReceipt, err := p.GetTransactionReceipt(string(*req))
+	receipt, err := p.GetTransactionReceipt(string(*req))
 	if err != nil {
-		errCause := errors.Cause(err)
-		if errCause == qtum.EmptyResponseErr {
-			return nil, nil
+		if err == qtum.EmptyResponseErr {
+			ethTx, err := p.GetTransactionByHash(string(*req), 0, 0)
+			if err != nil {
+				return nil, err
+			}
+
+			/// TODO: Correct to normal values
+			return &eth.GetTransactionReceiptResponse{
+				TransactionHash:   ethTx.Hash,
+				TransactionIndex:  "0x0",
+				BlockHash:         ethTx.BlockHash,
+				BlockNumber:       ethTx.BlockNumber,
+				From:              ethTx.From,
+				To:                ethTx.To,
+				CumulativeGasUsed: ethTx.Gas,
+				GasUsed:           ethTx.Gas,
+				ContractAddress:   ethTx.To,
+				Logs:              []eth.Log{},
+				LogsBloom:         "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+				Status:            "0x1",
+			}, nil
 		}
 		return nil, err
 	}
@@ -64,8 +82,19 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 	}
 	ethReceipt.Status = status
 
-	r := qtum.TransactionReceipt(*qtumReceipt)
-	ethReceipt.Logs = extractETHLogsFromTransactionReceipt(&r)
+	r := qtum.TransactionReceiptStruct(*receipt)
+	logs := getEthLogs(&r)
+
+	ethTxReceipt := eth.GetTransactionReceiptResponse{
+		TransactionHash:   utils.AddHexPrefix(receipt.TransactionHash),
+		TransactionIndex:  hexutil.EncodeUint64(receipt.TransactionIndex),
+		BlockHash:         utils.AddHexPrefix(receipt.BlockHash),
+		BlockNumber:       hexutil.EncodeUint64(receipt.BlockNumber),
+		ContractAddress:   utils.AddHexPrefix(receipt.ContractAddress),
+		CumulativeGasUsed: hexutil.EncodeUint64(receipt.CumulativeGasUsed),
+		GasUsed:           hexutil.EncodeUint64(receipt.GasUsed),
+		Logs:              logs,
+		Status:            status,
 
 	qtumTx, err := p.Qtum.GetTransaction(qtumReceipt.TransactionHash)
 	if err != nil {

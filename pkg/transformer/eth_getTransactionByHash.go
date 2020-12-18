@@ -1,10 +1,6 @@
 package transformer
 
 import (
-	"encoding/json"
-
-	// "github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -35,174 +31,13 @@ func (p *ProxyETHGetTransactionByHash) Request(req *eth.JSONRPCRequest) (interfa
 }
 
 func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) (*eth.GetTransactionByHashResponse, error) {
-	ethTx, err := getTransactionByHash(p.Qtum, req.TxID)
+	ethTx, err := p.GetTransactionByHash(req.Txid, 0, 0)
 	if err != nil {
 		return nil, err
 	}
-	return ethTx, nil
-}
-
-	ethVal, err := formatQtumAmount(tx.Amount)
-	if err != nil {
-		if errors.Cause(err) != qtum.ErrInvalidAddress {
-			return nil, err
-		}
-		ethTx, err := getRewardTransactionByHash(p, hash)
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get reward transaction by hash")
-		}
-		return ethTx, nil
-	}
-	qtumDecodedRawTx, err := p.DecodeRawTransaction(qtumTx.Hex)
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get raw transaction")
-	}
-
-	ethTx := &eth.GetTransactionByHashResponse{
-		Hash:  utils.AddHexPrefix(qtumDecodedRawTx.ID),
-		Nonce: "0x0",
-
-		// TODO: researching
-		// ? Do we need those values
-		V: "",
-		R: "",
-		S: "",
-	}
-
-	if !qtumTx.IsPending() { // otherwise, the following values must be nulls
-		blockNumber, err := getBlockNumberByHash(p, qtumTx.BlockHash)
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get block number by hash")
-		}
-		ethTx.BlockNumber = hexutil.EncodeUint64(blockNumber)
-		ethTx.BlockHash = utils.AddHexPrefix(qtumTx.BlockHash)
-		ethTx.TransactionIndex = hexutil.EncodeUint64(uint64(qtumTx.BlockIndex))
-	}
-
-	ethAmount, err := formatQtumAmount(qtumDecodedRawTx.CalcAmount())
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't format amount")
-	}
-	ethTx.Value = ethAmount
-
-	qtumTxContractInfo, isContractTx, err := qtumDecodedRawTx.ExtractContractInfo()
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't extract contract info")
-	}
-	if isContractTx {
-		ethTx.Input = utils.AddHexPrefix(qtum.ZeroUserInput)
-		if qtumTxContractInfo.UserInput == "" {
-			ethTx.Input = utils.AddHexPrefix(qtumTxContractInfo.UserInput)
-		}
-		ethTx.From = utils.AddHexPrefix(qtumTxContractInfo.From)
-		ethTx.To = utils.AddHexPrefix(qtumTxContractInfo.To)
-		ethTx.Gas = hexutil.Encode([]byte(qtumTxContractInfo.GasLimit))
-		ethTx.GasPrice = hexutil.Encode([]byte(qtumTxContractInfo.GasPrice))
-
-		return ethTx, nil
-	}
-
-	if qtumTx.Generated {
-		ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
-	} else {
-		ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx.Vins)
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get non contract transaction sender address")
-		}
-		// TODO: discuss
-		// ? Does func above return incorrect address for graph-node (len is < 40)
-		// ! Temporary solution
-		ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
-	}
-	ethTx.To, err = findNonContractTxReceiverAddress(qtumDecodedRawTx.Vouts)
-	if err != nil {
-		// TODO: discuss, research
-		// ? Some vouts doesn't have `receive` category at all
-		ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
-
-		// TODO: uncomment, after todo above will be resolved
-		// return nil, errors.WithMessage(err, "couldn't get non contract transaction receiver address")
-	}
-	// TODO: discuss
-	// ? Does func above return incorrect address for graph-node (len is < 40)
-	// ! Temporary solution
-	ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
-
-	// TODO: researching
-	// ! Temporary solution
-	ethTx.Input = utils.AddHexPrefix(qtum.ZeroUserInput)
-	for _, detail := range qtumTx.Details {
-		if detail.Label != "" {
-			ethTx.Input = utils.AddHexPrefix(detail.Label)
-			break
-		}
-	}
-
-	// TODO: researching
-	// ? Is it correct for non contract transaction
-	ethTx.Gas = "0x0"
-	ethTx.GasPrice = "0x0"
 
 	return ethTx, nil
 }
-
-// TODO: discuss
-// ? There are `witness` transactions, that is not acquireable nither via `gettransaction`, nor `getrawtransaction`
-func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, error) {
-	rawQtumTx, err := p.GetRawTransaction(hash, false)
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get raw transaction")
-	}
-
-	ethTx := &eth.GetTransactionByHashResponse{
-		Hash:  utils.AddHexPrefix(hash),
-		Nonce: "0x0",
-
-		// TODO: discuss
-		// ? Expect this value to be always zero
-		Input: utils.AddHexPrefix(qtum.ZeroUserInput),
-
-		// TODO: discuss
-		// ? Are zero values applicable
-		Gas:      "0x0",
-		GasPrice: "0x0",
-
-		// TODO: researching
-		// ? Do we need those values
-		V: "",
-		R: "",
-		S: "",
-	}
-
-	if !rawQtumTx.IsPending() {
-		blockIndex, err := getTransactionIndexInBlock(p, hash, rawQtumTx.BlockHash)
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get transaction index in block")
-		}
-		ethTx.TransactionIndex = hexutil.EncodeUint64(uint64(blockIndex))
-
-		// TODO: Error
-		// receipt, err := p.Qtum.GetTransactionReceipt(tx.Txid)
-		// if err != nil && err != qtum.EmptyResponseErr {
-		// 	return nil, err
-		// }
-
-		// if receipt != nil {
-		// 	ethTx.BlockNumber = hexutil.EncodeUint64(receipt.BlockNumber)
-		// 	ethTx.TransactionIndex = hexutil.EncodeUint64(receipt.TransactionIndex)
-
-		// 	if receipt.ContractAddress != "0000000000000000000000000000000000000000" {
-		// 		ethTx.To = utils.AddHexPrefix(receipt.ContractAddress)
-		// 	}
-		// }
-	}
-
-	// TODO: discuss
-	// ? Do we have to set `from` == `0x00..00`
-	ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
-	// TODO: discuss
-	// ? Where is a `to`
-	ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
 
 	return ethTx, nil
 }
