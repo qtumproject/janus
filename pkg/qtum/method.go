@@ -44,14 +44,22 @@ func (m *Method) SignMessage(addr string, msg string) (string, error) {
 	return signature, nil
 }
 
-func (m *Method) GetTransaction(txID string) (*GetTransactionResponse, error) {
-	var (
-		req = GetTransactionRequest{
-			TxID: txID,
-		}
-		resp = new(GetTransactionResponse)
-	)
-	err := m.Request(MethodGetTransaction, &req, resp)
+func (m *Method) GetTransaction(Txid string) (*GetTransactionResponse, error) {
+	var resp *GetTransactionResponse
+	req := GetTransactionRequest{
+		Txid: Txid
+	}
+	err := m.Request(MethodGetTransaction, &req, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
+func (m *Method) GetTransactionReceipt(txHash string) (*GetTransactionReceiptResponse, error) {
+	var resp *GetTransactionReceiptResponse
+	err := m.Request(MethodGetTransactionReceipt, GetTransactionReceiptRequest(txHash), &resp)
 	if err != nil {
 		return nil, err
 	}
