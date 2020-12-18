@@ -47,7 +47,7 @@ func (m *Method) SignMessage(addr string, msg string) (string, error) {
 func (m *Method) GetTransaction(Txid string) (*GetTransactionResponse, error) {
 	var resp *GetTransactionResponse
 	req := GetTransactionRequest{
-		Txid: Txid
+		Txid: Txid,
 	}
 	err := m.Request(MethodGetTransaction, &req, &resp)
 	if err != nil {
