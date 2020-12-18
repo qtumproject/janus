@@ -3,7 +3,7 @@ package transformer
 import (
 	"encoding/json"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
+	// "github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -181,25 +181,20 @@ func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionB
 		}
 		ethTx.TransactionIndex = hexutil.EncodeUint64(uint64(blockIndex))
 
-		blockNumber, err := getBlockNumberByHash(p, rawQtumTx.BlockHash)
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get block number by hash")
-		}
-		ethTx.BlockNumber = hexutil.EncodeUint64(blockNumber)
+		// TODO: Error
+		// receipt, err := p.Qtum.GetTransactionReceipt(tx.Txid)
+		// if err != nil && err != qtum.EmptyResponseErr {
+		// 	return nil, err
+		// }
 
-		ethTx.BlockHash = utils.AddHexPrefix(rawQtumTx.BlockHash)
-	}
+		// if receipt != nil {
+		// 	ethTx.BlockNumber = hexutil.EncodeUint64(receipt.BlockNumber)
+		// 	ethTx.TransactionIndex = hexutil.EncodeUint64(receipt.TransactionIndex)
 
-	for i := range rawQtumTx.Vouts {
-		// TODO: discuss
-		// ! The response may be null, even if txout is presented
-		_, err := p.GetTransactionOut(hash, i, rawQtumTx.IsPending())
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get transaction out")
-		}
-		// TODO: discuss, researching
-		// ? Where is a reward amount
-		ethTx.Value = "0x0"
+		// 	if receipt.ContractAddress != "0000000000000000000000000000000000000000" {
+		// 		ethTx.To = utils.AddHexPrefix(receipt.ContractAddress)
+		// 	}
+		// }
 	}
 
 	// TODO: discuss
