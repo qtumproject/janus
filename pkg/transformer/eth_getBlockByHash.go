@@ -2,10 +2,10 @@ package transformer
 
 import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
+	"strings"
 )
 
 // ProxyETHGetBlockByHash implements ETHProxy
@@ -18,112 +18,117 @@ func (p *ProxyETHGetBlockByHash) Method() string {
 }
 
 func (p *ProxyETHGetBlockByHash) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
-	req := new(eth.GetBlockByHashRequest)
-	if err := unmarshalRequest(rawreq.Params, req); err != nil {
+	var req eth.GetBlockByHashRequest
+	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		return nil, err
 	}
-	req.BlockHash = utils.RemoveHexPrefix(req.BlockHash)
 
-	return p.request(req)
+	qtumreq := p.ToRequest(&req)
+
+	return p.request(qtumreq)
+}
+func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.GetBlockByHashResponse, error) {
+	blockHeaderResp, err := p.GetBlockHeader(req.BlockHash)
+	if err != nil {
+		return nil, err
+	}
+
+	if blockHeaderResp.Previousblockhash == "" {
+		blockHeaderResp.Previousblockhash = "0000000000000000000000000000000000000000000000000000000000000000"
+	}
+
+	nonce := hexutil.EncodeUint64(uint64(blockHeaderResp.Nonce))
+
+	if len(strings.TrimLeft(nonce, "0x")) < 16 {
+		res := strings.TrimLeft(nonce, "0x")
+		for i := 0; i < 16-len(res); {
+			res = "0" + res
+		}
+		nonce = res
+	}
+
+	blockResp, err := p.GetBlock(string(req.BlockHash))
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: Remove repetition
+	if !req.FullTransaction {
+		txs := make([]string, 0, len(blockResp.Tx))
+		for _, tx := range blockResp.Tx {
+			txs = append(txs, utils.AddHexPrefix(tx))
+		}
+
+		/// TODO: Correct to normal values
+		return &eth.GetBlockByHashResponse{
+			Hash:             utils.AddHexPrefix(blockHeaderResp.Hash),
+			Nonce:            utils.AddHexPrefix(nonce),
+			Number:           hexutil.EncodeUint64(uint64(blockHeaderResp.Height)),
+			ParentHash:       utils.AddHexPrefix(blockHeaderResp.Previousblockhash),
+			Difficulty:       hexutil.EncodeUint64(uint64(blockHeaderResp.Difficulty)),
+			Timestamp:        hexutil.EncodeUint64(blockHeaderResp.Time),
+			StateRoot:        utils.AddHexPrefix(blockHeaderResp.HashStateRoot),
+			Size:             hexutil.EncodeUint64(uint64(blockResp.Size)),
+			Transactions:     txs,
+			TransactionsRoot: utils.AddHexPrefix(blockResp.Merkleroot),
+			ReceiptsRoot:     utils.AddHexPrefix(blockResp.Merkleroot),
+
+			ExtraData:       "0x00",
+			Miner:           "0x0000000000000000000000000000000000000000",
+			TotalDifficulty: "0x00",
+			GasLimit:        "0x00",
+			GasUsed:         "0x00",
+			LogsBloom:       "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+
+			Sha3Uncles: "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+			Uncles:     []string{},
+		}, nil
+	} else {
+		txs := make([]eth.GetTransactionByHashResponse, 0, len(blockResp.Tx))
+		for i, tx := range blockResp.Tx {
+			if blockHeaderResp.Height == 0 {
+				break
+			}
+
+			/// TODO: Correct to normal values
+			ethTx, err := p.GetTransactionByHash(tx, blockHeaderResp.Height, i)
+			if err != nil {
+				return nil, err
+			}
+
+			txs = append(txs, *ethTx)
+		}
+
+		/// TODO: Correct to normal values
+		return &eth.GetBlockByHashResponse{
+			Hash:             utils.AddHexPrefix(blockHeaderResp.Hash),
+			Nonce:            utils.AddHexPrefix(nonce),
+			Number:           hexutil.EncodeUint64(uint64(blockHeaderResp.Height)),
+			ParentHash:       utils.AddHexPrefix(blockHeaderResp.Previousblockhash),
+			Difficulty:       hexutil.EncodeUint64(uint64(blockHeaderResp.Difficulty)),
+			Timestamp:        hexutil.EncodeUint64(blockHeaderResp.Time),
+			StateRoot:        utils.AddHexPrefix(blockHeaderResp.HashStateRoot),
+			Size:             hexutil.EncodeUint64(uint64(blockResp.Size)),
+			Transactions:     txs,
+			TransactionsRoot: utils.AddHexPrefix(blockResp.Merkleroot),
+			ReceiptsRoot:     utils.AddHexPrefix(blockResp.Merkleroot),
+
+			ExtraData:       "0x00",
+			Miner:           "0x0000000000000000000000000000000000000000",
+			TotalDifficulty: "0x00",
+			GasLimit:        "0x00",
+			GasUsed:         "0x00",
+			LogsBloom:       "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+
+			Sha3Uncles: "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+			Uncles:     []string{},
+		}, nil
+	}
 }
 
-func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.GetBlockByHashResponse, error) {
-	blockHeader, err := p.GetBlockHeader(req.BlockHash)
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get block header")
+func (p *ProxyETHGetBlockByHash) ToRequest(ethreq *eth.GetBlockByHashRequest) *eth.GetBlockByHashRequest {
+	return &eth.GetBlockByHashRequest{
+		BlockHash: utils.RemoveHexPrefix(strings.Trim(ethreq.BlockHash, "\"")),
+		FullTransaction: ethreq.FullTransaction,
 	}
-	block, err := p.GetBlock(req.BlockHash)
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get block")
-	}
-	resp := &eth.GetBlockByHashResponse{
-		// TODO: researching
-		// * If ETH block has pending status, then the following values must be null
-		// ? Is it possible case for Qtum
-		Hash:   utils.AddHexPrefix(req.BlockHash),
-		Number: hexutil.EncodeUint64(uint64(block.Height)),
-
-		// TODO: researching
-		// ! Not found
-		// ! Has incorrect value for compatability
-		ReceiptsRoot: utils.AddHexPrefix(block.Merkleroot),
-
-		// TODO: researching
-		// ! Not found
-		// ! Probably, may be calculated by huge amount of requests
-		TotalDifficulty: hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
-
-		// TODO: researching
-		// ! Not found
-		// ? Expect it always to be null
-		Uncles: []string{},
-
-		// TODO: check value correctness
-		Sha3Uncles: "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
-
-		// TODO: backlog
-		// ! Not found
-		// - Temporary expect this value to be always zero, as Etherium logs are usually zeros
-		LogsBloom: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-
-		// TODO: researching
-		// ? What value to put
-		// - Temporary set this value to be always zero
-		ExtraData: "0x00",
-
-		Nonce:            formatQtumNonce(block.Nonce),
-		Size:             hexutil.EncodeUint64(uint64(block.Size)),
-		Difficulty:       hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
-		StateRoot:        utils.AddHexPrefix(blockHeader.HashStateRoot),
-		TransactionsRoot: utils.AddHexPrefix(block.Merkleroot),
-		Transactions:     make([]interface{}, 0, len(block.Txs)),
-		Timestamp:        hexutil.EncodeUint64(blockHeader.Time),
-	}
-
-	if blockHeader.IsGenesisBlock() {
-		resp.ParentHash = "0x0000000000000000000000000000000000000000000000000000000000000000"
-		resp.Miner = utils.AddHexPrefix(qtum.ZeroAddress)
-	} else {
-		resp.ParentHash = utils.AddHexPrefix(blockHeader.Previousblockhash)
-		// ! Not found
-		//
-		// NOTE:
-		// 	In order to find a miner it seems, that we have to check
-		// 	address field of the txout method response. Current
-		// 	suggestion is to fill this field with zeros, not to
-		// 	spend much time on requests execution
-		//
-		// TODO: check if it's value is acquirable via logs
-		resp.Miner = "0x0000000000000000000000000000000000000000"
-	}
-
-	// TODO: rethink later
-	// ! Found only for contracts transactions
-	// As there is no gas values presented at common block info, we set
-	// gas limit value equalling to default gas limit of a block
-	resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
-	resp.GasUsed = "0x0"
-
-	if req.FullTransaction {
-		for _, txHash := range block.Txs {
-			tx, err := getTransactionByHash(p.Qtum, txHash)
-			if err != nil {
-				return nil, errors.WithMessage(err, "couldn't get transaction by hash")
-			}
-			resp.Transactions = append(resp.Transactions, *tx)
-			// TODO: fill gas used
-			// TODO: fill gas limit?
-		}
-	} else {
-		for _, txHash := range block.Txs {
-			// NOTE:
-			// 	Etherium RPC API doc says, that tx hashes must be of [32]byte,
-			// 	however it doesn't seem to be correct, 'cause Etherium tx hash
-			// 	has [64]byte just like Qtum tx hash has. In this case we do no
-			// 	additional convertations now, while everything works fine
-			resp.Transactions = append(resp.Transactions, utils.AddHexPrefix(txHash))
-		}
-	}
-
-	return resp, nil
 }
