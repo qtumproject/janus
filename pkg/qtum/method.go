@@ -145,6 +145,11 @@ func (m *Method) GetBlockChainInfo() (resp GetBlockChainInfoResponse, err error)
 	return resp, err
 }
 
+func (m *Method) GetBlockChainInfo() (resp GetBlockChainInfoResponse, err error) {
+	err = m.Request(MethodGetBlockChainInfo, nil, &resp)
+	return
+}
+
 func (m *Method) GetBlockHeader(hash string) (resp *GetBlockHeaderResponse, err error) {
 	req := GetBlockHeaderRequest{
 		Hash: hash,
