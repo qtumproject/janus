@@ -128,7 +128,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 
 func (p *ProxyETHGetBlockByHash) ToRequest(ethreq *eth.GetBlockByHashRequest) *eth.GetBlockByHashRequest {
 	return &eth.GetBlockByHashRequest{
-		BlockHash: utils.RemoveHexPrefix(strings.Trim(ethreq.BlockHash, "\"")),
+		BlockHash:       utils.RemoveHexPrefix(strings.Trim(ethreq.BlockHash, "\"")),
 		FullTransaction: ethreq.FullTransaction,
 	}
 }
