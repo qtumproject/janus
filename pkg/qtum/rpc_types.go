@@ -682,70 +682,20 @@ func (r *GetBlockCountResponse) UnmarshalJSON(data []byte) error {
 
 type (
 	GetRawTransactionRequest struct {
-		TxID    string
-		Verbose bool
+		Txid string
 	}
-	GetRawTransactionResponse struct {
-		Hex     string `json:"hex"`
-		ID      string `json:"txid"`
-		Hash    string `json:"hash"`
-		Size    int64  `json:"size"`
-		Vsize   int64  `json:"vsize"`
-		Version int64  `json:"version"`
-		Weight  int64  `json:"weight"`
-
-		BlockHash     string `json:"blockhash"`
-		Confirmations int64  `json:"confirmations"`
-		Time          int64  `json:"time"`
-		BlockTime     int64  `json:"blocktime"`
-
-		Vins  []RawTransactionVin  `json:"vin"`
-		Vouts []RawTransactionVout `json:"vout"`
-
-		// Unused fields:
-		// - "in_active_chain"
-		// - "locktime"
-
-	}
-	RawTransactionVin struct {
-		ID    string `json:"txid"`
-		VoutN int64  `json:"vout"`
-
-		// Additional fields:
-		// - "scriptSig"
-		// - "sequence"
-		// - "txinwitness"
-	}
-	RawTransactionVout struct {
-		Amount  float64 `json:"value"`
-		Details struct {
-			Addresses []string `json:"addresses"`
-			Asm       string   `json:"asm"`
-			Hex       string   `json:"hex"`
-			// ReqSigs   interface{} `json:"reqSigs"`
-			Type string `json:"type"`
-		} `json:"scriptPubKey"`
-
-		// Additional fields:
-		// - "n"
-	}
+	GetRawTransactionResponse string
 )
 
 func (r *GetRawTransactionRequest) MarshalJSON() ([]byte, error) {
 	/*
-		1. "txid"      (string, required) The transaction id
-		2. verbose     (bool, optional, default=false) If false, return a string, otherwise return a json object
-		3. "blockhash" (string, optional) The block in which to look for the transaction
-
+		1. "txid"                  (string, required) The transaction id
+		2. "include_watchonly"     (bool, optional, default=false) Whether to include watch-only addresses in balance calculation and details[]
+		3. "waitconf"              (int, optional, default=0) Wait for enough confirmations before returning
 	*/
 	return json.Marshal([]interface{}{
-		r.TxID,
-		r.Verbose,
+		r.Txid,
 	})
-}
-
-func (r *GetRawTransactionResponse) IsPending() bool {
-	return r.BlockHash == ""
 }
 
 // ========== GetTransaction ============= //

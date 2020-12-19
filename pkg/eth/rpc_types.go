@@ -507,7 +507,6 @@ type (
 	}
 )
 
-
 func (r *GetBlockByNumberRequest) UnmarshalJSON(data []byte) error {
 	var params []interface{}
 	if err := json.Unmarshal(data, &params); err != nil {

@@ -78,7 +78,31 @@ func unmarshalRequest(data []byte, v interface{}) error {
 func (p *ProxyETHGetBlockByNumber) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
 	txData, err := p.GetTransaction(hash)
 	if err != nil {
-		return nil, err
+		hex, err := p.GetRawTransaction(hash)
+
+		if err != nil {
+			return nil, err
+		}
+
+		decodedRawTx, err := p.Qtum.DecodeRawTransaction(string(*hex))
+		if err != nil {
+			return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+		}
+
+		txData = &qtum.GetTransactionResponse{
+			Amount:            0.0,
+			Fee:               0.0,
+			Confirmations:     0,
+			Blockhash:         "0000000000000000000000000000000000000000000000000000000000000000",
+			Blockindex:        0,
+			Blocktime:         0,
+			Txid:              decodedRawTx.Txid,
+			Time:              0,
+			Timereceived:      0,
+			Bip125Replaceable: "",
+			Details:           []*qtum.TransactionDetail{},
+			Hex:               string(*hex),
+		}
 	}
 
 	ethVal, err := formatQtumAmount(txData.Amount)
@@ -167,7 +191,31 @@ func (p *ProxyETHGetBlockByNumber) GetTransactionByHash(hash string, height, pos
 func (p *ProxyETHGetTransactionByHash) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
 	txData, err := p.GetTransaction(hash)
 	if err != nil {
-		return nil, err
+		hex, err := p.GetRawTransaction(hash)
+
+		if err != nil {
+			return nil, err
+		}
+
+		decodedRawTx, err := p.Qtum.DecodeRawTransaction(string(*hex))
+		if err != nil {
+			return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+		}
+
+		txData = &qtum.GetTransactionResponse{
+			Amount:            0.0,
+			Fee:               0.0,
+			Confirmations:     0,
+			Blockhash:         "0000000000000000000000000000000000000000000000000000000000000000",
+			Blockindex:        0,
+			Blocktime:         0,
+			Txid:              decodedRawTx.Txid,
+			Time:              0,
+			Timereceived:      0,
+			Bip125Replaceable: "",
+			Details:           []*qtum.TransactionDetail{},
+			Hex:               string(*hex),
+		}
 	}
 
 	ethVal, err := formatQtumAmount(txData.Amount)
@@ -254,9 +302,34 @@ func (p *ProxyETHGetTransactionByHash) GetTransactionByHash(hash string, height,
 
 // TODO: Remove repetition
 func (p *ProxyETHGetTransactionReceipt) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
+	var txData *qtum.GetTransactionResponse
 	txData, err := p.GetTransaction(hash)
 	if err != nil {
-		return nil, err
+		hex, err := p.GetRawTransaction(hash)
+
+		if err != nil {
+			return nil, err
+		}
+
+		decodedRawTx, err := p.Qtum.DecodeRawTransaction(string(*hex))
+		if err != nil {
+			return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+		}
+
+		txData = &qtum.GetTransactionResponse{
+			Amount:            0.0,
+			Fee:               0.0,
+			Confirmations:     0,
+			Blockhash:         "0000000000000000000000000000000000000000000000000000000000000000",
+			Blockindex:        0,
+			Blocktime:         0,
+			Txid:              decodedRawTx.Txid,
+			Time:              0,
+			Timereceived:      0,
+			Bip125Replaceable: "",
+			Details:           []*qtum.TransactionDetail{},
+			Hex:               string(*hex),
+		}
 	}
 
 	ethVal, err := formatQtumAmount(txData.Amount)
@@ -345,7 +418,31 @@ func (p *ProxyETHGetTransactionReceipt) GetTransactionByHash(hash string, height
 func (p *ProxyETHGetBlockByHash) GetTransactionByHash(hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
 	txData, err := p.GetTransaction(hash)
 	if err != nil {
-		return nil, err
+		hex, err := p.GetRawTransaction(hash)
+
+		if err != nil {
+			return nil, err
+		}
+
+		decodedRawTx, err := p.Qtum.DecodeRawTransaction(string(*hex))
+		if err != nil {
+			return nil, errors.Wrap(err, "Qtum#DecodeRawTransaction")
+		}
+
+		txData = &qtum.GetTransactionResponse{
+			Amount:            0.0,
+			Fee:               0.0,
+			Confirmations:     0,
+			Blockhash:         "0000000000000000000000000000000000000000000000000000000000000000",
+			Blockindex:        position,
+			Blocktime:         0,
+			Txid:              decodedRawTx.Txid,
+			Time:              0,
+			Timereceived:      0,
+			Bip125Replaceable: "",
+			Details:           []*qtum.TransactionDetail{},
+			Hex:               string(*hex),
+		}
 	}
 
 	ethVal, err := QtumAmountToEthValue(txData.Amount)

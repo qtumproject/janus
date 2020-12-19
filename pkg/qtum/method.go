@@ -57,6 +57,19 @@ func (m *Method) GetTransaction(Txid string) (*GetTransactionResponse, error) {
 	return resp, nil
 }
 
+func (m *Method) GetRawTransaction(Txid string) (*GetRawTransactionResponse, error) {
+	var resp *GetRawTransactionResponse
+	req := GetRawTransactionRequest{
+		Txid: Txid,
+	}
+	err := m.Request(MethodGetRawTransaction, &req, &resp)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp, nil
+}
+
 func (m *Method) GetTransactionReceipt(txHash string) (*GetTransactionReceiptResponse, error) {
 	var resp *GetTransactionReceiptResponse
 	err := m.Request(MethodGetTransactionReceipt, GetTransactionReceiptRequest(txHash), &resp)
