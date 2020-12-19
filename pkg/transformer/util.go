@@ -434,7 +434,7 @@ func (p *ProxyETHGetBlockByHash) GetTransactionByHash(hash string, height, posit
 			Fee:               0.0,
 			Confirmations:     0,
 			Blockhash:         "0000000000000000000000000000000000000000000000000000000000000000",
-			Blockindex:        position,
+			Blockindex:        0,
 			Blocktime:         0,
 			Txid:              decodedRawTx.Txid,
 			Time:              0,
