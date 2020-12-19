@@ -60,7 +60,8 @@ func (m *Method) GetTransaction(Txid string) (*GetTransactionResponse, error) {
 func (m *Method) GetRawTransaction(Txid string) (*GetRawTransactionResponse, error) {
 	var resp *GetRawTransactionResponse
 	req := GetRawTransactionRequest{
-		Txid: Txid,
+		Txid:    Txid,
+		Verbose: true,
 	}
 	err := m.Request(MethodGetRawTransaction, &req, &resp)
 	if err != nil {

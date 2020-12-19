@@ -682,19 +682,35 @@ func (r *GetBlockCountResponse) UnmarshalJSON(data []byte) error {
 
 type (
 	GetRawTransactionRequest struct {
-		Txid string
+		Txid    string
+		Verbose bool
 	}
-	GetRawTransactionResponse string
+	GetRawTransactionResponse struct {
+		Txid          string `json:"txid"`
+		Hash          string `json:"hash"`
+		Version       int64  `json:"version"`
+		Size          int64  `json:"size"`
+		Vsize         int64  `json:"vsize"`
+		Weight        int64  `json:"weight"`
+		Locktime      int64  `json:"locktime"`
+		Hex           string `json:"hex"`
+		Blockhash     string `json:"blockhash"`
+		Confirmations int64  `json:"confirmations"`
+		Time          int64  `json:"time"`
+		Blocktime     int64  `json:"blocktime"`
+	}
 )
 
 func (r *GetRawTransactionRequest) MarshalJSON() ([]byte, error) {
 	/*
-		1. "txid"                  (string, required) The transaction id
-		2. "include_watchonly"     (bool, optional, default=false) Whether to include watch-only addresses in balance calculation and details[]
-		3. "waitconf"              (int, optional, default=0) Wait for enough confirmations before returning
+		1. "txid"      (string, required) The transaction id
+		2. verbose     (bool, optional, default=false) If false, return a string, otherwise return a json object
+		3. "blockhash" (string, optional) The block in which to look for the transaction
+
 	*/
 	return json.Marshal([]interface{}{
 		r.Txid,
+		r.Verbose,
 	})
 }
 
