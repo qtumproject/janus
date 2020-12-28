@@ -54,12 +54,10 @@ func (p *ProxyETHCall) ToRequest(ethreq *eth.CallRequest) (*qtum.CallContractReq
 	}
 
 	return &qtum.CallContractRequest{
-		To:   ethreq.To,
-		From: from,
-		Data: ethreq.Data,
-		// TODO: qtum [code: -3] Invalid value for gasLimit (Minimum is: 10000)
-		// Incorrect gas format
-		GasLimit: big.NewInt(10000),
+		To:       ethreq.To,
+		From:     from,
+		Data:     ethreq.Data,
+		GasLimit: big.NewInt(10000), // TODO: qtum [code: -3] Invalid value for gasLimit (Minimum is: 10000)
 		//GasLimit: ethreq.Gas.Int,
 	}, nil
 }
