@@ -111,6 +111,11 @@ func GetTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth
 	}
 
 	/// TODO: Correct to normal values
+	if txData.Blockhash == "" {
+		txData.Blockhash = "0000000000000000000000000000000000000000000000000000000000000000"
+	}
+
+	/// TODO: Correct to normal values
 	ethTx := eth.GetTransactionByHashResponse{
 		Hash:             utils.AddHexPrefix(txData.Txid),
 		Nonce:            "0x01",
