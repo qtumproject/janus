@@ -142,13 +142,14 @@ func GetTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth
 		// switch out.ScriptPubKey.Type
 		switch finalOp {
 		case "OP_CALL":
-			info, err := qtum.ParseCallSenderASM(script)
-			// OP_CALL with OP_SENDER has the script type "nonstandard"
-			if err != nil {
-				return nil, err
-			}
+			// TODO: Error parsing OP codes
+			// info, err := qtum.ParseCallSenderASM(script)
+			// // OP_CALL with OP_SENDER has the script type "nonstandard"
+			// if err != nil {
+			// 	return nil, err
+			// }
 
-			invokeInfo = info
+			// invokeInfo = info
 
 			break
 		case "OP_CREATE":
