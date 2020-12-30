@@ -109,6 +109,7 @@ func (p *ProxyETHGetBlockByNumber) getQtumBlockNumber(ethBlock json.RawMessage, 
 
 			return big.NewInt(res.Blocks), nil
 		case "pending", "earliest":
+			// TODO: Fix
 			return nil, errors.New(`tags, "pending" and "earliest", are unsupported`)
 		default:
 			return utils.DecodeBig(ethBlockStr)
@@ -123,6 +124,7 @@ func (p *ProxyETHGetBlockByNumber) getQtumBlockNumber(ethBlock json.RawMessage, 
 	return big.NewInt(b), nil
 }
 
+// TODO: Remove repetition
 func (p *ProxyETHGetLogs) getQtumBlockNumber(ethBlock json.RawMessage, defaultVal int64) (*big.Int, error) {
 	if ethBlock == nil {
 		return big.NewInt(defaultVal), nil
@@ -143,6 +145,7 @@ func (p *ProxyETHGetLogs) getQtumBlockNumber(ethBlock json.RawMessage, defaultVa
 
 			return big.NewInt(res.Blocks), nil
 		case "pending", "earliest":
+			// TODO: Fix
 			return nil, errors.New(`tags, "pending" and "earliest", are unsupported`)
 		default:
 			return utils.DecodeBig(ethBlockStr)
@@ -157,6 +160,7 @@ func (p *ProxyETHGetLogs) getQtumBlockNumber(ethBlock json.RawMessage, defaultVa
 	return big.NewInt(b), nil
 }
 
+// TODO: Remove repetition
 func (p *ProxyETHNewFilter) getQtumBlockNumber(ethBlock json.RawMessage, defaultVal int64) (*big.Int, error) {
 	if ethBlock == nil {
 		return big.NewInt(defaultVal), nil
