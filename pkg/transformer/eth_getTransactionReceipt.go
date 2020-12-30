@@ -36,13 +36,12 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 	receipt, err := p.GetTransactionReceipt(string(*req))
 	if err != nil {
 		if err == qtum.EmptyResponseErr {
-			/// TODO: Correct to normal values
 			ethTx, err := GetTransactionByHash(p.Qtum, string(*req), 0, 0)
 			if err != nil {
 				return nil, err
 			}
 
-			/// TODO: Correct to normal values
+			// TODO: Correct to normal values
 			return &eth.GetTransactionReceiptResponse{
 				TransactionHash:   ethTx.Hash,
 				TransactionIndex:  "0x0",
@@ -86,6 +85,7 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 	r := qtum.TransactionReceiptStruct(*receipt)
 	logs := getEthLogs(&r)
 
+	// TODO: Correct to normal values
 	ethTxReceipt := eth.GetTransactionReceiptResponse{
 		TransactionHash:   utils.AddHexPrefix(receipt.TransactionHash),
 		TransactionIndex:  hexutil.EncodeUint64(receipt.TransactionIndex),

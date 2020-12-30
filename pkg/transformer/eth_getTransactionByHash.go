@@ -31,7 +31,6 @@ func (p *ProxyETHGetTransactionByHash) Request(req *eth.JSONRPCRequest) (interfa
 }
 
 func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) (*eth.GetTransactionByHashResponse, error) {
-	/// TODO: Correct to normal values
 	ethTx, err := GetTransactionByHash(p.Qtum, req.Txid, 0, 0)
 	if err != nil {
 		return nil, err
