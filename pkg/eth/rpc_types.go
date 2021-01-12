@@ -504,9 +504,9 @@ type (
 		GasUsed          string `json:"gasUsed"`
 		Timestamp        string `json:"timestamp"`
 		//Different type of response []string, []GetTransactionByHashResponse
-		Transactions interface{} `json:"transactions"`
-		Uncles       []string    `json:"uncles"`
-		ReceiptsRoot string      `json:"receiptsRoot"`
+		Transactions []interface{} `json:"transactions"`
+		Uncles       []string      `json:"uncles"`
+		ReceiptsRoot string        `json:"receiptsRoot"`
 	}
 )
 
@@ -560,24 +560,34 @@ func (r *GetBlockByHashRequest) UnmarshalJSON(data []byte) error {
 }
 
 func (r *GetBlockByHashRequest) UnmarshalJSON(data []byte) error {
-	var params []json.RawMessage
+	var params []interface{}
 	if err := json.Unmarshal(data, &params); err != nil {
-		return errors.Wrap(err, "json unmarshalling")
+		return errors.Wrap(err, "couldn't unmarhsal parameters")
+	}
+	if paramsNum := len(params); paramsNum < 2 {
+		return errors.Errorf("invalid parameters number - %d/2", paramsNum)
 	}
 
-	if len(params) == 0 {
-		return errors.New("params must be set")
+	blockHash, ok := params[0].(string)
+	if !ok {
+		return newErrInvalidParameterType(1, params[0], "")
 	}
+	// TODO: discuss
+	// ? Should we precheck blockHash len
+	r.BlockHash = blockHash
 
-	var fullTx bool
-	if err := json.Unmarshal(params[1], &fullTx); err != nil {
-		return err
+	fullTxWanted, ok := params[1].(bool)
+	if !ok {
+		return newErrInvalidParameterType(2, params[1], false)
 	}
-
-	r.BlockHash = string(params[0])
-	r.FullTransaction = fullTx
+	r.FullTransaction = fullTxWanted
 
 	return nil
+}
+
+// TODO: think of moving it into a separate file
+func newErrInvalidParameterType(idx int, gotType interface{}, wantedType interface{}) error {
+	return errors.Errorf("invalid %d parameter type %T, but %T type is expected", idx, gotType, wantedType)
 }
 
 // ========== eth_newFilter ============= //
