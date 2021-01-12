@@ -42,6 +42,7 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 				return nil, err
 			}
 
+			// TODO: Verification, transaction of creating a smart contract
 			nonce := 0
 			var contractAddr common.Address
 			contractAddr = crypto.CreateAddress(common.HexToAddress(ethTx.From), uint64(nonce))
