@@ -280,7 +280,6 @@ type (
 		Logs              []Log  `json:"logs"`                      // Array - Array of log objects, which this transaction generated.
 		LogsBloom         string `json:"logsBloom"`                 // DATA, 256 Bytes - Bloom filter for light clients to quickly retrieve related logs.
 		Status            string `json:"status"`                    // QUANTITY either 1 (success) or 0 (failure)
-		Nonce             int    `json:"nonce"`                     // Nonce
 		// Root              string `json:"root,omitempty"`            // DATA 32 bytes of post-transaction stateroot (pre Byzantium)
 	}
 
