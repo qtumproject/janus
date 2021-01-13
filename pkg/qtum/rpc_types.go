@@ -16,21 +16,11 @@ import (
 const (
 	genesisBlockHeight = 0
 
-	// Is hex representation of 21000 value, which is default value
-	DefaultBlockGasLimit = "5208"
-
-	// Is a zero wallet address, which is used as a stub, when
-	// original value cannot be defined in such cases as generated
-	// transaction
-	ZeroAddress = "0000000000000000000000000000000000000000"
-
-	// Is a zero user_input/label, that usually may be send along
-	// with a transaction or contract. Primarly usage is as stub,
-	// when original value has not been provided
+	// Presents hex representation of a 21000 value, which is
+	// the default value to a block
 	//
-	// This value has the minimum length, which is acceptable by
-	// graph-node
-	ZeroUserInput = "00"
+	// NOTE: value doesn't have 0x prefix
+	DefaultBlockGasLimit = "5208"
 )
 
 type SendToContractRawRequest struct {
