@@ -431,28 +431,7 @@ type (
 	    "uncles": ["0x1606e5...", "0xd5145a9..."]
 	  }
 	*/
-	GetBlockByNumberResponse struct {
-		Number           string `json:"number"`
-		Hash             string `json:"hash"`
-		ParentHash       string `json:"parentHash"`
-		Nonce            string `json:"nonce"`
-		Sha3Uncles       string `json:"sha3Uncles"`
-		LogsBloom        string `json:"logsBloom"`
-		TransactionsRoot string `json:"transactionsRoot"`
-		StateRoot        string `json:"stateRoot"`
-		Miner            string `json:"miner"`
-		Difficulty       string `json:"difficulty"`
-		TotalDifficulty  string `json:"totalDifficulty"`
-		ExtraData        string `json:"extraData"`
-		Size             string `json:"size"`
-		GasLimit         string `json:"gasLimit"`
-		GasUsed          string `json:"gasUsed"`
-		Timestamp        string `json:"timestamp"`
-		//Different type of response []string, []GetTransactionByHashResponse
-		Transactions interface{} `json:"transactions"`
-		Uncles       []string    `json:"uncles"`
-		ReceiptsRoot string      `json:"receiptsRoot"`
-	}
+	GetBlockByNumberResponse = GetBlockByHashResponse
 )
 
 // ========== eth_getBlockByHash ============= //
