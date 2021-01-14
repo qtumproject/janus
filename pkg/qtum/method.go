@@ -74,8 +74,8 @@ func (m *Method) GetRawTransaction(txID string, hexEncoded bool) (*GetRawTransac
 }
 
 func (m *Method) GetTransactionReceipt(txHash string) (*GetTransactionReceiptResponse, error) {
-	var resp *GetTransactionReceiptResponse
-	err := m.Request(MethodGetTransactionReceipt, GetTransactionReceiptRequest(txHash), &resp)
+	resp := new(GetTransactionReceiptResponse)
+	err := m.Request(MethodGetTransactionReceipt, GetTransactionReceiptRequest(txHash), resp)
 	if err != nil {
 		return nil, err
 	}

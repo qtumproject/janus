@@ -1,9 +1,8 @@
 package transformer
 
 import (
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -34,35 +33,8 @@ func (p *ProxyETHGetTransactionReceipt) Request(rawreq *eth.JSONRPCRequest) (int
 }
 
 func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptRequest) (*eth.GetTransactionReceiptResponse, error) {
-	receipt, err := p.GetTransactionReceipt(string(*req))
+	qtumReceipt, err := p.GetTransactionReceipt(string(*req))
 	if err != nil {
-		if err == qtum.EmptyResponseErr {
-			ethTx, err := getTransactionByHash(p.Qtum, string(*req))
-			if err != nil {
-				return nil, err
-			}
-
-			// TODO: Verification, transaction of creating a smart contract
-			nonce := 0
-			var contractAddr common.Address
-			contractAddr = crypto.CreateAddress(common.HexToAddress(ethTx.From), uint64(nonce))
-
-			// TODO: Correct to normal values
-			return &eth.GetTransactionReceiptResponse{
-				TransactionHash:   ethTx.Hash,
-				TransactionIndex:  "0x0",
-				BlockHash:         ethTx.BlockHash,
-				BlockNumber:       ethTx.BlockNumber,
-				From:              ethTx.From,
-				To:                ethTx.To,
-				CumulativeGasUsed: ethTx.Gas,
-				GasUsed:           ethTx.Gas,
-				ContractAddress:   contractAddr.String(),
-				Logs:              []eth.Log{},
-				LogsBloom:         "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
-				Status:            "0x1",
-			}, nil
-		}
 		return nil, err
 	}
 
@@ -88,28 +60,12 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 	}
 	ethReceipt.Status = status
 
-	r := qtum.TransactionReceiptStruct(*receipt)
-	logs := getEthLogs(&r)
+	r := qtum.TransactionReceipt(*qtumReceipt)
+	ethReceipt.Logs = extractETHLogsFromTransactionReceipt(&r)
 
-	nonce := 0
-	if receipt.ContractAddress != "" {
-		var contractAddr common.Address
-		contractAddr = crypto.CreateAddress(common.HexToAddress(receipt.From), uint64(nonce))
-		receipt.ContractAddress = contractAddr.String()
-	}
-
-	// TODO: Correct to normal values
-	ethTxReceipt := eth.GetTransactionReceiptResponse{
-		TransactionHash:   utils.AddHexPrefix(receipt.TransactionHash),
-		TransactionIndex:  hexutil.EncodeUint64(receipt.TransactionIndex),
-		BlockHash:         utils.AddHexPrefix(receipt.BlockHash),
-		BlockNumber:       hexutil.EncodeUint64(receipt.BlockNumber),
-		ContractAddress:   utils.AddHexPrefix(receipt.ContractAddress),
-		CumulativeGasUsed: hexutil.EncodeUint64(receipt.CumulativeGasUsed),
-		GasUsed:           hexutil.EncodeUint64(receipt.GasUsed),
-		Logs:              logs,
-		Status:            status,
-		LogsBloom:         "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+	qtumTx, err := p.Qtum.GetTransaction(qtumReceipt.TransactionHash)
+	if err != nil {
+		return nil, errors.WithMessage(err, "couldn't get transaction")
 	}
 	decodedRawQtumTx, err := p.Qtum.DecodeRawTransaction(qtumTx.Hex)
 	if err != nil {
