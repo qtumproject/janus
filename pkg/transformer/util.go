@@ -217,13 +217,14 @@ func getBlockNumber(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*
 
 	case "earliest":
 		// TODO: approve
-		// 	? Can we return 0 as a genesis block
+		// 	? Can we return 0 as a genesis block - true
 		// 	* See func comment for more context
 		return nil, errors.New("TODO: tag is in implementation")
 
 	case "pending":
 		// TODO: discuss
-		// 	! See func comment
+		// 	! Researching
+		//
 		return nil, errors.New("TODO: tag is in implementation")
 
 	default: // hex number
