@@ -188,3 +188,62 @@ func GetTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth
 
 	return &ethTx, nil
 }
+
+// Returns Qtum block number. Result depends on a passed raw param. Raw param's slice of bytes should
+// has one of the following values:
+// - hex string representation of a number of a specific block
+// - string "latest" - for the latest mined block
+// - string "earliest" for the genesis block
+// - string "pending" - for the pending state/transactions
+func getBlockNumber(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*big.Int, error) {
+	if len(rawParam) < 1 {
+		return nil, errors.Errorf("empty parameter value")
+	}
+	if !isBytesOfString(rawParam) {
+		return nil, errors.Errorf("invalid parameter format - string is expected")
+	}
+
+	var param string
+	if err := json.Unmarshal(rawParam, &param); err != nil {
+		return nil, errors.Wrap(err, "couldn't unmarshal raw parameter")
+	}
+	switch param {
+	case "latest":
+		res, err := p.GetBlockChainInfo()
+		if err != nil {
+			return nil, err
+		}
+		return big.NewInt(res.Blocks), nil
+
+	case "earliest":
+		// TODO: approve
+		// 	? Can we return 0 as a genesis block
+		// 	* See func comment for more context
+		return nil, errors.New("TODO: tag is in implementation")
+
+	case "pending":
+		// TODO: discuss
+		// 	! See func comment
+		return nil, errors.New("TODO: tag is in implementation")
+
+	default: // hex number
+		n, err := utils.DecodeBig(param)
+		if err != nil {
+			return nil, errors.Wrap(err, "couldn't decode hex number to big int")
+		}
+		return n, nil
+	}
+}
+
+func isBytesOfString(v json.RawMessage) bool {
+	dQuote := []byte{'"'}
+	if !bytes.HasPrefix(v, dQuote) && !bytes.HasSuffix(v, dQuote) {
+		return false
+	}
+	if bytes.Count(v, dQuote) != 2 {
+		return false
+	}
+	// TODO: decide
+	// 	? Should we iterate over v to check if v[1:len(v)-2] is in a range of a-A, z-Z, 0-9
+	return true
+}
