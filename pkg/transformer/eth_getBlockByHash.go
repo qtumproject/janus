@@ -39,52 +39,37 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		return nil, errors.WithMessage(err, "couldn't get block")
 	}
 	resp := &eth.GetBlockByHashResponse{
-		// TODO: rediscuss || (Mark is researching)
-		// 	* If ETH block has pending status, then the following values must be null
-		//
-		// 	? How to define if a block is in pending status
-		// 	? Is it possible case for Qtum
+		// TODO: Mark is researching
+		// * If ETH block has pending status, then the following values must be null
+		// ? Is it possible case for Qtum
 		Hash:   utils.AddHexPrefix(req.BlockHash),
 		Number: hexutil.EncodeUint64(uint64(block.Height)),
 
+		// TODO: Mark is researching
 		// ! Not found
-		//
-		// TODO: rediscuss
-		// 	? It doesn't seem to be a correct value
+		// ! Incorrect value
 		ReceiptsRoot: utils.AddHexPrefix(block.Merkleroot),
-
+		// TODO: Mark is researching
 		// ! Not found
-		//
-		// TODO: rediscuss
-		// 	? may be chainwork is same as total difficulty
+		// ! Probably, may be calculated by many requests
 		TotalDifficulty: hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
 
-		// ! Not found
-		//
 		// TODO: Mark is researching
-		// 	? Do we have to expect here always an empty slice
+		// ! Not found
+		// ? Expect always null
 		Uncles: []string{},
 		// TODO: check value correctness
 		Sha3Uncles: "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
 
+		// TODO: backlog
 		// ! Not found
-		//
-		// Temporary expect this value to be always zero,
-		// as Etherium logs are usually zeros
+		// - Temporary expect this value to be always zero, as Etherium logs are usually zeros
 		LogsBloom: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
 
-		// TODO: discuss
-		// 	? Для extra data в bitcoin есть Coinbase data
-		//
-		// Represents name, version, node programming language... - node info (for Etherium)
+		// TODO: Mark is researching
+		// ? What value to put
+		// - Temporary set this value to be always zero
 		ExtraData: "0x00",
-
-		// ! Found only for contracts transactions
-		//
-		// As there is no gas values presented at common block info, we set
-		// gas limit value equalling to default node gas limit for a block
-		GasLimit: utils.AddHexPrefix(qtum.DefaultBlockGasLimit),
-		GasUsed:  "0x00",
 
 		Nonce:            formatNonce(block.Nonce),
 		Size:             hexutil.EncodeUint64(uint64(block.Size)),
@@ -112,18 +97,25 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		resp.Miner = "0x0000000000000000000000000000000000000000"
 	}
 
-	// TODO: discuss
-	// 	? Maybe Qutum implements new RPC method to fetch all needed txs someday
-	// 		* we already fetch tx info for each tx in a block
-	// 		* each call to GetTransactionByHash() func calls about 3 additional requests inside
-	// 		* it doesn't seem to be a bad variant to try find all needed values such as gas, miner etc.
+	// TODO: suggestion
+	// ? Maybe Qutum implements new RPC method to fetch all needed txs someday
+	// * We already fetch tx info for each tx in a block
+	// * Each call to GetTransactionByHash() func may call unpredictable additional requests inside
 	if req.FullTransaction {
+		// TODO: rethink someday
+		// ! Found only for contracts transactions
+		// As there is no gas values presented at common block info, we set
+		// gas limit value equalling to default node gas limit for a block
+		resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
+
 		for i, txHash := range block.Tx {
 			tx, err := GetTransactionByHash(p.Qtum, txHash, blockHeader.Height, i)
 			if err != nil {
 				return nil, errors.WithMessage(err, "couldn't get transaction by hash")
 			}
 			resp.Transactions = append(resp.Transactions, *tx)
+			// TODO: fill gas used
+			// resp.GasUsed +=  tx.Gas * 1e8
 		}
 	} else {
 		for _, txHash := range block.Tx {
