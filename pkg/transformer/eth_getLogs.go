@@ -3,6 +3,7 @@ package transformer
 import (
 	"encoding/json"
 
+	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -53,12 +54,12 @@ func (p *ProxyETHGetLogs) request(req *qtum.SearchLogsRequest) (*eth.GetLogsResp
 }
 
 func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLogsRequest, error) {
-	from, err := p.getQtumBlockNumber(ethreq.FromBlock, 0)
+	from, err := getBlockNumber(p.Qtum, ethreq.FromBlock, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	to, err := p.getQtumBlockNumber(ethreq.ToBlock, -1)
+	to, err := getBlockNumber(p.Qtum, ethreq.ToBlock, -1)
 	if err != nil {
 		return nil, err
 	}
@@ -86,118 +87,6 @@ func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLog
 		FromBlock: from,
 		ToBlock:   to,
 	}, nil
-}
-
-// TODO: Remove repetition
-func (p *ProxyETHGetBlockByNumber) getQtumBlockNumber(ethBlock json.RawMessage, defaultVal int64) (*big.Int, error) {
-	if ethBlock == nil {
-		return big.NewInt(defaultVal), nil
-	}
-
-	if isString(ethBlock) {
-		var ethBlockStr string
-		if err := json.Unmarshal(ethBlock, &ethBlockStr); err != nil {
-			return nil, err
-		}
-
-		switch ethBlockStr {
-		case "latest":
-			res, err := p.GetBlockChainInfo()
-			if err != nil {
-				return nil, err
-			}
-
-			return big.NewInt(res.Blocks), nil
-		case "pending", "earliest":
-			// TODO: Fix
-			return nil, errors.New(`tags, "pending" and "earliest", are unsupported`)
-		default:
-			return utils.DecodeBig(ethBlockStr)
-		}
-	}
-
-	var b int64
-	if err := json.Unmarshal(ethBlock, &b); err != nil {
-		return nil, err
-	}
-
-	return big.NewInt(b), nil
-}
-
-// TODO: Remove repetition
-func (p *ProxyETHGetLogs) getQtumBlockNumber(ethBlock json.RawMessage, defaultVal int64) (*big.Int, error) {
-	if ethBlock == nil {
-		return big.NewInt(defaultVal), nil
-	}
-
-	if isString(ethBlock) {
-		var ethBlockStr string
-		if err := json.Unmarshal(ethBlock, &ethBlockStr); err != nil {
-			return nil, err
-		}
-
-		switch ethBlockStr {
-		case "latest":
-			res, err := p.GetBlockChainInfo()
-			if err != nil {
-				return nil, err
-			}
-
-			return big.NewInt(res.Blocks), nil
-		case "pending", "earliest":
-			// TODO: Fix
-			return nil, errors.New(`tags, "pending" and "earliest", are unsupported`)
-		default:
-			return utils.DecodeBig(ethBlockStr)
-		}
-	}
-
-	var b int64
-	if err := json.Unmarshal(ethBlock, &b); err != nil {
-		return nil, err
-	}
-
-	return big.NewInt(b), nil
-}
-
-// TODO: Remove repetition
-func (p *ProxyETHNewFilter) getQtumBlockNumber(ethBlock json.RawMessage, defaultVal int64) (*big.Int, error) {
-	if ethBlock == nil {
-		return big.NewInt(defaultVal), nil
-	}
-
-	if isString(ethBlock) {
-		var ethBlockStr string
-		if err := json.Unmarshal(ethBlock, &ethBlockStr); err != nil {
-			return nil, err
-		}
-
-		switch ethBlockStr {
-		case "latest":
-			res, err := p.GetBlockChainInfo()
-			if err != nil {
-				return nil, err
-			}
-
-			return big.NewInt(res.Blocks), nil
-		case "pending", "earliest":
-			// TODO: Fix
-			return nil, errors.New(`tags, "pending" and "earliest", are unsupported`)
-		default:
-			return utils.DecodeBig(ethBlockStr)
-		}
-	}
-
-	var b int64
-	if err := json.Unmarshal(ethBlock, &b); err != nil {
-		return nil, err
-	}
-
-	return big.NewInt(b), nil
-}
-
-func isString(v json.RawMessage) bool {
-	return v[0] == '"'
 }
 
 func getEthLogs(receipt *qtum.TransactionReceiptStruct) []eth.Log {
