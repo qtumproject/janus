@@ -89,9 +89,9 @@ func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLog
 	}, nil
 }
 
-func getEthLogs(receipt *qtum.TransactionReceiptStruct) []eth.Log {
+func extractETHLogsFromTransactionReceipt(receipt *qtum.TransactionReceipt) []eth.Log {
 	logs := make([]eth.Log, 0, len(receipt.Log))
-	for index, log := range receipt.Log {
+	for i, log := range receipt.Log {
 		topics := make([]string, 0, len(log.Topics))
 		for _, topic := range log.Topics {
 			topics = append(topics, utils.AddHexPrefix(topic))
@@ -104,7 +104,7 @@ func getEthLogs(receipt *qtum.TransactionReceiptStruct) []eth.Log {
 			Data:             utils.AddHexPrefix(log.Data),
 			Address:          utils.AddHexPrefix(log.Address),
 			Topics:           topics,
-			LogIndex:         hexutil.EncodeUint64(uint64(index)),
+			LogIndex:         hexutil.EncodeUint64(uint64(i)),
 		})
 	}
 	return logs

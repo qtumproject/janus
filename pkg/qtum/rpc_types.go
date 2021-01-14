@@ -472,7 +472,7 @@ func (resp *DecodedRawTransactionResponse) ExtractContractInfo() (_ ContractInfo
 
 	for _, vout := range resp.Vouts {
 		var (
-			script  = strings.Split(vout.ScriptPubKey.Asm, " ")
+			script  = strings.Split(vout.ScriptPubKey.ASM, " ")
 			finalOp = script[len(script)-1]
 		)
 		switch finalOp {
@@ -514,6 +514,15 @@ func (resp *DecodedRawTransactionResponse) ExtractContractInfo() (_ ContractInfo
 	}
 
 	return ContractInfo{}, false, nil
+}
+
+func (resp *DecodedRawTransactionResponse) IsContractCreation() bool {
+	for _, vout := range resp.Vouts {
+		if strings.HasSuffix(vout.ScriptPubKey.ASM, "OP_CREATE") {
+			return true
+		}
+	}
+	return false
 }
 
 // ========== GetTransactionOut ============= //
@@ -622,7 +631,7 @@ func (resp *GetTransactionReceiptResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if receiptsNum := len(receipts); receiptsNum != 1 {
-		return EmptyResponseErr
+		return errors.Errorf("unexpected receipts number - %d/1", receiptsNum)
 	}
 	*resp = GetTransactionReceiptResponse(receipts[0])
 	return nil
