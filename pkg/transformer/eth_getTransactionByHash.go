@@ -144,6 +144,8 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	return ethTx, nil
 }
 
+// TODO: discuss
+// ?! There are transactions, that is not acquireable nither via `gettransaction`, nor `getrawtransaction`
 func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, error) {
 	rawQtumTx, err := p.GetRawTransaction(hash, false)
 	if err != nil {
