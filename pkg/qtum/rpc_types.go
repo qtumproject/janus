@@ -638,7 +638,7 @@ func (resp *GetTransactionReceiptResponse) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if receiptsNum := len(receipts); receiptsNum != 1 {
-		return errors.Errorf("unexpected receipts number - %d/1", receiptsNum)
+		return EmptyResponseErr
 	}
 	*resp = GetTransactionReceiptResponse(receipts[0])
 	return nil

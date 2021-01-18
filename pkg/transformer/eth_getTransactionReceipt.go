@@ -35,6 +35,10 @@ func (p *ProxyETHGetTransactionReceipt) Request(rawreq *eth.JSONRPCRequest) (int
 func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptRequest) (*eth.GetTransactionReceiptResponse, error) {
 	qtumReceipt, err := p.GetTransactionReceipt(string(*req))
 	if err != nil {
+		errCause := errors.Cause(err)
+		if errCause == qtum.EmptyResponseErr {
+			return nil, nil
+		}
 		return nil, err
 	}
 
