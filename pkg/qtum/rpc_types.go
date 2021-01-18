@@ -478,34 +478,41 @@ func (resp *DecodedRawTransactionResponse) ExtractContractInfo() (_ ContractInfo
 		switch finalOp {
 		case "OP_CALL":
 			// TODO: complete. qtum.ParseCallSenderASM, probably has errors
-			// info, err := qtum.ParseCallSenderASM(script)
-			// // OP_CALL with OP_SENDER has the script type "nonstandard"
-			// if err != nil {
-			// 	return nil, err
-			// }
-
-			return ContractInfo{}, true, errors.New("contract parsing partially implemented")
-
-		case "OP_CREATE":
-			// OP_CALL with OP_SENDER has the script type "create_sender"
-			// TODO: refine parsing
-			invokeInfo, err := ParseCreateSenderASM(script)
+			callInfo, err := ParseCallSenderASM(script)
+			// OP_CALL with OP_SENDER has the script type "nonstandard"
 			if err != nil {
-				return ContractInfo{}, false, errors.WithMessage(err, "couldn't parse create sender ASM")
+				return ContractInfo{}, false, errors.WithMessage(err, "couldn't parse call sender ASM")
 			}
-			contractInfo := ContractInfo{
-				From: invokeInfo.From,
-				To:   invokeInfo.To,
-
-				// TODO: discuss
-				// ?! Not really "gas sent by user"
-				GasLimit:  invokeInfo.GasLimit,
-				UserInput: invokeInfo.CallData,
+			info := ContractInfo{
+				From:      callInfo.From,
+				To:        callInfo.To,
+				GasLimit:  callInfo.GasLimit,
+				UserInput: callInfo.CallData,
 
 				// TODO: researching
 				GasUsed: "0x0",
 			}
-			return contractInfo, true, nil
+			return info, true, errors.New("contract parsing partially implemented")
+
+		case "OP_CREATE":
+			// OP_CALL with OP_SENDER has the script type "create_sender"
+			createInfo, err := ParseCreateSenderASM(script)
+			if err != nil {
+				return ContractInfo{}, false, errors.WithMessage(err, "couldn't parse create sender ASM")
+			}
+			info := ContractInfo{
+				From: createInfo.From,
+				To:   createInfo.To,
+
+				// TODO: discuss
+				// ?! Not really "gas sent by user"
+				GasLimit:  createInfo.GasLimit,
+				UserInput: createInfo.CallData,
+
+				// TODO: researching
+				GasUsed: "0x0",
+			}
+			return info, true, nil
 
 		case "OP_SPEND":
 			// TODO: complete
