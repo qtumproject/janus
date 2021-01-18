@@ -461,7 +461,6 @@ type ContractInfo struct {
 	From      string
 	To        string
 	GasLimit  string
-	GasPrice  string
 	GasUsed   string
 	UserInput string
 }
@@ -473,51 +472,40 @@ func (resp *DecodedRawTransactionResponse) ExtractContractInfo() (_ ContractInfo
 
 	for _, vout := range resp.Vouts {
 		var (
-			script  = strings.Split(vout.ScriptPubKey.ASM, " ")
+			script  = strings.Split(vout.ScriptPubKey.Asm, " ")
 			finalOp = script[len(script)-1]
 		)
 		switch finalOp {
 		case "OP_CALL":
-			callInfo, err := ParseCallSenderASM(script)
-			// OP_CALL with OP_SENDER has the script type "nonstandard"
-			if err != nil {
-				return ContractInfo{}, false, errors.WithMessage(err, "couldn't parse call sender ASM")
-			}
-			info := ContractInfo{
-				From:     callInfo.From,
-				To:       callInfo.To,
-				GasLimit: callInfo.GasLimit,
-				GasPrice: callInfo.GasPrice,
+			// TODO: complete. qtum.ParseCallSenderASM, probably has errors
+			// info, err := qtum.ParseCallSenderASM(script)
+			// // OP_CALL with OP_SENDER has the script type "nonstandard"
+			// if err != nil {
+			// 	return nil, err
+			// }
 
-				// TODO: researching
-				GasUsed: "0x0",
-
-				UserInput: callInfo.CallData,
-			}
-			return info, true, errors.New("contract parsing partially implemented")
+			return ContractInfo{}, true, errors.New("contract parsing partially implemented")
 
 		case "OP_CREATE":
 			// OP_CALL with OP_SENDER has the script type "create_sender"
-			createInfo, err := ParseCreateSenderASM(script)
+			// TODO: refine parsing
+			invokeInfo, err := ParseCreateSenderASM(script)
 			if err != nil {
 				return ContractInfo{}, false, errors.WithMessage(err, "couldn't parse create sender ASM")
 			}
-			info := ContractInfo{
-				From: createInfo.From,
-				To:   createInfo.To,
+			contractInfo := ContractInfo{
+				From: invokeInfo.From,
+				To:   invokeInfo.To,
 
 				// TODO: discuss
 				// ?! Not really "gas sent by user"
-				GasLimit: createInfo.GasLimit,
-
-				GasPrice: createInfo.GasPrice,
+				GasLimit:  invokeInfo.GasLimit,
+				UserInput: invokeInfo.CallData,
 
 				// TODO: researching
 				GasUsed: "0x0",
-
-				UserInput: createInfo.CallData,
 			}
-			return info, true, nil
+			return contractInfo, true, nil
 
 		case "OP_SPEND":
 			// TODO: complete
@@ -526,15 +514,6 @@ func (resp *DecodedRawTransactionResponse) ExtractContractInfo() (_ ContractInfo
 	}
 
 	return ContractInfo{}, false, nil
-}
-
-func (resp *DecodedRawTransactionResponse) IsContractCreation() bool {
-	for _, vout := range resp.Vouts {
-		if strings.HasSuffix(vout.ScriptPubKey.ASM, "OP_CREATE") {
-			return true
-		}
-	}
-	return false
 }
 
 // ========== GetTransactionOut ============= //
@@ -676,18 +655,48 @@ type (
 		Verbose bool
 	}
 	GetRawTransactionResponse struct {
-		TxID          string `json:"txid"`
-		Hash          string `json:"hash"`
-		Version       int64  `json:"version"`
-		Size          int64  `json:"size"`
-		Vsize         int64  `json:"vsize"`
-		Weight        int64  `json:"weight"`
-		Locktime      int64  `json:"locktime"`
-		Hex           string `json:"hex"`
-		Blockhash     string `json:"blockhash"`
+		Hex     string `json:"hex"`
+		ID      string `json:"txid"`
+		Hash    string `json:"hash"`
+		Size    int64  `json:"size"`
+		Vsize   int64  `json:"vsize"`
+		Version int64  `json:"version"`
+		Weight  int64  `json:"weight"`
+
+		BlockHash     string `json:"blockhash"`
 		Confirmations int64  `json:"confirmations"`
 		Time          int64  `json:"time"`
-		Blocktime     int64  `json:"blocktime"`
+		BlockTime     int64  `json:"blocktime"`
+
+		Vins  []RawTransactionVin  `json:"vin"`
+		Vouts []RawTransactionVout `json:"vout"`
+
+		// Unused fields:
+		// - "in_active_chain"
+		// - "locktime"
+
+	}
+	RawTransactionVin struct {
+		ID    string `json:"txid"`
+		VoutN int64  `json:"vout"`
+
+		// Additional fields:
+		// - "scriptSig"
+		// - "sequence"
+		// - "txinwitness"
+	}
+	RawTransactionVout struct {
+		Amount  float64 `json:"value"`
+		Details struct {
+			Addresses []string `json:"addresses"`
+			Asm       string   `json:"asm"`
+			Hex       string   `json:"hex"`
+			// ReqSigs   interface{} `json:"reqSigs"`
+			Type string `json:"type"`
+		} `json:"scriptPubKey"`
+
+		// Additional fields:
+		// - "n"
 	}
 )
 
@@ -702,6 +711,10 @@ func (r *GetRawTransactionRequest) MarshalJSON() ([]byte, error) {
 		r.TxID,
 		r.Verbose,
 	})
+}
+
+func (r *GetRawTransactionResponse) IsPending() bool {
+	return r.BlockHash == ""
 }
 
 // ========== GetTransaction ============= //
