@@ -110,3 +110,7 @@ stop-qtum:
 	@ printf "\nStopping qtum...\n\n"
 		docker kill `docker container ps | grep ${qtum_container_name} | cut -d ' ' -f1` > /dev/null
 	@ printf "\n... Done\n\n"
+
+open-qtum-bash:
+	@ printf "\nOpening qtum bash...\n\n"
+		docker exec -it ${qtum_container_name} bash
