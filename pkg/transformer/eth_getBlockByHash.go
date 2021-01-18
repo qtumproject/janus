@@ -1,8 +1,6 @@
 package transformer
 
 import (
-	"strconv"
-
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
@@ -39,25 +37,27 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		return nil, errors.WithMessage(err, "couldn't get block")
 	}
 	resp := &eth.GetBlockByHashResponse{
-		// TODO: Mark is researching
+		// TODO: researching
 		// * If ETH block has pending status, then the following values must be null
 		// ? Is it possible case for Qtum
 		Hash:   utils.AddHexPrefix(req.BlockHash),
 		Number: hexutil.EncodeUint64(uint64(block.Height)),
 
-		// TODO: Mark is researching
+		// TODO: researching
 		// ! Not found
-		// ! Incorrect value
+		// ! Has incorrect value for compatability
 		ReceiptsRoot: utils.AddHexPrefix(block.Merkleroot),
-		// TODO: Mark is researching
+
+		// TODO: researching
 		// ! Not found
-		// ! Probably, may be calculated by many requests
+		// ! Probably, may be calculated by huge amount of requests
 		TotalDifficulty: hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
 
-		// TODO: Mark is researching
+		// TODO: researching
 		// ! Not found
-		// ? Expect always null
+		// ? Expect it always to be null
 		Uncles: []string{},
+
 		// TODO: check value correctness
 		Sha3Uncles: "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
 
@@ -66,12 +66,12 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		// - Temporary expect this value to be always zero, as Etherium logs are usually zeros
 		LogsBloom: "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
 
-		// TODO: Mark is researching
+		// TODO: researching
 		// ? What value to put
 		// - Temporary set this value to be always zero
 		ExtraData: "0x00",
 
-		Nonce:            formatNonce(block.Nonce),
+		Nonce:            formatQtumNonce(block.Nonce),
 		Size:             hexutil.EncodeUint64(uint64(block.Size)),
 		Difficulty:       hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
 		StateRoot:        utils.AddHexPrefix(blockHeader.HashStateRoot),
@@ -97,25 +97,22 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		resp.Miner = "0x0000000000000000000000000000000000000000"
 	}
 
-	// TODO: suggestion
-	// ? Maybe Qutum implements new RPC method to fetch all needed txs someday
-	// * We already fetch tx info for each tx in a block
-	// * Each call to GetTransactionByHash() func may call unpredictable additional requests inside
 	if req.FullTransaction {
-		// TODO: rethink someday
+		// TODO: rethink later
 		// ! Found only for contracts transactions
 		// As there is no gas values presented at common block info, we set
 		// gas limit value equalling to default node gas limit for a block
 		resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
 
 		for i, txHash := range block.Tx {
-			tx, err := GetTransactionByHash(p.Qtum, txHash, blockHeader.Height, i)
+			tx, err := getTransactionByHash(p.Qtum, txHash, blockHeader.Height, i)
 			if err != nil {
 				return nil, errors.WithMessage(err, "couldn't get transaction by hash")
 			}
 			resp.Transactions = append(resp.Transactions, *tx)
 			// TODO: fill gas used
 			// resp.GasUsed +=  tx.Gas * 1e8
+			// TODO: fill gas limit?
 		}
 	} else {
 		for _, txHash := range block.Tx {
@@ -129,16 +126,4 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 	}
 
 	return resp, nil
-}
-
-// Formats Qtum nonce to Etherium like value. Length of the resulting string is 16+2 (0x) bytes
-func formatNonce(nonce int) string {
-	var (
-		hexedNonce     = strconv.FormatInt(int64(nonce), 16)
-		missedCharsNum = 16 - len(hexedNonce)
-	)
-	for i := 0; i < missedCharsNum; i++ {
-		hexedNonce = "0" + hexedNonce
-	}
-	return "0x" + hexedNonce
 }

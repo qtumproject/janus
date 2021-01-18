@@ -44,30 +44,28 @@ func (m *Method) SignMessage(addr string, msg string) (string, error) {
 	return signature, nil
 }
 
-func (m *Method) GetTransaction(Txid string) (*GetTransactionResponse, error) {
+func (m *Method) GetTransaction(txID string) (*GetTransactionResponse, error) {
 	var resp *GetTransactionResponse
 	req := GetTransactionRequest{
-		Txid: Txid,
+		TxID: txID,
 	}
 	err := m.Request(MethodGetTransaction, &req, &resp)
 	if err != nil {
 		return nil, err
 	}
-
 	return resp, nil
 }
 
-func (m *Method) GetRawTransaction(Txid string) (*GetRawTransactionResponse, error) {
+func (m *Method) GetRawTransaction(txID string) (*GetRawTransactionResponse, error) {
 	var resp *GetRawTransactionResponse
 	req := GetRawTransactionRequest{
-		Txid:    Txid,
+		TxID:    txID,
 		Verbose: true,
 	}
 	err := m.Request(MethodGetRawTransaction, &req, &resp)
 	if err != nil {
 		return nil, err
 	}
-
 	return resp, nil
 }
 
@@ -80,49 +78,9 @@ func (m *Method) GetTransactionReceipt(txHash string) (*GetTransactionReceiptRes
 	return resp, nil
 }
 
-func (m *Method) GetRawTransaction(txID string, hexEncoded bool) (*GetRawTransactionResponse, error) {
-	var (
-		req = GetRawTransactionRequest{
-			TxID:    txID,
-			Verbose: !hexEncoded,
-		}
-		resp = new(GetRawTransactionResponse)
-	)
-	err := m.Request(MethodGetRawTransaction, &req, resp)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (m *Method) GetTransactionReceipt(txHash string) (*GetTransactionReceiptResponse, error) {
-	resp := new(GetTransactionReceiptResponse)
-	err := m.Request(MethodGetTransactionReceipt, GetTransactionReceiptRequest(txHash), resp)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
 func (m *Method) DecodeRawTransaction(hex string) (*DecodedRawTransactionResponse, error) {
 	var resp *DecodedRawTransactionResponse
 	err := m.Request(MethodDecodeRawTransaction, DecodeRawTransactionRequest(hex), &resp)
-	if err != nil {
-		return nil, err
-	}
-	return resp, nil
-}
-
-func (m *Method) GetTransactionOut(hash string, voutNumber int, mempoolIncluded bool) (*GetTransactionOutResponse, error) {
-	var (
-		req = GetTransactionOutRequest{
-			Hash:            hash,
-			VoutNumber:      voutNumber,
-			MempoolIncluded: mempoolIncluded,
-		}
-		resp = new(GetTransactionOutResponse)
-	)
-	err := m.Request(MethodGetTransactionOut, req, resp)
 	if err != nil {
 		return nil, err
 	}
@@ -157,11 +115,6 @@ func (m *Method) GetBlockHash(b *big.Int) (resp GetBlockHashResponse, err error)
 func (m *Method) GetBlockChainInfo() (resp GetBlockChainInfoResponse, err error) {
 	err = m.Request(MethodGetBlockChainInfo, nil, &resp)
 	return resp, err
-}
-
-func (m *Method) GetBlockChainInfo() (resp GetBlockChainInfoResponse, err error) {
-	err = m.Request(MethodGetBlockChainInfo, nil, &resp)
-	return
 }
 
 func (m *Method) GetBlockHeader(hash string) (resp *GetBlockHeaderResponse, err error) {
