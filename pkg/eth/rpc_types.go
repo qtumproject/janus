@@ -475,19 +475,15 @@ type (
 		Timestamp  string `json:"timestamp"`
 		ExtraData  string `json:"extraData"`
 		//Different type of response []string, []GetTransactionByHashResponse
-		Transactions []interface{} `json:"transactions"`
-
-		StateRoot        string `json:"stateRoot"`
-		TransactionsRoot string `json:"transactionsRoot"`
-		ReceiptsRoot     string `json:"receiptsRoot"`
-
-		Difficulty string `json:"difficulty"`
+		Transactions     []interface{} `json:"transactions"`
+		StateRoot        string        `json:"stateRoot"`
+		TransactionsRoot string        `json:"transactionsRoot"`
+		ReceiptsRoot     string        `json:"receiptsRoot"`
+		Difficulty       string        `json:"difficulty"`
 		// Represents a sum of all blocks difficulties until current block includingly
 		TotalDifficulty string `json:"totalDifficulty"`
-
-		GasLimit string `json:"gasLimit"`
-		GasUsed  string `json:"gasUsed"`
-
+		GasLimit        string `json:"gasLimit"`
+		GasUsed         string `json:"gasUsed"`
 		// Represents sha3 hash value based on uncles slice
 		Sha3Uncles string   `json:"sha3Uncles"`
 		Uncles     []string `json:"uncles"`
@@ -497,11 +493,13 @@ type (
 func (r *GetBlockByNumberRequest) UnmarshalJSON(data []byte) error {
 	var params []interface{}
 	if err := json.Unmarshal(data, &params); err != nil {
-		return errors.Wrap(err, "couldn't unmarhsal data")
+		return errors.Wrap(err, "couldn't unmarhsal parameters")
 	}
 	if paramsNum := len(params); paramsNum < 2 {
 		return errors.Errorf("invalid parameters number - %d/2", paramsNum)
 	}
+	// TODO: think of changing []byte type to string type
+	r.BlockNumber = json.RawMessage(fmt.Sprintf("\"%s\"", blockNumber))
 
 	blockNumber, ok := params[0].(string)
 	if !ok {
@@ -532,32 +530,6 @@ func (r *GetBlockByHashRequest) UnmarshalJSON(data []byte) error {
 	if !ok {
 		return newErrInvalidParameterType(1, params[0], "")
 	}
-	r.BlockHash = blockHash
-
-	fullTxWanted, ok := params[1].(bool)
-	if !ok {
-		return newErrInvalidParameterType(2, params[1], false)
-	}
-	r.FullTransaction = fullTxWanted
-
-	return nil
-}
-
-func (r *GetBlockByHashRequest) UnmarshalJSON(data []byte) error {
-	var params []interface{}
-	if err := json.Unmarshal(data, &params); err != nil {
-		return errors.Wrap(err, "couldn't unmarhsal parameters")
-	}
-	if paramsNum := len(params); paramsNum < 2 {
-		return errors.Errorf("invalid parameters number - %d/2", paramsNum)
-	}
-
-	blockHash, ok := params[0].(string)
-	if !ok {
-		return newErrInvalidParameterType(1, params[0], "")
-	}
-	// TODO: discuss
-	// ? Should we precheck blockHash len
 	r.BlockHash = blockHash
 
 	fullTxWanted, ok := params[1].(bool)

@@ -31,7 +31,7 @@ func (p *ProxyETHGetTransactionByHash) Request(req *eth.JSONRPCRequest) (interfa
 }
 
 func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) (*eth.GetTransactionByHashResponse, error) {
-	ethTx, err := GetTransactionByHash(p.Qtum, req.Txid, 0, 0)
+	ethTx, err := getTransactionByHash(p.Qtum, req.TxID, 0, 0)
 	if err != nil {
 		return nil, err
 	}
@@ -39,5 +39,8 @@ func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) 
 	return ethTx, nil
 }
 
-	return ethTx, nil
+func (p *ProxyETHGetTransactionByHash) ToRequest(ethreq *eth.GetTransactionByHashRequest) *qtum.GetTransactionRequest {
+	return &qtum.GetTransactionRequest{
+		TxID: utils.RemoveHexPrefix(string(*ethreq)),
+	}
 }

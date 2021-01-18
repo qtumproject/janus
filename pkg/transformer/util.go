@@ -75,7 +75,7 @@ func unmarshalRequest(data []byte, v interface{}) error {
 	return nil
 }
 
-func GetTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
+func getTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth.GetTransactionByHashResponse, error) {
 	txData, err := p.GetTransaction(hash)
 	if err != nil {
 		raw, err := p.GetRawTransaction(hash)
@@ -92,7 +92,7 @@ func GetTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth
 			Blockhash:         raw.Blockhash,
 			Blockindex:        0,
 			Blocktime:         raw.Blocktime,
-			Txid:              raw.Txid,
+			Txid:              raw.TxID,
 			Time:              raw.Time,
 			Timereceived:      0,
 			Bip125Replaceable: "",
@@ -189,6 +189,17 @@ func GetTransactionByHash(p *qtum.Qtum, hash string, height, position int) (*eth
 	return &ethTx, nil
 }
 
+func formatQtumNonce(nonce int) string {
+	var (
+		hexedNonce     = strconv.FormatInt(int64(nonce), 16)
+		missedCharsNum = 16 - len(hexedNonce)
+	)
+	for i := 0; i < missedCharsNum; i++ {
+		hexedNonce = "0" + hexedNonce
+	}
+	return "0x" + hexedNonce
+}
+
 // Returns Qtum block number. Result depends on a passed raw param. Raw param's slice of bytes should
 // has one of the following values:
 // - hex string representation of a number of a specific block
@@ -237,6 +248,7 @@ func getBlockNumber(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*
 }
 
 func isBytesOfString(v json.RawMessage) bool {
+	println(string(v))
 	dQuote := []byte{'"'}
 	if !bytes.HasPrefix(v, dQuote) && !bytes.HasSuffix(v, dQuote) {
 		return false
@@ -245,6 +257,6 @@ func isBytesOfString(v json.RawMessage) bool {
 		return false
 	}
 	// TODO: decide
-	// 	? Should we iterate over v to check if v[1:len(v)-2] is in a range of a-A, z-Z, 0-9
+	// ? Should we iterate over v to check if v[1:len(v)-2] is in a range of a-A, z-Z, 0-9
 	return true
 }

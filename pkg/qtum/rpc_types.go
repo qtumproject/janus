@@ -672,11 +672,11 @@ func (r *GetBlockCountResponse) UnmarshalJSON(data []byte) error {
 
 type (
 	GetRawTransactionRequest struct {
-		Txid    string
+		TxID    string
 		Verbose bool
 	}
 	GetRawTransactionResponse struct {
-		Txid          string `json:"txid"`
+		TxID          string `json:"txid"`
 		Hash          string `json:"hash"`
 		Version       int64  `json:"version"`
 		Size          int64  `json:"size"`
@@ -699,7 +699,7 @@ func (r *GetRawTransactionRequest) MarshalJSON() ([]byte, error) {
 
 	*/
 	return json.Marshal([]interface{}{
-		r.Txid,
+		r.TxID,
 		r.Verbose,
 	})
 }
