@@ -97,13 +97,14 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		resp.Miner = "0x0000000000000000000000000000000000000000"
 	}
 
-	if req.FullTransaction {
-		// TODO: rethink later
-		// ! Found only for contracts transactions
-		// As there is no gas values presented at common block info, we set
-		// gas limit value equalling to default node gas limit for a block
-		resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
+	// TODO: rethink later
+	// ! Found only for contracts transactions
+	// As there is no gas values presented at common block info, we set
+	// gas limit value equalling to default gas limit for a block
+	resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
+	resp.GasUsed = "0x0"
 
+	if req.FullTransaction {
 		for _, txHash := range block.Txs {
 			tx, err := getTransactionByHash(p.Qtum, txHash)
 			if err != nil {
@@ -111,7 +112,6 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 			}
 			resp.Transactions = append(resp.Transactions, *tx)
 			// TODO: fill gas used
-			// resp.GasUsed +=  tx.Gas * 1e8
 			// TODO: fill gas limit?
 		}
 	} else {
@@ -120,7 +120,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 			// 	Etherium RPC API doc says, that tx hashes must be of [32]byte,
 			// 	however it doesn't seem to be correct, 'cause Etherium tx hash
 			// 	has [64]byte just like Qtum tx hash has. In this case we do no
-			// 	additional convertations. Now everything works fine
+			// 	additional convertations now, while everything works fine
 			resp.Transactions = append(resp.Transactions, utils.AddHexPrefix(txHash))
 		}
 	}
