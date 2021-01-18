@@ -200,7 +200,7 @@ func (r *GetLogsRequest) UnmarshalJSON(data []byte) error {
 
 // ========== GetTransactionByHash ============= //
 type (
-	// Presents transaction hash value
+	// Presents transacrion hash value
 	GetTransactionByHashRequest  string
 	GetTransactionByHashResponse struct {
 		// NOTE: must be null when its pending
@@ -214,13 +214,8 @@ type (
 		TransactionIndex string `json:"transactionIndex"`
 
 		Hash string `json:"hash"`
-
 		// The number of transactions made by the sender prior to this one
-		// NOTE:
-		// 	Unnecessary value, but keep it to be always 0x0, to be
-		// 	graph-node compatible
 		Nonce string `json:"nonce"`
-
 		// Value transferred in Wei
 		Value string `json:"value"`
 		// The data send along with the transaction
@@ -236,11 +231,11 @@ type (
 		GasPrice string `json:"gasPrice"`
 
 		// ECDSA recovery id
-		V string `json:"v,omitempty"`
+		V string `json:"v"`
 		// ECDSA signature r
-		R string `json:"r,omitempty"`
+		R string `json:"r"`
 		// ECDSA signature s
-		S string `json:"s,omitempty"`
+		S string `json:"s"`
 	}
 )
 

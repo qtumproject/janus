@@ -45,24 +45,28 @@ func (m *Method) SignMessage(addr string, msg string) (string, error) {
 }
 
 func (m *Method) GetTransaction(txID string) (*GetTransactionResponse, error) {
-	var resp *GetTransactionResponse
-	req := GetTransactionRequest{
-		TxID: txID,
-	}
-	err := m.Request(MethodGetTransaction, &req, &resp)
+	var (
+		req = GetTransactionRequest{
+			TxID: txID,
+		}
+		resp = new(GetTransactionResponse)
+	)
+	err := m.Request(MethodGetTransaction, &req, resp)
 	if err != nil {
 		return nil, err
 	}
 	return resp, nil
 }
 
-func (m *Method) GetRawTransaction(txID string) (*GetRawTransactionResponse, error) {
-	var resp *GetRawTransactionResponse
-	req := GetRawTransactionRequest{
-		TxID:    txID,
-		Verbose: true,
-	}
-	err := m.Request(MethodGetRawTransaction, &req, &resp)
+func (m *Method) GetRawTransaction(txID string, hexEncoded bool) (*GetRawTransactionResponse, error) {
+	var (
+		req = GetRawTransactionRequest{
+			TxID:    txID,
+			Verbose: !hexEncoded,
+		}
+		resp = new(GetRawTransactionResponse)
+	)
+	err := m.Request(MethodGetRawTransaction, &req, resp)
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +85,22 @@ func (m *Method) GetTransactionReceipt(txHash string) (*GetTransactionReceiptRes
 func (m *Method) DecodeRawTransaction(hex string) (*DecodedRawTransactionResponse, error) {
 	var resp *DecodedRawTransactionResponse
 	err := m.Request(MethodDecodeRawTransaction, DecodeRawTransactionRequest(hex), &resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+func (m *Method) GetTransactionOut(hash string, voutNumber int, mempoolIncluded bool) (*GetTransactionOutResponse, error) {
+	var (
+		req = GetTransactionOutRequest{
+			Hash:            hash,
+			VoutNumber:      voutNumber,
+			MempoolIncluded: mempoolIncluded,
+		}
+		resp = new(GetTransactionOutResponse)
+	)
+	err := m.Request(MethodGetTransactionOut, req, resp)
 	if err != nil {
 		return nil, err
 	}
