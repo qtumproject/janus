@@ -141,11 +141,11 @@ func formatQtumNonce(nonce int) string {
 
 // Returns Qtum block number. Result depends on a passed raw param. Raw param's slice of bytes should
 // has one of the following values:
-// - hex string representation of a number of a specific block
-// - string "latest" - for the latest mined block
-// - string "earliest" for the genesis block
-// - string "pending" - for the pending state/transactions
-func getBlockNumber(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*big.Int, error) {
+// 	- hex string representation of a number of a specific block
+// 	- string "latest" - for the latest mined block
+// 	- string "earliest" for the genesis block
+// 	- string "pending" - for the pending state/transactions
+func getBlockNumberByParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*big.Int, error) {
 	if len(rawParam) < 1 {
 		return nil, errors.Errorf("empty parameter value")
 	}

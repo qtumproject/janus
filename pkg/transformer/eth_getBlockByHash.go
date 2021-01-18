@@ -76,7 +76,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		Difficulty:       hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
 		StateRoot:        utils.AddHexPrefix(blockHeader.HashStateRoot),
 		TransactionsRoot: utils.AddHexPrefix(block.Merkleroot),
-		Transactions:     make([]interface{}, 0, len(block.Tx)),
+		Transactions:     make([]interface{}, 0, len(block.Txs)),
 		Timestamp:        hexutil.EncodeUint64(blockHeader.Time),
 	}
 
@@ -104,8 +104,8 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		// gas limit value equalling to default node gas limit for a block
 		resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
 
-		for i, txHash := range block.Tx {
-			tx, err := getTransactionByHash(p.Qtum, txHash, blockHeader.Height, i)
+		for _, txHash := range block.Txs {
+			tx, err := getTransactionByHash(p.Qtum, txHash)
 			if err != nil {
 				return nil, errors.WithMessage(err, "couldn't get transaction by hash")
 			}
@@ -115,7 +115,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 			// TODO: fill gas limit?
 		}
 	} else {
-		for _, txHash := range block.Tx {
+		for _, txHash := range block.Txs {
 			// NOTE:
 			// 	Etherium RPC API doc says, that tx hashes must be of [32]byte,
 			// 	however it doesn't seem to be correct, 'cause Etherium tx hash

@@ -54,12 +54,12 @@ func (p *ProxyETHGetLogs) request(req *qtum.SearchLogsRequest) (*eth.GetLogsResp
 }
 
 func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLogsRequest, error) {
-	from, err := getBlockNumber(p.Qtum, ethreq.FromBlock, 0)
+	from, err := getBlockNumberByParam(p.Qtum, ethreq.FromBlock, 0)
 	if err != nil {
 		return nil, err
 	}
 
-	to, err := getBlockNumber(p.Qtum, ethreq.ToBlock, -1)
+	to, err := getBlockNumberByParam(p.Qtum, ethreq.ToBlock, -1)
 	if err != nil {
 		return nil, err
 	}

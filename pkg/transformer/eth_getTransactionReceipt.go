@@ -37,7 +37,7 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 	receipt, err := p.GetTransactionReceipt(string(*req))
 	if err != nil {
 		if err == qtum.EmptyResponseErr {
-			ethTx, err := getTransactionByHash(p.Qtum, string(*req), 0, 0)
+			ethTx, err := getTransactionByHash(p.Qtum, string(*req))
 			if err != nil {
 				return nil, err
 			}
