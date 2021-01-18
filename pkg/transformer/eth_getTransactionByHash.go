@@ -103,7 +103,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't extract contract info")
 	}
-	if !isContractTx {
+	if isContractTx {
 		ethTx.Input = qtumTxContractInfo.UserInput
 		ethTx.From = utils.AddHexPrefix(qtumTxContractInfo.From)
 		ethTx.To = utils.AddHexPrefix(qtumTxContractInfo.To)
@@ -116,9 +116,13 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 		return ethTx, nil
 	}
 
-	ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx.Vins)
-	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get non contract transaction sender address")
+	if qtumTx.Generated {
+		ethTx.From = "0x0000000000000000000000000000000000"
+	} else {
+		ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx.Vins)
+		if err != nil {
+			return nil, errors.WithMessage(err, "couldn't get non contract transaction sender address")
+		}
 	}
 	ethTx.To, err = findNonContractTxReceiverAddress(qtumDecodedRawTx.Vouts)
 	if err != nil {
