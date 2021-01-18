@@ -63,7 +63,6 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 		}
 		return ethTx, nil
 	}
-
 	qtumDecodedRawTx, err := p.DecodeRawTransaction(qtumTx.Hex)
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't get raw transaction")
@@ -145,7 +144,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 }
 
 // TODO: discuss
-// ?! There are transactions, that is not acquireable nither via `gettransaction`, nor `getrawtransaction`
+// ? There are `witness` transactions, that is not acquireable nither via `gettransaction`, nor `getrawtransaction`
 func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, error) {
 	rawQtumTx, err := p.GetRawTransaction(hash, false)
 	if err != nil {
