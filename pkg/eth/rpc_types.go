@@ -231,11 +231,11 @@ type (
 		GasPrice string `json:"gasPrice"`
 
 		// ECDSA recovery id
-		V string `json:"v"`
+		V string `json:"v,omitempty"`
 		// ECDSA signature r
-		R string `json:"r"`
+		R string `json:"r,omitempty"`
 		// ECDSA signature s
-		S string `json:"s"`
+		S string `json:"s,omitempty"`
 	}
 )
 
@@ -493,7 +493,7 @@ type (
 func (r *GetBlockByNumberRequest) UnmarshalJSON(data []byte) error {
 	var params []interface{}
 	if err := json.Unmarshal(data, &params); err != nil {
-		return errors.Wrap(err, "couldn't unmarhsal parameters")
+		return errors.Wrap(err, "couldn't unmarhsal data")
 	}
 	if paramsNum := len(params); paramsNum < 2 {
 		return errors.Errorf("invalid parameters number - %d/2", paramsNum)
@@ -543,7 +543,7 @@ func (r *GetBlockByHashRequest) UnmarshalJSON(data []byte) error {
 
 // TODO: think of moving it into a separate file
 func newErrInvalidParameterType(idx int, gotType interface{}, wantedType interface{}) error {
-	return errors.Errorf("invalid %d parameter type %T, but %T type is expected", idx, gotType, wantedType)
+	return errors.Errorf("invalid %d parameter of %T type, but %T type is expected", idx, gotType, wantedType)
 }
 
 // ========== eth_newFilter ============= //
