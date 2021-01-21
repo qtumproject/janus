@@ -32,7 +32,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't get block header")
 	}
-	block, err := p.GetBlock(string(req.BlockHash))
+	block, err := p.GetBlock(req.BlockHash)
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't get block")
 	}
@@ -82,10 +82,10 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 
 	if blockHeader.IsGenesisBlock() {
 		resp.ParentHash = "0x0000000000000000000000000000000000000000000000000000000000000000"
-		resp.Miner = "0x0000000000000000000000000000000000000000"
+		resp.Miner = utils.AddHexPrefix(qtum.ZeroAddress)
 	} else {
 		resp.ParentHash = utils.AddHexPrefix(blockHeader.Previousblockhash)
-		// ! Found only in txout method response
+		// ! Not found
 		//
 		// NOTE:
 		// 	In order to find a miner it seems, that we have to check
@@ -100,7 +100,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 	// TODO: rethink later
 	// ! Found only for contracts transactions
 	// As there is no gas values presented at common block info, we set
-	// gas limit value equalling to default gas limit for a block
+	// gas limit value equalling to default gas limit of a block
 	resp.GasLimit = utils.AddHexPrefix(qtum.DefaultBlockGasLimit)
 	resp.GasUsed = "0x0"
 
