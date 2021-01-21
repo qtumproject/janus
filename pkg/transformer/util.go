@@ -97,11 +97,13 @@ func getNonContractTxSenderAddress(p *qtum.Qtum, vins []*qtum.DecodedRawTransact
 // 	- returning address already has 0x prefix
 //
 // 	TODO: researching
-// 	- Vout[0].Addresses[0] - temporary solution
+// 	- Vout[0].Addresses[i] != "" - temporary solution
 func findNonContractTxReceiverAddress(vouts []*qtum.DecodedRawTransactionOutV) (string, error) {
 	for _, vout := range vouts {
 		for _, address := range vout.ScriptPubKey.Addresses {
-			return utils.AddHexPrefix(address), nil
+			if address != "" {
+				return utils.AddHexPrefix(address), nil
+			}
 		}
 	}
 	return "", errors.New("not found")
