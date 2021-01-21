@@ -166,10 +166,15 @@ func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionB
 
 	ethTx := &eth.GetTransactionByHashResponse{
 		Hash: utils.AddHexPrefix(hash),
+
 		// TODO: researching
 		// ? May be don't need this
 		// ! Probably, needs huge quantity requests to calc by hands
 		Nonce: "0x0",
+
+		// TODO: discuss
+		// ? Expect this value to be always zero
+		Input: utils.AddHexPrefix(qtum.ZeroUserInput),
 
 		// TODO: discuss
 		// ? Are zero values applicable
@@ -200,20 +205,23 @@ func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionB
 	}
 
 	for i := range rawQtumTx.Vouts {
+		// TODO: discuss
+		// ! The response may be null, even if txout is presented
 		_, err := p.GetTransactionOut(hash, i, rawQtumTx.IsPending())
 		if err != nil {
 			return nil, errors.WithMessage(err, "couldn't get transaction out")
 		}
 		// TODO: discuss, researching
 		// ? Where is a reward amount
+		ethTx.Value = "0x0"
 	}
 
 	// TODO: discuss
 	// ? Do we have to set `from` == `0x00..00`
-	ethTx.From = "0x0000000000000000000000000000000000"
+	ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
 	// TODO: discuss
 	// ? Where is a `to`
-	ethTx.To = "0x0000000000000000000000000000000000"
+	ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
 
 	return ethTx, nil
 }
