@@ -92,18 +92,21 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 		ethTx.TransactionIndex = hexutil.EncodeUint64(uint64(qtumTx.BlockIndex))
 	}
 
-	amount, err := formatQtumAmount(qtumDecodedRawTx.CalcAmount())
+	ethAmount, err := formatQtumAmount(qtumDecodedRawTx.CalcAmount())
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't format amount")
 	}
-	ethTx.Value = amount
+	ethTx.Value = ethAmount
 
 	qtumTxContractInfo, isContractTx, err := qtumDecodedRawTx.ExtractContractInfo()
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't extract contract info")
 	}
 	if isContractTx {
-		ethTx.Input = qtumTxContractInfo.UserInput
+		ethTx.Input = utils.AddHexPrefix(qtum.ZeroUserInput)
+		if qtumTxContractInfo.UserInput == "" {
+			ethTx.Input = utils.AddHexPrefix(qtumTxContractInfo.UserInput)
+		}
 		ethTx.From = utils.AddHexPrefix(qtumTxContractInfo.From)
 		ethTx.To = utils.AddHexPrefix(qtumTxContractInfo.To)
 		ethTx.Gas = utils.AddHexPrefix(qtumTxContractInfo.GasUsed)
@@ -116,23 +119,33 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	}
 
 	if qtumTx.Generated {
-		ethTx.From = "0x0000000000000000000000000000000000"
+		ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
 	} else {
 		ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx.Vins)
 		if err != nil {
 			return nil, errors.WithMessage(err, "couldn't get non contract transaction sender address")
 		}
+		// TODO: discuss
+		// ? Does func above return incorrect address for graph-node (len is < 40)
+		// ! Temporary solution
+		ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
 	}
 	ethTx.To, err = findNonContractTxReceiverAddress(qtumDecodedRawTx.Vouts)
 	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get non contract transaction receiver address")
+		// TODO: researchin
+		// ! Temporary solution
+		ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
+		// return nil, errors.WithMessage(err, "couldn't get non contract transaction receiver address")
 	}
 
+	// TODO: researching
+	// ! Temporary solution
+	ethTx.Input = utils.AddHexPrefix(qtum.ZeroUserInput)
 	for _, detail := range qtumTx.Details {
-		// TODO: researching
-		// ! Temporary solution
-		ethTx.Input = detail.Label
-		break
+		if detail.Label != "" {
+			ethTx.Input = utils.AddHexPrefix(detail.Label)
+			break
+		}
 	}
 
 	// TODO: researching
