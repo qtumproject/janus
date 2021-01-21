@@ -153,10 +153,7 @@ func getBlockNumberByParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal in
 		return nil, errors.Errorf("invalid parameter format - string is expected")
 	}
 
-	var param string
-	if err := json.Unmarshal(rawParam, &param); err != nil {
-		return nil, errors.Wrap(err, "couldn't unmarshal raw parameter")
-	}
+	param := string(rawParam[1 : len(rawParam)-1]) // trim \" runes
 	switch param {
 	case "latest":
 		res, err := p.GetBlockChainInfo()
