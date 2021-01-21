@@ -73,6 +73,8 @@ func (err *JSONRPCError) Error() string {
 func (err *JSONRPCError) TryGetKnownError() error {
 	switch err.Code {
 	case -5:
+		// - address doesn't exist
+		// - invalid address
 		return ErrInvalidAddress
 	default:
 		return err
@@ -80,12 +82,7 @@ func (err *JSONRPCError) TryGetKnownError() error {
 }
 
 var (
-	// May be caused by:
-	// 	- provided address doesn't exist
-	// 	- provided address is invalid
-	// 	- data is not acquirable via used RPC method and provided address
 	ErrInvalidAddress = errors.New("invalid address")
-
 	// TODO: add
 	// - insufficient balance
 	// - amount out of range
