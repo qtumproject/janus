@@ -132,11 +132,12 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	}
 	ethTx.To, err = findNonContractTxReceiverAddress(qtumDecodedRawTx.Vouts)
 	if err != nil {
-		// TODO: researchin
-		// ! Temporary solution
-		ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
-		// return nil, errors.WithMessage(err, "couldn't get non contract transaction receiver address")
+		return nil, errors.WithMessage(err, "couldn't get non contract transaction receiver address")
 	}
+	// TODO: discuss
+	// ? Does func above return incorrect address for graph-node (len is < 40)
+	// ! Temporary solution
+	ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
 
 	// TODO: researching
 	// ! Temporary solution
