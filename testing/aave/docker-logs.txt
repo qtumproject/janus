@@ -1,0 +1,2012 @@
+Hardhat log:
+
+1) "before all" hook in "{root}":
+     FetchError: request to http://127.0.0.1:23889/ failed, reason: socket hang up
+      at ClientRequest.<anonymous> (node_modules/node-fetch/lib/index.js:1461:11)
+      at ClientRequest.emit (node:events:376:20)
+      at Socket.socketOnEnd (node:_http_client:498:9)
+      at Socket.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+Qtum RPC log:
+
+"timestamp": "0x60102ce7",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0x8784903e1868f0b40f1c89b943aaa445e668471136ffb3746d51e6793de9a184",
+
+"0x5385c1df177f46040d9cfae72ae48c4a4af949aba97a4ef4633299bea6f6337d"
+
+],
+
+"transactionsRoot": "0x0a32bea97d7ef25306827384aca762ae6340b5cebef34c7fa3bdede9f51d760b",
+
+"uncles": []
+
+}
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119635",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000008166",
+
+"confirmations": 23,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "2da33fb22c21639ed5b89db9f15a0a370120a109168ce7d0d48b1b52c51d7844",
+
+"hashStateRoot": "0d90f6daf1596c8d73b6f471801001bae6e9037bebdcd376851772e56d85d0f7",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 16562,
+
+"mediantime": 1611672785,
+
+"merkleroot": "b743c91daaa8067a2e50fe485869d7f33f30510ff7610a13ae018c87610fe9e5",
+
+"modifier": "eac3a78f1536f165276aaa87dbcc0a49f7ac66d63c165902e052bdee3b528b1a",
+
+"nTx": 2,
+
+"nextblockhash": "133c7e5b850e82350a2d619cd8b435751dbc01deb3e662d6ad9393993ebec98f",
+
+"nonce": 2,
+
+"previousblockhash": "44671b8f7d7c1ec2b3a5dc90ab5e4e5aa6fd50c4a5bdf943cfc1af7c476eea83",
+
+"proofhash": "2da33fb22c21639ed5b89db9f15a0a370120a109168ce7d0d48b1b52c51d7844",
+
+"size": 1676,
+
+"strippedsize": 1640,
+
+"time": 1611672790,
+
+"tx": [
+
+"d038cfefea608061b1dc76b8eb5cd1eb71811df5ac8d20d403788ca4c274c389",
+
+"398e1b129d107ac3c9cf1239ae19c0dc24a73d885e33c95dbd08925a0f507b28"
+
+],
+
+"version": 536870912,
+
+"versionHex": "20000000",
+
+"weight": 6596
+
+}
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119632",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000008184",
+
+"confirmations": 8,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "657045da777b55f88ced6771e21c3e86c100496875d5fd72cca10e55d4afda1c",
+
+"hashStateRoot": "b3c7666d90e28f52202f3dbb8430700b9845bcec490333be1162c262890d92df",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 16577,
+
+"mediantime": 1611672798,
+
+"merkleroot": "bdf40d5b75ac403e5ae9d7c6d992e710723bdd6d6fd54794a9437e811c80709a",
+
+"modifier": "d523eeb324b7dca4779704547b5251d84336f84d143c79da07e3cd77af226d46",
+
+"nTx": 2,
+
+"nextblockhash": "38a265091da2e9076345cfe0db96e60ec47eaf153d584677964e5f6cd4dd277f",
+
+"nonce": 1,
+
+"previousblockhash": "4ca34684e3f287800ce8519d5695e1b4189e5a1e9794e81be4ced74430d2e3fc",
+
+"proofhash": "657045da777b55f88ced6771e21c3e86c100496875d5fd72cca10e55d4afda1c",
+
+"time": 1611672804,
+
+"version": 536870912,
+
+"versionHex": "20000000"
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 25448,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"0x40b2",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25448,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x0",
+
+"gasLimit": "0x0",
+
+"gasUsed": "0x0",
+
+"hash": "0x2da33fb22c21639ed5b89db9f15a0a370120a109168ce7d0d48b1b52c51d7844",
+
+"logsBloom": "",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x2",
+
+"number": "0x40b2",
+
+"parentHash": "0x44671b8f7d7c1ec2b3a5dc90ab5e4e5aa6fd50c4a5bdf943cfc1af7c476eea83",
+
+"sha3Uncles": "",
+
+"size": "0x68c",
+
+"stateRoot": "0x0d90f6daf1596c8d73b6f471801001bae6e9037bebdcd376851772e56d85d0f7",
+
+"timestamp": "0x60102cd6",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0xd038cfefea608061b1dc76b8eb5cd1eb71811df5ac8d20d403788ca4c274c389",
+
+"0x398e1b129d107ac3c9cf1239ae19c0dc24a73d885e33c95dbd08925a0f507b28"
+
+],
+
+"transactionsRoot": "0xb743c91daaa8067a2e50fe485869d7f33f30510ff7610a13ae018c87610fe9e5",
+
+"uncles": []
+
+}
+
+}
+
+level=debug component=qtum.Client method=getblock
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblock",
+
+"id": "119643",
+
+"params": [
+
+"657045da777b55f88ced6771e21c3e86c100496875d5fd72cca10e55d4afda1c",
+
+1
+
+]
+
+}
+
+=> ETH request
+
+{
+
+"id": 25450,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"0x40c3",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25450,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x0",
+
+"gasLimit": "0x0",
+
+"gasUsed": "0x0",
+
+"hash": "0x7f6b0946e0a4a9a66a4acf1351eec501dbea06d2e7e4bc7b22147219dfca2a3c",
+
+"logsBloom": "",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x1",
+
+"number": "0x40c3",
+
+"parentHash": "0x38a265091da2e9076345cfe0db96e60ec47eaf153d584677964e5f6cd4dd277f",
+
+"sha3Uncles": "",
+
+"size": "0xb21",
+
+"stateRoot": "0xa22b0711f8bb0a08fc1c8b60c21e8500ed1a2db4f76c77b1a0377f66a87b61ea",
+
+"timestamp": "0x60102ce6",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0x45ea7bc3fd6b840b6b770ca0ebc2de13639dee698dfdec48f7acb2e8496b1082",
+
+"0x77ac880c3f76f49c2ff8959d0995af04b867005f61683677845b18b3ef54ac2e"
+
+],
+
+"transactionsRoot": "0x6436673ee2f1398e063d831e17e0b721485422ca27442988f926eb29fe432449",
+
+"uncles": []
+
+}
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119640",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000008148",
+
+"confirmations": 38,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "312ae6bf97767e62fcbaad256eaf817941e1d933ad281371d8c61c89ca29f924",
+
+"hashStateRoot": "03bd6200675fbd2135b0525adb8325e442582f49a4e6f0327a85d6bb4c2ed292",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 16547,
+
+"mediantime": 1611672774,
+
+"merkleroot": "e1947b70eba7f5bd6a060da2a3e346f0bd417f5bb677a3a53e14e2e449fa3359",
+
+"modifier": "e16f4a31ab4c08d1bfcf1babedd2dc1a11338078fd0c87ac60eff8690893717a",
+
+"nTx": 2,
+
+"nextblockhash": "2a58c85e5601d6b012a18c75441bf4a22ddff4635bd1b9df53edee3ae901e354",
+
+"nonce": 0,
+
+"previousblockhash": "7464e591b483dec944fc95564d64025001af73712cb0c3583d5546c4c0fc3ef0",
+
+"proofhash": "312ae6bf97767e62fcbaad256eaf817941e1d933ad281371d8c61c89ca29f924",
+
+"time": 1611672778,
+
+"version": 536870912,
+
+"versionHex": "20000000"
+
+}
+
+}
+
+level=debug component=qtum.Client method=getblock
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblock",
+
+"id": "119644",
+
+"params": [
+
+"312ae6bf97767e62fcbaad256eaf817941e1d933ad281371d8c61c89ca29f924",
+
+1
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119642",
+
+"result": {
+
+"bestblockhash": "3a5680046e42b03d2b7dce21ae1a814b505a663d04d8336f4bc497e49d7150b8",
+
+"blocks": 16584,
+
+"chain": "regtest",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000008192",
+
+"difficulty": 4.656542373906925e-10,
+
+"headers": 16584,
+
+"initialblockdownload": false,
+
+"mediantime": 1611672806,
+
+"moneysupply": 100046336,
+
+"pruned": false,
+
+"size_on_disk": 20747649,
+
+"softforks": {
+
+"bip34": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip65": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip66": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"csv": {
+
+"active": true,
+
+"height": 432,
+
+"type": "buried"
+
+},
+
+"segwit": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"testdummy": {
+
+"active": true,
+
+"bip9": {
+
+"since": 432,
+
+"start_time": 0,
+
+"status": "active",
+
+"timeout": 9223372036854776000
+
+},
+
+"height": 432,
+
+"type": "bip9"
+
+}
+
+},
+
+"verificationprogress": 1,
+
+"warnings": ""
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 25453,
+
+"jsonrpc": "2.0",
+
+"method": "net_version",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 25453,
+
+"jsonrpc": "2.0",
+
+"result": "0x1024"
+
+}
+
+=> ETH request
+
+{
+
+"id": 25447,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"0x40b9",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25447,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x0",
+
+"gasLimit": "0x0",
+
+"gasUsed": "0x0",
+
+"hash": "0x31605c809ffcaa14c18b6e110b1f5cd83eb8c4580e77ff543ea8714d30eb05fb",
+
+"logsBloom": "",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x0",
+
+"number": "0x40b9",
+
+"parentHash": "0x6c88814668fb5a7faf5bcd196c8ee51ab6292e88b587fbcc6016f1a92a8cdaf5",
+
+"sha3Uncles": "",
+
+"size": "0x2f3",
+
+"stateRoot": "0x212f40414d33eac92b6bbbba0d0e64dbfc1bcf67ac30c56e028df693046654ac",
+
+"timestamp": "0x60102cdb",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0x63bb5e8e520943db311eae67d8913ea128dbd8c8c550b44b7193650c3e75a180",
+
+"0x959c4994f621a19d235d54e11f7f60960cbc817c78fb996af54c4760072170dc"
+
+],
+
+"transactionsRoot": "0x0fe01b819b754ea1fe95513d08f4592bd0f215e5e0f8298ca625fcc74f214da7",
+
+"uncles": []
+
+}
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119643",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000008184",
+
+"confirmations": 8,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "657045da777b55f88ced6771e21c3e86c100496875d5fd72cca10e55d4afda1c",
+
+"hashStateRoot": "b3c7666d90e28f52202f3dbb8430700b9845bcec490333be1162c262890d92df",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 16577,
+
+"mediantime": 1611672798,
+
+"merkleroot": "bdf40d5b75ac403e5ae9d7c6d992e710723bdd6d6fd54794a9437e811c80709a",
+
+"modifier": "d523eeb324b7dca4779704547b5251d84336f84d143c79da07e3cd77af226d46",
+
+"nTx": 2,
+
+"nextblockhash": "38a265091da2e9076345cfe0db96e60ec47eaf153d584677964e5f6cd4dd277f",
+
+"nonce": 1,
+
+"previousblockhash": "4ca34684e3f287800ce8519d5695e1b4189e5a1e9794e81be4ced74430d2e3fc",
+
+"proofhash": "657045da777b55f88ced6771e21c3e86c100496875d5fd72cca10e55d4afda1c",
+
+"size": 936,
+
+"strippedsize": 900,
+
+"time": 1611672804,
+
+"tx": [
+
+"0ce9de40aa3724764099f5a0851cbb16e72b75416d752ea9b1552d1cc053ae93",
+
+"8d2e889638426b0b140a732b30403a9a78c8ab1f0d43c6b2b35a51819626a7d7"
+
+],
+
+"version": 536870912,
+
+"versionHex": "20000000",
+
+"weight": 3636
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 25452,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"0x40c1",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25452,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x0",
+
+"gasLimit": "0x0",
+
+"gasUsed": "0x0",
+
+"hash": "0x657045da777b55f88ced6771e21c3e86c100496875d5fd72cca10e55d4afda1c",
+
+"logsBloom": "",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x1",
+
+"number": "0x40c1",
+
+"parentHash": "0x4ca34684e3f287800ce8519d5695e1b4189e5a1e9794e81be4ced74430d2e3fc",
+
+"sha3Uncles": "",
+
+"size": "0x3a8",
+
+"stateRoot": "0xb3c7666d90e28f52202f3dbb8430700b9845bcec490333be1162c262890d92df",
+
+"timestamp": "0x60102ce4",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0x0ce9de40aa3724764099f5a0851cbb16e72b75416d752ea9b1552d1cc053ae93",
+
+"0x8d2e889638426b0b140a732b30403a9a78c8ab1f0d43c6b2b35a51819626a7d7"
+
+],
+
+"transactionsRoot": "0xbdf40d5b75ac403e5ae9d7c6d992e710723bdd6d6fd54794a9437e811c80709a",
+
+"uncles": []
+
+}
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119644",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000008148",
+
+"confirmations": 38,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "312ae6bf97767e62fcbaad256eaf817941e1d933ad281371d8c61c89ca29f924",
+
+"hashStateRoot": "03bd6200675fbd2135b0525adb8325e442582f49a4e6f0327a85d6bb4c2ed292",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 16547,
+
+"mediantime": 1611672774,
+
+"merkleroot": "e1947b70eba7f5bd6a060da2a3e346f0bd417f5bb677a3a53e14e2e449fa3359",
+
+"modifier": "e16f4a31ab4c08d1bfcf1babedd2dc1a11338078fd0c87ac60eff8690893717a",
+
+"nTx": 2,
+
+"nextblockhash": "2a58c85e5601d6b012a18c75441bf4a22ddff4635bd1b9df53edee3ae901e354",
+
+"nonce": 0,
+
+"previousblockhash": "7464e591b483dec944fc95564d64025001af73712cb0c3583d5546c4c0fc3ef0",
+
+"proofhash": "312ae6bf97767e62fcbaad256eaf817941e1d933ad281371d8c61c89ca29f924",
+
+"size": 789,
+
+"strippedsize": 753,
+
+"time": 1611672778,
+
+"tx": [
+
+"d4c50ea653b0714cc0b81f30f9b8f0348dc3aebe088af887e80c95ab6fba2d47",
+
+"69b811f79da278c90ad7d5406afe36febc57de9c0bb54f09f82687776ed11902"
+
+],
+
+"version": 536870912,
+
+"versionHex": "20000000",
+
+"weight": 3048
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 25442,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"0x40a3",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25442,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x0",
+
+"gasLimit": "0x0",
+
+"gasUsed": "0x0",
+
+"hash": "0x312ae6bf97767e62fcbaad256eaf817941e1d933ad281371d8c61c89ca29f924",
+
+"logsBloom": "",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x0",
+
+"number": "0x40a3",
+
+"parentHash": "0x7464e591b483dec944fc95564d64025001af73712cb0c3583d5546c4c0fc3ef0",
+
+"sha3Uncles": "",
+
+"size": "0x315",
+
+"stateRoot": "0x03bd6200675fbd2135b0525adb8325e442582f49a4e6f0327a85d6bb4c2ed292",
+
+"timestamp": "0x60102cca",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0xd4c50ea653b0714cc0b81f30f9b8f0348dc3aebe088af887e80c95ab6fba2d47",
+
+"0x69b811f79da278c90ad7d5406afe36febc57de9c0bb54f09f82687776ed11902"
+
+],
+
+"transactionsRoot": "0xe1947b70eba7f5bd6a060da2a3e346f0bd417f5bb677a3a53e14e2e449fa3359",
+
+"uncles": []
+
+}
+
+}
+
+level=info msg="proxy RPC" method=eth_getBlockByNumber
+
+level=debug component=qtum.Client method=getblockhash
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockhash",
+
+"id": "119645",
+
+"params": [
+
+1
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119645",
+
+"result": "007cc9d9106d6f1ce80ae7007858d061cf429b8d7808516d384c4753c9389d80"
+
+}
+
+level=debug component=qtum.Client method=getblockheader
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockheader",
+
+"id": "119646",
+
+"params": [
+
+"007cc9d9106d6f1ce80ae7007858d061cf429b8d7808516d384c4753c9389d80",
+
+true
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119646",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000000004",
+
+"confirmations": 16584,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "007cc9d9106d6f1ce80ae7007858d061cf429b8d7808516d384c4753c9389d80",
+
+"hashStateRoot": "e347448b257b1ec40ec2ace0a909751c1b8a07eabd4d13bf6c2f3c4c854f493b",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 1,
+
+"mediantime": 1611073775,
+
+"merkleroot": "d5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9",
+
+"modifier": "7e346df4838cd51a928190e263cffa12c4cdb0684c7d550116014450594f1d69",
+
+"nTx": 1,
+
+"nextblockhash": "68d5708e0460c37a92534c2272a92930a5f98b8b18397d368cbc15dad1d723bb",
+
+"nonce": 5,
+
+"previousblockhash": "665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943",
+
+"proofhash": "0000000000000000000000000000000000000000000000000000000000000000",
+
+"time": 1611073775,
+
+"version": 536870912,
+
+"versionHex": "20000000"
+
+}
+
+}
+
+level=debug component=qtum.Client method=getblock
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblock",
+
+"id": "119647",
+
+"params": [
+
+"007cc9d9106d6f1ce80ae7007858d061cf429b8d7808516d384c4753c9389d80",
+
+1
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119647",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000000004",
+
+"confirmations": 16584,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "007cc9d9106d6f1ce80ae7007858d061cf429b8d7808516d384c4753c9389d80",
+
+"hashStateRoot": "e347448b257b1ec40ec2ace0a909751c1b8a07eabd4d13bf6c2f3c4c854f493b",
+
+"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+
+"height": 1,
+
+"mediantime": 1611073775,
+
+"merkleroot": "d5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9",
+
+"modifier": "7e346df4838cd51a928190e263cffa12c4cdb0684c7d550116014450594f1d69",
+
+"nTx": 1,
+
+"nextblockhash": "68d5708e0460c37a92534c2272a92930a5f98b8b18397d368cbc15dad1d723bb",
+
+"nonce": 5,
+
+"previousblockhash": "665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943",
+
+"proofhash": "0000000000000000000000000000000000000000000000000000000000000000",
+
+"size": 353,
+
+"strippedsize": 317,
+
+"time": 1611073775,
+
+"tx": [
+
+"d5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9"
+
+],
+
+"version": 536870912,
+
+"versionHex": "20000000",
+
+"weight": 1304
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 25454,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"latest",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25454,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x0",
+
+"gasLimit": "0x0",
+
+"gasUsed": "0x0",
+
+"hash": "0x007cc9d9106d6f1ce80ae7007858d061cf429b8d7808516d384c4753c9389d80",
+
+"logsBloom": "",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x5",
+
+"number": "0x1",
+
+"parentHash": "0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943",
+
+"sha3Uncles": "",
+
+"size": "0x161",
+
+"stateRoot": "0xe347448b257b1ec40ec2ace0a909751c1b8a07eabd4d13bf6c2f3c4c854f493b",
+
+"timestamp": "0x600708ef",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0xd5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9"
+
+],
+
+"transactionsRoot": "0xd5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9",
+
+"uncles": []
+
+}
+
+}
+
+level=info msg="proxy RPC" method=eth_call
+
+level=debug component=qtum.Client method=fromhexaddress
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "fromhexaddress",
+
+"id": "119648",
+
+"params": [
+
+"7926223070547d2d15b2ef5e7383e541c338ffe9"
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119648",
+
+"result": "qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW"
+
+}
+
+level=debug component=qtum.Client method=callcontract
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "callcontract",
+
+"id": "119649",
+
+"params": [
+
+"051da1f1e56f57dd22203c9d46fc08e27327a574",
+
+"a2bd3644ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+
+"qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW",
+
+6721975
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119649",
+
+"result": {
+
+"address": "051da1f1e56f57dd22203c9d46fc08e27327a574",
+
+"executionResult": {
+
+"codeDeposit": 0,
+
+"depositSize": 0,
+
+"excepted": "None",
+
+"exceptedMessage": "",
+
+"gasForDeposit": 0,
+
+"gasRefunded": 0,
+
+"gasUsed": 42024,
+
+"newAddress": "051da1f1e56f57dd22203c9d46fc08e27327a574",
+
+"output": "0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004e313135373932303839323337333136313935343233353730393835303038363837393037383533323639393834363635363430353634303339343537353834303037393133313239363339393335000000000000000000000000000000000000"
+
+},
+
+"transactionReceipt": {
+
+"bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+
+"gasUsed": 42024,
+
+"log": [],
+
+"stateRoot": "241c533306b6f6f04d55edf27625eb600d6a5c59da2b23bc8256c9070c6681fe",
+
+"utxoRoot": "56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421"
+
+}
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 25455,
+
+"jsonrpc": "2.0",
+
+"method": "eth_call",
+
+"params": [
+
+{
+
+"data": "0xa2bd3644ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+
+"from": "0x7926223070547d2d15b2ef5e7383e541c338ffe9",
+
+"gas": "0x6691b7",
+
+"gasPrice": "0x64",
+
+"to": "0x051da1f1e56f57dd22203c9d46fc08e27327a574"
+
+},
+
+"latest"
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 25455,
+
+"jsonrpc": "2.0",
+
+"result": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004e313135373932303839323337333136313935343233353730393835303038363837393037383533323639393834363635363430353634303339343537353834303037393133313239363339393335000000000000000000000000000000000000"
+
+}
+
+level=info msg="proxy RPC" method=web3_clientVersion
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 1,
+
+"jsonrpc": "2.0",
+
+"method": "web3_clientVersion",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 1,
+
+"jsonrpc": "2.0",
+
+"result": "QTUM ETHTestRPC/ethereum-js"
+
+}
+
+level=info msg="proxy RPC" method=web3_clientVersion
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 2,
+
+"jsonrpc": "2.0",
+
+"method": "web3_clientVersion",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 2,
+
+"jsonrpc": "2.0",
+
+"result": "QTUM ETHTestRPC/ethereum-js"
+
+}
+
+level=info msg="proxy RPC" method=eth_accounts
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 3,
+
+"jsonrpc": "2.0",
+
+"method": "eth_accounts",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 3,
+
+"jsonrpc": "2.0",
+
+"result": [
+
+"0x7926223070547d2d15b2ef5e7383e541c338ffe9",
+
+"0x2352be3db3177f0a07efbe6da5857615b8c9901d",
+
+"0x69b004ac2b3993bf2fdf56b02746a1f57997420d",
+
+"0x8c647515f03daeefd09872d7530fa8d8450f069a",
+
+"0x2191744eb5ebeac90e523a817b77a83a0058003b",
+
+"0x88b0bf4b301c21f8a47be2188bad6467ad556dcf"
+
+]
+
+}
+
+level=info msg="proxy RPC" method=eth_chainId
+
+level=error err="Unsupported method eth_chainId"
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 4,
+
+"jsonrpc": "2.0",
+
+"method": "eth_chainId",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"error": {
+
+"code": 100,
+
+"message": "Unsupported method eth_chainId"
+
+},
+
+"id": 4,
+
+"jsonrpc": "2.0"
+
+}
+
+level=error err="Unsupported method eth_chainId"
+
+level=info msg="proxy RPC" method=eth_accounts
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 5,
+
+"jsonrpc": "2.0",
+
+"method": "eth_accounts",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 5,
+
+"jsonrpc": "2.0",
+
+"result": [
+
+"0x7926223070547d2d15b2ef5e7383e541c338ffe9",
+
+"0x2352be3db3177f0a07efbe6da5857615b8c9901d",
+
+"0x69b004ac2b3993bf2fdf56b02746a1f57997420d",
+
+"0x8c647515f03daeefd09872d7530fa8d8450f069a",
+
+"0x2191744eb5ebeac90e523a817b77a83a0058003b",
+
+"0x88b0bf4b301c21f8a47be2188bad6467ad556dcf"
+
+]
+
+}
+
+level=info msg="proxy RPC" method=net_version
+
+level=debug component=qtum.Client method=getblockchaininfo
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockchaininfo",
+
+"id": "119650",
+
+"params": null
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119650",
+
+"result": {
+
+"bestblockhash": "c117229fcf2febdde620579954823bbd0f7e9f5afa93655410c95aaf4f59ce8e",
+
+"blocks": 16645,
+
+"chain": "regtest",
+
+"chainwork": "000000000000000000000000000000000000000000000000000000000000820c",
+
+"difficulty": 4.656542373906925e-10,
+
+"headers": 16645,
+
+"initialblockdownload": false,
+
+"mediantime": 1611674528,
+
+"moneysupply": 100046580,
+
+"pruned": false,
+
+"size_on_disk": 20791297,
+
+"softforks": {
+
+"bip34": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip65": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip66": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"csv": {
+
+"active": true,
+
+"height": 432,
+
+"type": "buried"
+
+},
+
+"segwit": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"testdummy": {
+
+"active": true,
+
+"bip9": {
+
+"since": 432,
+
+"start_time": 0,
+
+"status": "active",
+
+"timeout": 9223372036854776000
+
+},
+
+"height": 432,
+
+"type": "bip9"
+
+}
+
+},
+
+"verificationprogress": 1,
+
+"warnings": ""
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 6,
+
+"jsonrpc": "2.0",
+
+"method": "net_version",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 6,
+
+"jsonrpc": "2.0",
+
+"result": "0x1024"
+
+}
+
+level=info msg="proxy RPC" method=eth_chainId
+
+level=error err="Unsupported method eth_chainId"
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 7,
+
+"jsonrpc": "2.0",
+
+"method": "eth_chainId",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"error": {
+
+"code": 100,
+
+"message": "Unsupported method eth_chainId"
+
+},
+
+"id": 7,
+
+"jsonrpc": "2.0"
+
+}
+
+level=error err="Unsupported method eth_chainId"
+
+level=info msg="proxy RPC" method=net_version
+
+level=debug component=qtum.Client method=getblockchaininfo
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockchaininfo",
+
+"id": "119651",
+
+"params": null
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119651",
+
+"result": {
+
+"bestblockhash": "c117229fcf2febdde620579954823bbd0f7e9f5afa93655410c95aaf4f59ce8e",
+
+"blocks": 16645,
+
+"chain": "regtest",
+
+"chainwork": "000000000000000000000000000000000000000000000000000000000000820c",
+
+"difficulty": 4.656542373906925e-10,
+
+"headers": 16645,
+
+"initialblockdownload": false,
+
+"mediantime": 1611674528,
+
+"moneysupply": 100046580,
+
+"pruned": false,
+
+"size_on_disk": 20791297,
+
+"softforks": {
+
+"bip34": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip65": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip66": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"csv": {
+
+"active": true,
+
+"height": 432,
+
+"type": "buried"
+
+},
+
+"segwit": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"testdummy": {
+
+"active": true,
+
+"bip9": {
+
+"since": 432,
+
+"start_time": 0,
+
+"status": "active",
+
+"timeout": 9223372036854776000
+
+},
+
+"height": 432,
+
+"type": "bip9"
+
+}
+
+},
+
+"verificationprogress": 1,
+
+"warnings": ""
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 8,
+
+"jsonrpc": "2.0",
+
+"method": "net_version",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 8,
+
+"jsonrpc": "2.0",
+
+"result": "0x1024"
+
+}
+
+level=info msg="proxy RPC" method=eth_estimateGas
+
+level=debug component=qtum.Client method=fromhexaddress
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "fromhexaddress",
+
+"id": "119652",
+
+"params": [
+
+"7926223070547d2d15b2ef5e7383e541c338ffe9"
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "119652",
+
+"result": "qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW"
+
+}
+
+echo: http: panic serving 172.19.0.1:56840: runtime error: invalid memory address or nil pointer dereference
+
+goroutine 402413 [running]:
+
+net/http.(*conn).serve.func1(0xc0001b2460)
+
+/usr/local/go/src/net/http/server.go:1800 +0x139
+
+panic(0x912020, 0xf3ccf0)
+
+/usr/local/go/src/runtime/panic.go:975 +0x3e3
+
+github.com/qtumproject/janus/pkg/transformer.(*ProxyETHCall).ToRequest(0xc000010018, 0xc0004e8c30, 0x2000, 0x91df20, 0xc0004e8c30)
+
+/go/src/github.com/qtumproject/janus/pkg/transformer/eth_call.go:59 +0xd2
+
+github.com/qtumproject/janus/pkg/transformer.(*ProxyETHEstimateGas).Request(0xc000010070, 0xc0004e8be0, 0xb82b40, 0xc000010070, 0x0, 0x0)
+
+/go/src/github.com/qtumproject/janus/pkg/transformer/eth_estimateGas.go:25 +0x9e
+
+github.com/qtumproject/janus/pkg/transformer.(*Transformer).Transform(0xc0000a3dd0, 0xc0004e8be0, 0x4, 0x4, 0x0, 0x0)
+
+/go/src/github.com/qtumproject/janus/pkg/transformer/transformer.go:67 +0x82
+
+github.com/qtumproject/janus/pkg/server.httpHandler(0xb93d40, 0xc0000220e0, 0xc0001998b8, 0xc0001c8680)
+
+/go/src/github.com/qtumproject/janus/pkg/server/handler.go:31 +0x304
+
+github.com/qtumproject/janus/vendor/github.com/labstack/echo.(*Echo).Add.func1(0xb93d40, 0xc0000220e0, 0xb84640, 0xc0001c8680)
+
+/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/echo.go:490 +0x8a
+
+github.com/qtumproject/janus/pkg/server.batchRequestsMiddleware.func1(0xb93d40, 0xc0000220e0, 0x5, 0x998fc0)
+
+/go/src/github.com/qtumproject/janus/pkg/server/server.go:140 +0x4dd
+
+github.com/qtumproject/janus/pkg/server.(*Server).Start.func2.1(0xb93d40, 0xc0000220e0, 0x2, 0xb7f080)
+
+/go/src/github.com/qtumproject/janus/pkg/server/server.go:86 +0xe9
+
+github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware.BodyDumpWithConfig.func1.1(0xb93d40, 0xc0000220e0, 0x9ae24e, 0x1b)
+
+/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware/body_dump.go:81 +0x355
+
+github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware.CORSWithConfig.func1.1(0xb93d40, 0xc0000220e0, 0x4, 0xc0005a1705)
+
+/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware/cors.go:117 +0x407
+
+github.com/qtumproject/janus/vendor/github.com/labstack/echo.(*Echo).ServeHTTP(0xc00000c1e0, 0xb87a60, 0xc000204380, 0xc000322100)
+
+/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/echo.go:593 +0x222
+
+net/http.serverHandler.ServeHTTP(0xc00007e000, 0xb87a60, 0xc000204380, 0xc000322100)
+
+/usr/local/go/src/net/http/server.go:2836 +0xa3
+
+net/http.(*conn).serve(0xc0001b2460, 0xb88f20, 0xc0000ec9c0)
+
+/usr/local/go/src/net/http/server.go:1924 +0x86c
+
+created by net/http.(*Server).Serve
+
+/usr/local/go/src/net/http/server.go:2962 +0x35c
