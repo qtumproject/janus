@@ -1,0 +1,1712 @@
+# Integration test for Openzeppelin (Pre-revision)
+
+The following represents a list of the results (pass/fail) of running the openzeppelin contracts and their respective tests 
+([available here](https://github.com/OpenZeppelin/openzeppelin-contracts)) prior to rebasing the testing suite with the revisions-rpc branch.
+
+
+## TL;DR
+
+  179 passing (5m)
+  89 failing
+
+## Failed tests 
+
+1) Contract: AccessControl
+       granting
+         non-admin cannot grant role to other accounts:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: qtum [code: -4] Private key not available \
+      +AccessControl: sender must be an admin to grant
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/access/AccessControl.test.js:41:7)
+
+  2) Contract: AccessControl
+       "after each" hook: after test for "non-admin cannot grant role to other accounts":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  3) Contract: Ownable
+       transfer ownership
+         prevents non-owners from transferring:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x64c5a9f014a874dc88f6e7c23a28815c3ae5e6c3db3fa9793e0f3c8c348d06c6 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +Ownable: caller is not the owner
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/access/Ownable.test.js:28:7)
+
+  4) Contract: Ownable
+       "after each" hook: after test for "prevents non-owners from transferring":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  5) Contract: TimelockController
+       methods
+         simple
+           schedule
+             proposer can schedule:
+     Error: Returned error: Unsupported method eth_getBlockByHash
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  6) Contract: TimelockController
+       "after each" hook: after test for "proposer can schedule":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  7) Contract: ECDSA
+       recover with invalid signature
+         with short signature:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +ECDSA: invalid signature length
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/cryptography/ECDSA.test.js:20:7)
+
+  8) Contract: ECDSA
+       "after each" hook: after test for "with short signature":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  9) Contract: EIP712
+       "before each" hook: deploying for "domain separator":
+     Error: The transaction receipt didn't contain a contract address.
+      at Context.<anonymous> (test/drafts/EIP712.test.js:15:35)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+
+  10) Contract: ERC20Permit
+       "before each" hook for "initial nonce is 0":
+     Error: The transaction receipt didn't contain a contract address.
+      at Context.<anonymous> (test/drafts/ERC20Permit.test.js:33:43)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+
+  11) Contract: ERC165
+       does not allow 0xffffffff:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x251f6a05a2ab428d4fa223b3c5869773994bdc9c89acbb28432de6db165bfd35 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ERC165: invalid interface id
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/introspection/ERC165.test.js:13:5)
+
+  12) Contract: ERC165
+       "after each" hook: after test for "does not allow 0xffffffff":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  13) Contract: ERC1820Implementer
+       "before each" hook for "returns false when interface implementation is queried":
+     Error: Returned error: qtum [code: -5] Address does not exist
+      at Object.ErrorResponse (node_modules/web3/node_modules/web3-core-helpers/lib/errors.js:28:19)
+      at /mnt/d/go-workspace/src/github.com/qtumproject/janus/testing/openzeppelin/node_modules/web3/node_modules/web3-core-requestmanager/lib/index.js:303:36
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  14) Contract: SafeMath
+       with default revert message
+         add
+           reverts on addition overflow:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +SafeMath: addition overflow
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at testFailsCommutative (test/math/SafeMath.test.js:29:5)
+      at Context.<anonymous> (test/math/SafeMath.test.js:177:9)
+
+  15) Contract: SafeMath
+       "after each" hook: after test for "reverts on addition overflow":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  16) Contract: SignedSafeMath
+       add
+         reverts on positive addition overflow:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +SignedSafeMath: addition overflow
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at testFailsCommutative (test/math/SignedSafeMath.test.js:19:5)
+      at Context.<anonymous> (test/math/SignedSafeMath.test.js:42:7)
+
+  17) Contract: SignedSafeMath
+       "after each" hook: after test for "reverts on positive addition overflow":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  18) Contract: ConditionalEscrow
+       when withdrawal is allowed
+         as an escrow
+           deposits
+             can accept a single deposit:
+     Error: Returned error: qtum [code: -3] Invalid amount
+      at Context.<anonymous> (test/payment/escrow/Escrow.behavior.js:11:27)
+      at processImmediate (node:internal/timers:463:21)
+
+  19) Contract: ConditionalEscrow
+       "after each" hook: after test for "can accept a single deposit":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  20) Contract: Escrow
+       as an escrow
+         deposits
+           can accept a single deposit:
+     Error: Returned error: qtum [code: -3] Invalid amount
+      at Context.<anonymous> (test/payment/escrow/Escrow.behavior.js:11:27)
+      at processImmediate (node:internal/timers:463:21)
+
+  21) Contract: Escrow
+       "after each" hook: after test for "can accept a single deposit":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  22) Contract: RefundEscrow
+       requires a non-null beneficiary:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: invalid character 'W' looking for beginning of value
+      +RefundEscrow: beneficiary is the zero address
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at runNextTicks (node:internal/process/task_queues:58:5)
+      at listOnTimeout (node:internal/timers:525:9)
+      at processTimers (node:internal/timers:499:7)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/payment/escrow/RefundEscrow.test.js:15:5)
+
+  23) Contract: RefundEscrow
+       "after each" hook: after test for "requires a non-null beneficiary":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  24) Contract: PaymentSplitter
+       rejects an empty set of payees:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +PaymentSplitter: no payees
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/payment/PaymentSplitter.test.js:14:5)
+
+  25) Contract: PaymentSplitter
+       "after each" hook: after test for "rejects an empty set of payees":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  26) Contract: PullPayment
+       payments
+         can record an async payment correctly:
+     Transaction: 0x7e2799e2c42961268ffe037eccb472b3bbda07e0350b466514cfe04d17720bdb exited with an error (status 0).
+     Please check that the transaction:
+     - satisfies all conditions set by Solidity `require` statements.
+     - does not trigger a Solidity `revert` statement.
+
+  StatusError: Transaction: 0x7e2799e2c42961268ffe037eccb472b3bbda07e0350b466514cfe04d17720bdb exited with an error (status 0).
+      at Context.<anonymous> (test/payment/PullPayment.test.js:18:27)
+      at processImmediate (node:internal/timers:463:21)
+
+  27) Contract: PullPayment
+       "after each" hook: after test for "can record an async payment correctly":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  28) Contract: ERC1155PresetMinterPauser
+       minting
+         other accounts cannot mint tokens:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x53e469eeaea37da4c49ee298c7c3faa81b1a4f795223387fc9e31e90380f9a1a exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ERC1155PresetMinterPauser: must have minter role to mint
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/presets/ERC1155PresetMinterPauser.test.js:58:7)
+
+  29) Contract: ERC1155PresetMinterPauser
+       "after each" hook: after test for "other accounts cannot mint tokens":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  30) Contract: ERC20PresetMinterPauser
+       minting
+         other accounts cannot mint tokens:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x2c1ca31f3e075966dfd7dba92fefb2ed9b1436f9fbf12454daff057a6a074fb6 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ERC20PresetMinterPauser: must have minter role to mint
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/presets/ERC20PresetMinterPauser.test.js:53:7)
+
+  31) Contract: ERC20PresetMinterPauser
+       "after each" hook: after test for "other accounts cannot mint tokens":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  32) Contract: ERC721PresetMinterPauserAutoId
+       minting
+         other accounts cannot mint tokens:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: invalid character 'W' looking for beginning of value
+      +ERC721PresetMinterPauserAutoId: must have minter role to mint
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at runNextTicks (node:internal/process/task_queues:58:5)
+      at listOnTimeout (node:internal/timers:525:9)
+      at processTimers (node:internal/timers:499:7)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/presets/ERC721PresetMinterPauserAutoId.test.js:62:7)
+
+  33) Contract: ERC721PresetMinterPauserAutoId
+       "after each" hook: after test for "other accounts cannot mint tokens":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  34) Contract: ERC777PresetFixedSupply
+       "before all" hook for "returns the name":
+     Error: Returned error: qtum [code: -5] Address does not exist
+      at Object.ErrorResponse (node_modules/web3/node_modules/web3-core-helpers/lib/errors.js:28:19)
+      at /mnt/d/go-workspace/src/github.com/qtumproject/janus/testing/openzeppelin/node_modules/web3/node_modules/web3-core-requestmanager/lib/index.js:303:36
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  35) Contract: BeaconProxy
+       bad beacon is not accepted
+         non-contract beacon:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +BeaconProxy: beacon is not a contract
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/proxy/BeaconProxy.test.js:26:7)
+
+  36) Contract: BeaconProxy
+       "after each" hook: after test for "non-contract beacon":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  37) Contract: Clones
+       clone
+         initialization without parameters
+           non payable
+             when not sending balance
+               "before each" hook: creating proxy for "initializes the proxy":
+     Transaction: 0xa8a6410fc363ec6310faa70b91bf2a4f4e21abf4af1c9d4b1aa1fdb8b58fa1f9 exited with an error (status 0) after consuming all gas.
+     Please check that the transaction:
+     - satisfies all conditions set by Solidity `assert` statements.
+     - has enough gas to execute the full transaction.
+     - does not trigger an invalid opcode by other means (ex: accessing an array out of bounds).
+  StatusError: Transaction: 0xa8a6410fc363ec6310faa70b91bf2a4f4e21abf4af1c9d4b1aa1fdb8b58fa1f9 exited with an error (status 0) after consuming all gas.
+      at /mnt/d/go-workspace/src/github.com/qtumproject/janus/testing/openzeppelin/test/proxy/Clones.test.js:11:37
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at Context.<anonymous> (test/proxy/Clones.behaviour.js:31:13)
+
+  38) Contract: Clones
+       clone
+         initialization without parameters
+           non payable
+             when sending some balance
+               reverts:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0xa2ec16aa467e883509619b896c2a5d279b41f3f42175f000384446246d97ab0f exited with an error (status 0) after consuming all gas.
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `assert` statements.
+      -     - has enough gas to execute the full transaction.
+      -     - does not trigger an invalid opcode by other means (ex: accessing an array out of bounds).
+      +revert
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at Context.<anonymous> (test/proxy/Clones.behaviour.js:45:11)
+
+  39) Contract: Clones
+       "after each" hook: after test for "reverts":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  40) Contract: Initializable
+       basic testing without inheritance
+         after initialize
+           initializer does not run again:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x5bb32b7f59d7887c22c53b1d1ad5a4b2f09ca8ab2afd5ddecb0520f3a68d0f37 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +Initializable: contract is already initialized
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/proxy/Initializable.test.js:30:9)
+
+  41) Contract: Initializable
+       "after each" hook: after test for "initializer does not run again":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  42) Contract: ProxyAdmin
+       #changeProxyAdmin
+         fails to change proxy admin if its not the proxy owner:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: qtum [code: -4] Private key not available
+      +caller is not the owner
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/proxy/ProxyAdmin.test.js:42:7)
+
+  43) Contract: ProxyAdmin
+       "after each" hook: after test for "fails to change proxy admin if its not the proxy owner":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  44) Contract: TransparentUpgradeableProxy
+       cannot be initialized with a non-contract address:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +revert
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at Context.<anonymous> (test/proxy/UpgradeableProxy.behaviour.js:18:5)
+
+  45) Contract: TransparentUpgradeableProxy
+       "after each" hook: after test for "cannot be initialized with a non-contract address":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  46) Contract: UpgradeableBeacon
+       "before each" hook: before test for "cannot be created with non-contract implementation":
+     Error: Returned error: invalid character 'W' looking for beginning of value
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  47) Contract: UpgradeableProxy
+       cannot be initialized with a non-contract address:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +revert
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at Context.<anonymous> (test/proxy/UpgradeableProxy.behaviour.js:18:5)
+
+  48) Contract: UpgradeableProxy
+       "after each" hook: after test for "cannot be initialized with a non-contract address":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  49) Contract: ERC1155
+       like an ERC1155
+         balanceOf
+           reverts when queried about the zero address:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +ERC1155: balance query for the zero address
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC1155/ERC1155.behavior.js:24:9)
+
+  50) Contract: ERC1155
+       "after each" hook: after test for "reverts when queried about the zero address":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  51) Contract: ERC1155Burnable
+       burn
+         unapproved accounts cannot burn the holder's tokens:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: qtum [code: -4] Private key not available
+      +ERC1155: caller is not owner nor approved
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC1155/ERC1155Burnable.test.js:37:7)
+
+  52) Contract: ERC1155Burnable
+       "after each" hook: after test for "unapproved accounts cannot burn the holder's tokens":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  53) Contract: ERC1155Pausable
+       when token is paused
+         reverts when trying to safeTransferFrom from holder:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0xb5528016623eab0c5f74edd5345ef1b5ed18eaf7230c25f29e73fc7031188312 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ERC1155Pausable: token transfer while paused
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC1155/ERC1155Pausable.test.js:31:7)
+
+  54) Contract: ERC1155Pausable
+       "after each" hook: after test for "reverts when trying to safeTransferFrom from holder":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  55) Contract: ERC20
+       transfer
+         when the recipient is not the zero address
+           when the sender does not have enough balance
+             reverts:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x99df620b15bf573455e57689f5bac99ab41159224bc7a9a435ae75210921b039 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ERC20: transfer amount exceeds balance
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC20/ERC20.behavior.js:168:9)
+
+  56) Contract: ERC20
+       "after each" hook: after test for "reverts":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  57) Contract: ERC20Burnable
+       "before each" hook: before test for "burns the requested amount":
+     Error: Returned error: invalid character 'W' looking for beginning of value
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  58) Contract: ERC20Capped
+       requires a non-zero cap:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +ERC20Capped: cap is 0
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC20/ERC20Capped.test.js:15:5)
+
+  59) Contract: ERC20Capped
+       "after each" hook: after test for "requires a non-zero cap":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  60) Contract: ERC20Pausable
+       pausable token
+         transfer
+           reverts when trying to transfer when paused:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x6643b1a62dae98994e600c53c23db10da1c2d635cc600de9849c8aafd3217220 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ERC20Pausable: token transfer while paused
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC20/ERC20Pausable.test.js:41:9)
+
+  61) Contract: ERC20Pausable
+       "after each" hook: after test for "reverts when trying to transfer when paused":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  62) Contract: ERC20Snapshot
+       totalSupplyAt
+         reverts with a snapshot id of 0:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +ERC20Snapshot: id is 0
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC20/ERC20Snapshot.test.js:34:7)
+
+  63) Contract: ERC20Snapshot
+       "after each" hook: after test for "reverts with a snapshot id of 0":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  64) Contract: SafeERC20
+       with address that has no contract code
+         reverts on transfer:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x8b356b0b137c5f30845620d12488deeeb524558e4012161af9efffbbe8abc1dd exited with an error (status 0) after consuming all gas.
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `assert` statements.
+      -     - has enough gas to execute the full transaction.
+      -     - does not trigger an invalid opcode by other means (ex: accessing an array out of bounds).
+      +Address: call to non-contract
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC20/SafeERC20.test.js:46:5)
+
+  65) Contract: SafeERC20
+       "after each" hook: after test for "reverts on transfer":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  66) Contract: TokenTimelock
+       with token
+         rejects a release time in the past:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +TokenTimelock: release time is before current time
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC20/TokenTimelock.test.js:23:7)
+
+  67) Contract: TokenTimelock
+       "after each" hook: after test for "rejects a release time in the past":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  68) Contract: ERC721
+       metadata
+         token URI
+           reverts when queried for non existent token id:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +ERC721Metadata: URI query for nonexistent token
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC721/ERC721.test.js:56:9)
+
+  69) Contract: ERC721
+       "after each" hook: after test for "reverts when queried for non existent token id":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  70) Contract: ERC721Burnable
+       like a burnable ERC721
+         burn
+           when successful
+             burns the given token ID and adjusts the balance of the owner:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +ERC721: owner query for nonexistent token
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/token/ERC721/ERC721Burnable.test.js:39:11)
+
+  71) Contract: ERC721Burnable
+       "after each" hook: after test for "burns the given token ID and adjusts the balance of the owner":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  72) Contract: ERC721Pausable
+       "before each" hook for "reverts when trying to transferFrom":
+     Error: Returned error: invalid character 'W' looking for beginning of value
+      at Context.<anonymous> (test/token/ERC721/ERC721Pausable.test.js:15:46)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+
+  73) Contract: ERC777
+       "before each" hook: before test for "does not emit AuthorizedOperator events for default operators":
+     Error: Returned error: invalid character 'W' looking for beginning of value
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  74) Contract: Address
+       sendValue
+         when sender contract has no funds
+           sends 0 wei:
+     Transaction: 0x9e5ab62f47110063128f3ba70af9cc279f3070c1c8d2fbe5615f1446b3638c5d exited with an error (status 0) after consuming all gas.
+     Please check that the transaction:
+     - satisfies all conditions set by Solidity `assert` statements.
+     - has enough gas to execute the full transaction.
+     - does not trigger an invalid opcode by other means (ex: accessing an array out of bounds).
+  StatusError: Transaction: 0x9e5ab62f47110063128f3ba70af9cc279f3070c1c8d2fbe5615f1446b3638c5d exited with an error (status 0) after consuming all gas.
+      at Context.<anonymous> (test/utils/Address.test.js:33:25)
+      at processImmediate (node:internal/timers:463:21)
+
+  75) Contract: Address
+       "after each" hook: after test for "sends 0 wei":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  76) Contract: Counters
+       decrement
+         starting from 1
+           reverts if the current value is 0:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x6a8cd9416f0e691912f58d679f627e8da75c389c81528f3abff0193899c2aa1e exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +SafeMath: subtraction overflow
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/utils/Counters.test.js:46:9)
+
+  77) Contract: Counters
+       "after each" hook: after test for "reverts if the current value is 0":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  78) Contract: Create2
+       deploy
+         deploys a ERC1820Implementer from inline assembly code:
+     Transaction: 0x7b14044c3d6f7038d84e769abbc979617bdb1b6221a36a967e48f3f8443f7bf1 exited with an error (status 0) after consuming all gas.
+     Please check that the transaction:
+     - satisfies all conditions set by Solidity `assert` statements.
+     - has enough gas to execute the full transaction.
+     - does not trigger an invalid opcode by other means (ex: accessing an array out of bounds).
+  StatusError: Transaction: 0x7b14044c3d6f7038d84e769abbc979617bdb1b6221a36a967e48f3f8443f7bf1 exited with an error (status 0) after consuming all gas.
+      at Context.<anonymous> (test/utils/Create2.test.js:47:26)
+      at processImmediate (node:internal/timers:463:21)
+
+  79) Contract: Create2
+       "after each" hook: after test for "deploys a ERC1820Implementer from inline assembly code":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  80) Contract: EnumerableMap
+       read
+         get
+           missing value:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +EnumerableMap: nonexistent key
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/utils/EnumerableMap.test.js:153:9)
+
+  81) Contract: EnumerableMap
+       "after each" hook: after test for "missing value":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  82) Contract: EnumerableSet
+       EnumerableBytes32Set
+         at
+           reverts when retrieving non-existent elements:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +EnumerableSet: index out of bounds
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/utils/EnumerableSet.behavior.js:54:7)
+
+  83) Contract: EnumerableSet
+       "after each" hook: after test for "reverts when retrieving non-existent elements":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  84) Contract: Pausable
+       when unpaused
+         cannot take drastic measure in non-pause:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x1a72f9226a51a200b69ddfda5e8d0e1d9de29c727c2a6583cbe9d9b679650ba3 exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +Pausable: not paused
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/utils/Pausable.test.js:27:7)
+
+  85) Contract: Pausable
+       "after each" hook: after test for "cannot take drastic measure in non-pause":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  86) Contract: ReentrancyGuard
+       does not allow remote callback:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Transaction: 0x8ac9eb98bcb5c28bc54c77b1918f57ad7e533e729e26d0393bc44b3c8839f64f exited with an error (status 0).
+      -     Please check that the transaction:
+      -     - satisfies all conditions set by Solidity `require` statements.
+      -     - does not trigger a Solidity `revert` statement.
+      +ReentrancyAttack: failed call
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/utils/ReentrancyGuard.test.js:16:5)
+
+  87) Contract: ReentrancyGuard
+       "after each" hook: after test for "does not allow remote callback":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+  88) Contract: SafeCast
+       toUint8
+         reverts when downcasting 2^8 (256):
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -Returned error: VM exception: Revert
+      +SafeCast: value doesn't fit in 8 bits
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/utils/SafeCast.test.js:29:9)
+
+  89) Contract: SafeCast
+       "after each" hook: after test for "reverts when downcasting 2^8 (256)":
+     Error: Returned error: qtum [code: -8] Incorrect params
+      at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+      at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+      at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+      at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+      at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+      at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+      at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+      at IncomingMessage.emit (node:events:388:22)
+      at endReadableNT (node:internal/streams/readable:1305:12)
+      at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+##  Passed tests
+
+ Contract: AccessControl
+    default admin
+      ✓ deployer has default admin role
+      ✓ other roles's admin is the default admin role
+      ✓ default admin role's admin is itself
+    granting
+      ✓ admin can grant role to other accounts
+
+ Contract: Ownable
+    ✓ has an owner
+    transfer ownership
+      ✓ changes owner after transfer
+
+  Contract: TimelockController
+    ✓ initial state
+    methods
+      operation hashing
+        ✓ hashOperation
+        ✓ hashOperationBatch
+
+  Contract: MerkleProof
+    verify
+      ✓ returns true for a valid Merkle proof
+      ✓ returns false for an invalid Merkle proof
+      ✓ returns false for a Merkle proof of invalid length
+
+  Contract: ERC165Checker
+    ERC165 not supported
+      ✓ does not support ERC165
+      ✓ does not support mock interface via supportsInterface
+      ✓ does not support mock interface via supportsAllInterfaces (42ms)
+      ✓ does not support mock interface via getSupportedInterfaces
+    ERC165 supported
+      ✓ supports ERC165
+      ✓ does not support mock interface via supportsInterface
+      ✓ does not support mock interface via supportsAllInterfaces
+      ✓ does not support mock interface via getSupportedInterfaces
+    ERC165 and single interface supported
+      ✓ supports ERC165
+      ✓ supports mock interface via supportsInterface
+      ✓ supports mock interface via supportsAllInterfaces
+      ✓ supports mock interface via getSupportedInterfaces
+    ERC165 and many interfaces supported
+      ✓ supports ERC165
+      ✓ supports each interfaceId via supportsInterface (48ms)
+      ✓ supports all interfaceIds via supportsAllInterfaces
+      ✓ supports none of the interfaces queried via supportsAllInterfaces
+      ✓ supports not all of the interfaces queried via supportsAllInterfaces
+      ✓ supports all interfaceIds via getSupportedInterfaces
+      ✓ supports none of the interfaces queried via getSupportedInterfaces
+      ✓ supports not all of the interfaces queried via getSupportedInterfaces
+    account address does not support ERC165
+      ✓ does not support ERC165
+      ✓ does not support mock interface via supportsInterface
+      ✓ does not support mock interface via supportsAllInterfaces
+      ✓ does not support mock interface via getSupportedInterfaces
+
+  Contract: Math
+    max
+      ✓ is correctly detected in first argument position
+      ✓ is correctly detected in second argument position
+    min
+      ✓ is correctly detected in first argument position
+      ✓ is correctly detected in second argument position
+    average
+      ✓ is correctly calculated with two odd numbers
+      ✓ is correctly calculated with two even numbers
+      ✓ is correctly calculated with one even and one odd number
+
+  Contract: SafeMath
+    with flag
+      add
+        ✓ adds correctly
+        ✓ reverts on addition overflow
+      sub
+        ✓ subtracts correctly
+        ✓ reverts if subtraction result would be negative
+      mul
+        ✓ multiplies correctly
+        ✓ multiplies by zero correctly
+        ✓ reverts on multiplication overflow
+      div
+        ✓ divides correctly
+        ✓ divides zero correctly
+        ✓ returns complete number result on non-even division
+        ✓ reverts on division by zero
+      mod
+        ✓ reverts with a 0 divisor
+        modulos correctly
+          ✓ when the dividend is smaller than the divisor
+          ✓ when the dividend is equal to the divisor
+          ✓ when the dividend is larger than the divisor
+          ✓ when the dividend is a multiple of the divisor
+    with default revert message
+      add
+        ✓ adds correctly
+  
+  Contract: SignedSafeMath
+    add
+      ✓ adds correctly if it does not overflow and the result is positive
+      ✓ adds correctly if it does not overflow and the result is negative
+
+  Contract: ERC1155PresetMinterPauser
+    ✓ deployer has the default admin role
+    ✓ deployer has the minter role
+    ✓ deployer has the pauser role
+    ✓ minter and pauser role admin is the default admin
+    minting
+      ✓ deployer can mint tokens
+
+  Contract: ERC20PresetFixedSupply
+    ✓ deployer has the balance equal to initial supply
+    ✓ total supply is equal to initial supply
+    burning
+      ✓ holders can burn their tokens (555ms)
+      ✓ decrements totalSupply
+ 
+ Contract: ERC20PresetMinterPauser
+    ✓ deployer has the default admin role
+    ✓ deployer has the minter role
+    ✓ deployer has the pauser role
+    ✓ minter and pauser role admin is the default admin
+    minting
+      ✓ deployer can mint tokens
+
+  Contract: ERC721PresetMinterPauserAutoId
+    ✓ token has correct name
+    ✓ token has correct symbol
+    ✓ token has correct base URI
+    ✓ deployer has the default admin role
+    ✓ deployer has the minter role (50ms)
+    ✓ minter role admin is the default admin
+    minting
+      ✓ deployer can mint tokens
+
+  Contract: BeaconProxy
+    ✓ upgrade a proxy by upgrading its beacon
+    ✓ upgrade 2 proxies by upgrading shared beacon
+
+  Contract: Initializable
+    basic testing without inheritance
+      before initialize
+        ✓ initializer has not run
+      after initialize
+        ✓ initializer has run
+
+  Contract: ProxyAdmin
+    ✓ has an owner
+    #getProxyAdmin
+      ✓ returns proxyAdmin as admin of the proxy
+
+  Contract: ERC1155Burnable
+  burn
+    ✓ holder can burn their tokens 
+    ✓ approved operators can burn the holder's tokens 
+
+  Contract: ERC1155Holder
+    ✓ receives ERC1155 tokens from a single ID 
+    ✓ receives ERC1155 tokens from a multiple IDs 
+    Contract interface
+      ERC165
+        ERC165's supportsInterface(bytes4)
+          ✓ uses less than 30k gas [skip-on-coverage]
+          ✓ claims support
+        supportsInterface(bytes4)
+          ✓ has to be implemented
+      ERC1155Receiver
+        ERC165's supportsInterface(bytes4)
+          ✓ uses less than 30k gas [skip-on-coverage]
+          ✓ claims support
+        onERC1155Received(address,address,uint256,uint256,bytes)
+          ✓ has to be implemented
+        onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)
+          ✓ has to be implemented
+
+  Contract: ERC20
+    ✓ has a name
+    ✓ has a symbol
+    ✓ has 18 decimals
+    _setupDecimals
+      ✓ can set decimals during construction (631ms)
+    total supply
+      ✓ returns the total amount of tokens
+    balanceOf
+      when the requested account has no tokens
+        ✓ returns zero
+      when the requested account has some tokens
+        ✓ returns the total amount of tokens
+
+  Contract: ERC20Pausable
+    pausable token
+      transfer
+        ✓ allows to transfer when unpaused 
+        ✓ allows to transfer when paused and then unpaused
+
+  Contract: ERC20Snapshot
+    snapshot
+      ✓ emits a snapshot event 
+      ✓ creates increasing snapshots ids, starting from 1
+
+  Contract: ERC721
+    Contract interface
+      ERC165
+        ERC165's supportsInterface(bytes4)
+          ✓ uses less than 30k gas [skip-on-coverage]
+          ✓ claims support
+        supportsInterface(bytes4)
+          ✓ has to be implemented
+      ERC721
+        ERC165's supportsInterface(bytes4)
+          ✓ uses less than 30k gas [skip-on-coverage]
+          ✓ claims support
+        balanceOf(address)
+          ✓ has to be implemented
+        ownerOf(uint256)
+          ✓ has to be implemented
+        approve(address,uint256)
+          ✓ has to be implemented
+        getApproved(uint256)
+          ✓ has to be implemented
+        setApprovalForAll(address,bool)
+          ✓ has to be implemented
+        isApprovedForAll(address,address)
+          ✓ has to be implemented
+        transferFrom(address,address,uint256)
+          ✓ has to be implemented
+        safeTransferFrom(address,address,uint256)
+          ✓ has to be implemented
+        safeTransferFrom(address,address,uint256,bytes)
+          ✓ has to be implemented
+      ERC721Enumerable
+        ERC165's supportsInterface(bytes4)
+          ✓ uses less than 30k gas [skip-on-coverage]
+          ✓ claims support
+        totalSupply()
+          ✓ has to be implemented
+        tokenOfOwnerByIndex(address,uint256)
+          ✓ has to be implemented
+        tokenByIndex(uint256)
+          ✓ has to be implemented
+      ERC721Metadata
+        ERC165's supportsInterface(bytes4)
+          ✓ uses less than 30k gas [skip-on-coverage] (40ms)
+          ✓ claims support
+        name()
+          ✓ has to be implemented
+        symbol()
+          ✓ has to be implemented
+        tokenURI(uint256)
+          ✓ has to be implemented
+    metadata
+      ✓ has a name
+      ✓ has a symbol
+      token URI
+        ✓ it is empty by default
+
+  Contract: ERC721Holder
+    ✓ receives an ERC721 token
+
+  Contract: Address
+    isContract
+      ✓ returns false for account address
+      ✓ returns true for contract address
+
+  Contract: Arrays
+    findUpperBound
+      Even number of elements
+        ✓ returns correct index for the basic case
+        ✓ returns 0 for the first element
+        ✓ returns index of the last element
+        ✓ returns first index after last element if searched value is over the upper boundary
+        ✓ returns 0 for the element under the lower boundary
+      Odd number of elements
+        ✓ returns correct index for the basic case
+        ✓ returns 0 for the first element
+        ✓ returns index of the last element
+        ✓ returns first index after last element if searched value is over the upper boundary
+        ✓ returns 0 for the element under the lower boundary
+      Array with gap
+        ✓ returns index of first element in next filled range
+      Empty array
+        ✓ always returns 0 for empty array
+
+  Contract: Counters
+    ✓ starts at zero
+    increment
+      starting from 0
+        ✓ increments the current value by one
+        ✓ can be called multiple 
+    decrement
+      starting from 1
+        ✓ decrements the current value by one
+
+   Contract: Create2
+    computeAddress
+      ✓ computes the correct contract address
+      ✓ computes the correct contract address with deployer (43ms)
+    deploy
+
+  Contract: EnumerableMap
+    ✓ starts empty
+    set
+      ✓ adds a key (675ms)
+      ✓ adds several keys (1190ms)
+      ✓ returns false when adding keys already in the set (1150ms)
+      ✓ updates values for keys already in the set (1165ms)
+    remove
+      ✓ removes added keys (1131ms)
+      ✓ returns false when removing keys not in the set (583ms)
+      ✓ adds and removes multiple keys (7581ms)
+    read
+      get
+        ✓ existing value
+
+  Contract: EnumerableSet
+    EnumerableBytes32Set
+      ✓ starts empty
+      add
+        ✓ adds a value (597ms)
+        ✓ adds several values (1163ms)
+        ✓ returns false when adding values already in the set
+
+  Contract: Pausable
+    when unpaused
+      ✓ can perform normal process in non-pause
+
+  Contract: SafeCast
+    toUint8
+      ✓ downcasts 0
+      ✓ downcasts 1
+      ✓ downcasts 2^8 - 1 (255)
+
+  Contract: Strings
+    from uint256
+      ✓ converts 0
+      ✓ converts a positive number
+      ✓ converts MAX_UINT256
