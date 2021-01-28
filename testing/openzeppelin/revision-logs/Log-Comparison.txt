@@ -1,0 +1,72 @@
+## Failing test difference
+
+# Post Revision Truffle log shows new failing test
+
+    13) Contract: ERC165Checker
+        "before each" hook: before test for "does not support ERC165":
+        Error: Returned error: invalid character 'W' looking for beginning of value
+        at Object.ErrorResponse (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3-core-helpers/src/errors.js:29:1)
+        at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-core-requestmanager/src/index.js:170:1
+        at /home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/packages/provider/wrapper.js:107:1
+        at XMLHttpRequest.request.onreadystatechange (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/web3/node_modules/web3-providers-http/src/index.js:111:1)
+        at XMLHttpRequestEventTarget.dispatchEvent (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request-event-target.js:34:1)
+        at XMLHttpRequest._setReadyState (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:208:1)
+        at XMLHttpRequest._onHttpResponseEnd (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:318:1)
+        at IncomingMessage.<anonymous> (/home/dferret/.nvm/versions/node/v15.5.1/lib/node_modules/truffle/build/webpack:/node_modules/xhr2-cookies/dist/xml-http-request.js:289:47)
+        at IncomingMessage.emit (node:events:388:22)
+        at endReadableNT (node:internal/streams/readable:1305:12)
+        at processTicksAndRejections (node:internal/process/task_queues:80:21)
+
+    47) Contract: UpgradeableBeacon
+       cannot be created with non-contract implementation:
+
+      Wrong kind of exception received
+      + expected - actual
+
+      -The transaction receipt didn't contain a contract address.
+      +UpgradeableBeacon: implementation is not a contract
+
+      at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (node:internal/process/task_queues:93:5)
+      at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+      at Context.<anonymous> (test/proxy/UpgradeableBeacon.test.js:12:5)
+
+    59) Contract: ERC20Burnable
+    burn
+        when the given amount is greater than the balance of the sender
+        reverts:
+
+    Wrong kind of exception received
+    + expected - actual
+
+    -Transaction: 0x7fe5e1850753b17f7fddb9668f14144824b89a95039296edb5efbc9257733742 exited with an error (status 0).
+    -     Please check that the transaction:
+    -     - satisfies all conditions set by Solidity `require` statements.
+    -     - does not trigger a Solidity `revert` statement.
+    +ERC20: burn amount exceeds balance
+
+    at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (node:internal/process/task_queues:93:5)
+    at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+    at Context.<anonymous> (test/token/ERC20/behaviors/ERC20Burnable.behavior.js:40:9)
+
+    75) Contract: ERC721Pausable
+    when token is paused
+        reverts when trying to transferFrom:
+
+    Wrong kind of exception received
+    + expected - actual
+
+    -Transaction: 0xfff0a1d39fcc1ca504c3ba513411059a49d4cc654f8584a9e45f20ba2dc9b87d exited with an error (status 0).
+    -     Please check that the transaction:
+    -     - satisfies all conditions set by Solidity `require` statements.
+    -     - does not trigger a Solidity `revert` statement.
+    +ERC721Pausable: token transfer while paused
+
+    at expectException (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:20:30)
+    at runMicrotasks (<anonymous>)
+    at processTicksAndRejections (node:internal/process/task_queues:93:5)
+    at expectRevert (node_modules/@openzeppelin/test-helpers/src/expectRevert.js:75:3)
+    at Context.<anonymous> (test/token/ERC721/ERC721Pausable.test.js:30:7)
