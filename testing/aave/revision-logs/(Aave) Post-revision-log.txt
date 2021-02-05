@@ -1,17 +1,61 @@
-# Integration test for Aave (Pre-revision)
-
-The following represents a list of the results (pass/fail) of running the aave v2 contracts and their respective tests 
-([available here](https://github.com/aave/protocol-v2)) after rebasing the testing suite with the revisions-rpc branch.
-
-
-## Failed tests
-
-> protocol-v2@1.0.0 test
+> protocol-v2@1.0.0 test /d/go-workspace/src/github.com/qtumproject/janus/testing/aave
 > hardhat test ./test/*.spec.ts
 
-(node:12033) Warning: Accessing non-existent property 'INVALID_ALT_NUMBER' of module exports inside circular dependency
+? Help us improve Hardhat with anonymous crash reports & basic usage data? (Y/n) ‣ (node:9295) Warning: Accessing non-existent property 'INVALID_ALT_NUMBER' of module exports inside circular dependency
 (Use `node --trace-warnings ...` to show where the warning was created)
-(node:12033) Warning: Accessing non-existent property 'INVALID_ALT_NUMBER' of module exports inside circular dependency
+(node:9295) Warning: Accessing non-existent property 'INVALID_ALT_NUMBER' of module exports inside circular dependency
+✖ Help us improve Hardhat with anonymous crash reports & basic usage data? (Y/n) · true
+Downloading compiler 0.6.12
+Compiling 101 files with 0.6.12
+contracts/dependencies/openzeppelin/upgradeability/BaseAdminUpgradeabilityProxy.sol:14:1: Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+contract BaseAdminUpgradeabilityProxy is BaseUpgradeabilityProxy {
+^ (Relevant source part starts here and spans across multiple lines).
+contracts/dependencies/openzeppelin/upgradeability/Proxy.sol:16:3: The payable fallback function is defined here.
+  fallback() external payable {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+contracts/dependencies/openzeppelin/upgradeability/AdminUpgradeabilityProxy.sol:11:1: Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+contract AdminUpgradeabilityProxy is BaseAdminUpgradeabilityProxy, UpgradeabilityProxy {
+^ (Relevant source part starts here and spans across multiple lines).
+contracts/dependencies/openzeppelin/upgradeability/Proxy.sol:16:3: The payable fallback function is defined here.
+  fallback() external payable {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+contracts/dependencies/openzeppelin/upgradeability/InitializableUpgradeabilityProxy.sol:11:1: Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+contract InitializableUpgradeabilityProxy is BaseUpgradeabilityProxy {
+^ (Relevant source part starts here and spans across multiple lines).
+contracts/dependencies/openzeppelin/upgradeability/Proxy.sol:16:3: The payable fallback function is defined here.
+  fallback() external payable {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+contracts/dependencies/openzeppelin/upgradeability/InitializableAdminUpgradeabilityProxy.sol:12:1: Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+contract InitializableAdminUpgradeabilityProxy is
+^ (Relevant source part starts here and spans across multiple lines).
+contracts/dependencies/openzeppelin/upgradeability/Proxy.sol:16:3: The payable fallback function is defined here.
+  fallback() external payable {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+contracts/protocol/libraries/aave-upgradeability/BaseImmutableAdminUpgradeabilityProxy.sol:16:1: Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+contract BaseImmutableAdminUpgradeabilityProxy is BaseUpgradeabilityProxy {
+^ (Relevant source part starts here and spans across multiple lines).
+contracts/dependencies/openzeppelin/upgradeability/Proxy.sol:16:3: The payable fallback function is defined here.
+  fallback() external payable {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+contracts/protocol/libraries/aave-upgradeability/InitializableImmutableAdminUpgradeabilityProxy.sol:11:1: Warning: This contract has a payable fallback function, but no receive ether function. Consider adding a receive ether function.
+contract InitializableImmutableAdminUpgradeabilityProxy is
+^ (Relevant source part starts here and spans across multiple lines).
+contracts/dependencies/openzeppelin/upgradeability/Proxy.sol:16:3: The payable fallback function is defined here.
+  fallback() external payable {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+contracts/mocks/dependencies/weth/WETH9.sol: Warning: SPDX license identifier not provided in source file. Before publishing, consider adding a comment containing "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED" for non-open-source code. Please see https://spdx.org for more information.
+
+contracts/mocks/oracle/CLAggregators/MockAggregator.sol:18:3: Warning: Function state mutability can be restricted to pure
+  function getTokenType() external view returns (uint256) {
+  ^ (Relevant source part starts here and spans across multiple lines).
+
+Compilation finished successfully
 Creating Typechain artifacts in directory types for target ethers-v5
 Successfully generated Typechain artifacts!
 
@@ -19,6 +63,33 @@ Successfully generated Typechain artifacts!
 
   1) "before all" hook in "{root}"
 ·------------------------|---------------------------|-----------|----------------------------·
+|  Solc version: 0.6.12  ·  Optimizer enabled: true  ·  Runs: 1  ·  Block limit: 6718946 gas  │
+·························|···························|···········|·····························
+|  Methods                                                                                    │
+··············|··········|·············|·············|···········|·············|···············
+|  Contract   ·  Method  ·  Min        ·  Max        ·  Avg      ·  # calls    ·  eur (avg)   │
+·-------------|----------|-------------|-------------|-----------|-------------|--------------·
+
+  0 passing (5m)
+  1 failing
+
+  1) "before all" hook in "{root}":
+     ProviderError: invalid address
+      at HttpProvider.request (node_modules/hardhat/src/internal/core/providers/http.ts:46:19)
+      at GanacheGasMultiplierProvider._getMultipliedGasEstimation (node_modules/hardhat/src/internal/core/providers/gas-providers.ts:57:59)
+      at GanacheGasMultiplierProvider.request (node_modules/hardhat/src/internal/core/providers/gas-providers.ts:167:19)
+      at runMicrotasks (<anonymous>)
+      at processTicksAndRejections (internal/process/task_queues.js:93:5)
+
+
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! protocol-v2@1.0.0 test: `hardhat test ./test/*.spec.ts`
+npm ERR! Exit status 1
+npm ERR!
+npm ERR! Failed at the protocol-v2@1.0.0 test script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.-----|-----------|----------------------------·
 |  Solc version: 0.6.12  ·  Optimizer enabled: true  ·  Runs: 1  ·  Block limit: 6718946 gas  │
 ·························|···························|···········|·····························
 |  Methods                                                                                    │

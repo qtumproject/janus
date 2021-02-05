@@ -1,3 +1,4 @@
+  
 version: "3.8"
 services:
   janus:
@@ -12,10 +13,10 @@ services:
     environment: 
         - QTUM_RPC=http://qtum:testpasswd@qtum:3889
     volumes:
-        - ../standalone/myaccounts.txt:/go/myaccounts.txt
+        - ../standalone/myaccounts.txt:$GOPATH/github.com/qtumproject/janus/myaccounts.txt
     depends_on:
       - qtum
-    command: --bind 0.0.0.0 --accounts myaccounts.txt --dev
+    command: --bind 0.0.0.0 --accounts $GOPATH/github.com/qtumproject/janus/myaccounts.txt --dev
   qtum:
     ports:
       - "3889:3889"
