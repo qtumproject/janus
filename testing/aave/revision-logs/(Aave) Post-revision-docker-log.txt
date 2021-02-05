@@ -1,339 +1,3 @@
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x51ccd7f68278e9477254d27c4962352b2a3c6aa9c6855bf451698ca112ccb509",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x0",
-
-"number": "0xaa9",
-
-"parentHash": "0x45fb71bad3769834fd21b19c16eadfb43a64e68b06169d9ec767c094110c40c4",
-
-"sha3Uncles": "",
-
-"size": "0x28de",
-
-"stateRoot": "0xc68cf04291d51cadda58eff146bfdfc2117d0dba83e38fbb706871c0d16f7b9a",
-
-"timestamp": "0x6011e263",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x487807db48b955fe740e43822a6997335ba695c283ed3a4ee2b6e61a8f28a0a9",
-
-"0x8fc643e839e7e220aa87f27ef5e6409456c5d07bd44f610da2ec997a1f668481"
-
-],
-
-"transactionsRoot": "0x9caf1f437d7887bf568a5457cb73813544e8cffdb740f5312651a4fc8754939a",
-
-"uncles": []
-
-}
-
-}
-
-<= ETH response
-
-{
-
-"id": 21809,
-
-"jsonrpc": "2.0",
-
-"result": {
-
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x73b26950f8357ad67e17becf157daa0ac7d8817c79c3fb2b8ff957f62f8627ea",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x1",
-
-"number": "0xaa2",
-
-"parentHash": "0x35841800b769f708fc1872f750283d6334f805a14f8eac048c775339a26882f2",
-
-"sha3Uncles": "",
-
-"size": "0x2f5",
-
-"stateRoot": "0x5bc151120c74dc9b1dfbb5e4d3e604261158d85c388547ea896f78f22b267e96",
-
-"timestamp": "0x6011e25e",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x198399883d4207ceb4e2962ca704c581f767b1c6542ef41af446af7ee3f2297b",
-
-"0x1ce82f74f63870a2b2cd9bd428630b3554fbb58a774fdfd06a2ec6baa769cb18"
-
-],
-
-"transactionsRoot": "0x08a97d669f5217f2347b618f82e031fbed3285bc1fb17061b50c8d41a44bc126",
-
-"uncles": []
-
-}
-
-}
-
-<= qtum RPC response
-
-{
-
-"error": null,
-
-"id": "278261",
-
-"result": {
-
-"bits": "207fffff",
-
-"chainwork": "00000000000000000000000000000000000000000000000000000000000015fa",
-
-"confirmations": 40,
-
-"difficulty": 4.656542373906925e-10,
-
-"flags": "proof-of-work",
-
-"hash": "0a47bd8d9ec498631ca6ea5724c8978292d90ace6eeb592b8ede2be391349e26",
-
-"hashStateRoot": "3f895721a2a884cb48b98a6e612556e25dc4aafee1292fee41a9848b85c46d0d",
-
-"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
-
-"height": 2812,
-
-"mediantime": 1611784842,
-
-"merkleroot": "f90ecc6abe1fe904b7023f72fbdf73c6bfd4562a3e1f7e2dde56323616b8c20b",
-
-"modifier": "dac72c923393a6f05e9cf6f447394fe4c173a9cfb9c764ff8615702878b6906e",
-
-"nTx": 2,
-
-"nextblockhash": "05048bda7d58a9cfbf173238ee8cf873a69674f828362908fdf117c94cd19f5e",
-
-"nonce": 5,
-
-"previousblockhash": "7107c25a7a3c9cb2573b8fc31d8c6b2a1ae3c999b7d4aeaf3337f46f2c855052",
-
-"proofhash": "0a47bd8d9ec498631ca6ea5724c8978292d90ace6eeb592b8ede2be391349e26",
-
-"size": 821,
-
-"strippedsize": 785,
-
-"time": 1611784844,
-
-"tx": [
-
-"5c164a95207c159c2c768eb58044121d19a158dc0a5341c7a47454e62aeaa059",
-
-"91e75691f071f475950021cdf99d39e6f7a148ae51781a66793795cdf1b2ad65"
-
-],
-
-"version": 536870912,
-
-"versionHex": "20000000",
-
-"weight": 3176
-
-}
-
-}
-
-=> ETH request
-
-{
-
-"id": 21799,
-
-"jsonrpc": "2.0",
-
-"method": "eth_getBlockByNumber",
-
-"params": [
-
-"0xb08",
-
-
-
-false
-
-]
-
-}
-
-<= ETH response
-
-{
-
-"id": 21799,
-
-"jsonrpc": "2.0",
-
-"result": {
-
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x1994e34ac35ee2cbcca05eaebe078148a932883a277ae1f9450425143eab171a",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x0",
-
-"number": "0xb08",
-
-"parentHash": "0x6e3ea3bbcac955d560924001d957c5902ffc98277be4f1ddda0c848a6443f59a",
-
-"sha3Uncles": "",
-
-"size": "0xb03",
-
-"stateRoot": "0xe453815b4ac1dbfd1c6c918fcb99c903da95437e7aab3568cc2cd6f9b90479a2",
-
-"timestamp": "0x6011e290",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x561f9a325be376e044d675084a9128fbaee3baf70ab69557845bf08a6f591a31",
-
-"0x464b0cf494c577b9b9a337a88c6ab5bbc27628ee6b3d74ea3fab8286bb45dca9"
-
-],
-
-"transactionsRoot": "0xa62dd507c22f79b711a1d80afc3ff3226eaf69e27210f8f2d98de7386cc3ad8a",
-
-"uncles": []
-
-}
-
-}
-
-=> ETH request
-
-{
-
-"id": 21806,
-
-"jsonrpc": "2.0",
-
-"method": "eth_getBlockByNumber",
-
-"params": [
-
-"0xb12",
-
-
-
-false
-
-]
-
-}
-
-<= qtum RPC response
-
-{
-
-"error": null,
-
-"id": "278251",
-
-"result": {
-
-"bits": "207fffff",
-
-"chainwork": "000000000000000000000000000000000000000000000000000000000000155c",
-
-"confirmations": 119,
-
-"difficulty": 4.656542373906925e-10,
-
-"flags": "proof-of-work",
-
-"hash": "55c5d40fb130946fb7e81097cc03783ebd66ba20d14e96bbf955220004ebdafc",
-
-"hashStateRoot": "abe9f8d6af9da6234272f7b8968eef987c3c217221d8c52bb28caf6f62b044e3",
-
-"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
-
-"height": 2733,
-
-"mediantime": 1611784803,
-
-"merkleroot": "7608f58787aebb49547fb77ac01874d62d648b8aed4535b013799b4a7d1c9850",
-
-"modifier": "438960d6b989f8bdcd80f004e57b4beea4c58fc41fdabb1e154c76c224e07c69",
-
-"nTx": 2,
-
-"nextblockhash": "3e1a0e4479d1db43186809570ac30da587d0c3b960ec316c5ef20409df780370",
-
-"nonce": 0,
-
-"previousblockhash": "6ecbc5cdedb94c8869623b62278752f06d08dc312a33d79abf8b514c5b76698b",
-
-"proofhash": "55c5d40fb130946fb7e81097cc03783ebd66ba20d14e96bbf955220004ebdafc",
-
-"size": 10315,
-
-"strippedsize": 10279,
-
-"time": 1611784805,
-
-"tx": [
-
-"9aa865a2ac22af8f65f0d85e2bee8b5c353ca588ae2053ace1d5a7c1aaf442f7",
-
-"f3244854138400d7387d55de17279f731d3764207f26fd0bed0099e00a8b5c4b"
-
-],
-
-"version": 536870912,
-
-"versionHex": "20000000",
-
-"weight": 41152
-
-}
-
 }
 
 level=debug msg="ETH RPC"
@@ -342,7 +6,7 @@ level=debug msg="ETH RPC"
 
 {
 
-"id": 21814,
+"id": 223975,
 
 "jsonrpc": "2.0",
 
@@ -350,7 +14,7 @@ level=debug msg="ETH RPC"
 
 "params": [
 
-"0xaa0",
+"0xd74",
 
 
 
@@ -364,7 +28,7 @@ false
 
 {
 
-"id": 21814,
+"id": 223975,
 
 "jsonrpc": "2.0",
 
@@ -372,123 +36,45 @@ false
 
 "difficulty": "0x0",
 
-"extraData": "0x0",
+"extraData": "0x00",
 
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x686f41516d1b7d897fd110c30545169ba713413ea67daa70f44bf4d77a65b8cc",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x0",
-
-"number": "0xaa0",
-
-"parentHash": "0x152ad0d45a8694131e6069b91533d74734293376f0c1112fd225dc3cf7c0fd7e",
-
-"sha3Uncles": "",
-
-"size": "0x2f5",
-
-"stateRoot": "0xc987a0e45a7bd4a4d3ac9c737a863ea201e2213fbad2550bbf5bf3db30014de3",
-
-"timestamp": "0x6011e25e",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0xfe875d8675546eeff2136b5268d271964d62799c42745cbfb58b463099ff0e1b",
-
-"0xad850be17edde8e980ef309d90a8c0d867afae145bf74a7d1d80628234103597"
-
-],
-
-"transactionsRoot": "0xbc33a67d9375b21f81411ef8e129735ac30d3b4a3d79f4a78c45ab89866a4df1",
-
-"uncles": []
-
-}
-
-}
-
-level=debug msg="ETH RPC"
-
-=> ETH request
-
-{
-
-"id": 21808,
-
-"jsonrpc": "2.0",
-
-"method": "eth_getBlockByNumber",
-
-"params": [
-
-"0xb0e",
-
-
-
-false
-
-]
-
-}
-
-<= ETH response
-
-{
-
-"id": 21808,
-
-"jsonrpc": "2.0",
-
-"result": {
-
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
+"gasLimit": "0x5208",
 
 "gasUsed": "0x0",
 
-"hash": "0x24086397ad9e824b6f9464b3ffa602c2ebcbe86c33085e8c0cb680b46282ed90",
+"hash": "0x4db8dfc5410761d0d766f05c4c2ff1f09c37717674e50b0f3051db17b7105a88",
 
-"logsBloom": "",
+"logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
 
 "miner": "0x0000000000000000000000000000000000000000",
 
-"nonce": "0x1",
+"nonce": "0x0000000000000000",
 
-"number": "0xb0e",
+"number": "0xd74",
 
-"parentHash": "0x1a12aec9c1eb18c15ef925f6ad13c75f5dc3dc4c71060b31bf79adb42e570229",
+"parentHash": "0x6b2e9758f361266aa1abd54d53b36ca8769c17b8c8d0e71f3bc30b7e22e28311",
 
-"sha3Uncles": "",
+"receiptsRoot": "0xebc4f4b3c7e69e459e7627a3e551c56061c664be413e4d1128357e871b5a28d5",
+
+"sha3Uncles": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
 
 "size": "0x3a8",
 
-"stateRoot": "0x6e6b1f837ae1f514f708a527e7e700ff3ab61f71c55b845534f9491a268c7c12",
+"stateRoot": "0x1e0b595d829bc9c9f1aeed17468a80c7d058b2a6d083bb9665793c3a6884a023",
 
-"timestamp": "0x6011e294",
+"timestamp": "0x601d8d90",
 
 "totalDifficulty": "0x0",
 
 "transactions": [
 
-"0x41baa8b101920940c3b5a69afffeb8813aa6d6ba5f7564e015292cc512111a8e",
+"0x577e984ab84960cf75b3db2f2da96b912f4f49a90043e47f6639e631b58a7928",
 
-"0x0c34d71ab3659a79e8c88e1e7a19b533e64d6a864aa747c8f7c791199a6087a1"
+"0x74cf0f454150118e6021d8fd8d512a93ce704fa90cb56b3fea1cb40351edb987"
 
 ],
 
-"transactionsRoot": "0x1ed270cead102e44d25a01a75a827ccda7f296be96f2d00146902c74585ffb53",
+"transactionsRoot": "0xebc4f4b3c7e69e459e7627a3e551c56061c664be413e4d1128357e871b5a28d5",
 
 "uncles": []
 
@@ -496,113 +82,135 @@ false
 
 }
 
-<= ETH response
+level=info msg="proxy RPC" method=net_version
+
+level=debug component=qtum.Client method=getblockchaininfo
+
+=> qtum RPC request
 
 {
 
-"id": 21806,
+"jsonrpc": "1.0",
 
-"jsonrpc": "2.0",
+"method": "getblockchaininfo",
 
-"result": {
+"id": "638473",
 
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x3f3f0dd4cee16300323c7410b58380996687eee43b088423d94facc0b29b69b9",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x1",
-
-"number": "0xb12",
-
-"parentHash": "0x4a8aab9aac366251c37f1c7cea50b5937506e4b290e385db388a177d67cafe6e",
-
-"sha3Uncles": "",
-
-"size": "0x741",
-
-"stateRoot": "0x5eef48d07f338f9aa0e819c089ede55671a4d7bb6d711d7186e12d0c496e2cfb",
-
-"timestamp": "0x6011e295",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x02bfd5854d59738e037192a6b64c4667b92af9f8c8d5240f860f483c5d6a50fe",
-
-"0x3eb081b84adbbb2f2c8c46a3059068abb6a9f80ea3e6aa75471acf457263f9ef"
-
-],
-
-"transactionsRoot": "0x88a2e4e10a6ddb55860de88403a909a330270c5e83b049c0cb2ae7d04164deb0",
-
-"uncles": []
+"params": null
 
 }
 
-}
-
-<= ETH response
+<= qtum RPC response
 
 {
 
-"id": 21816,
+"error": null,
 
-"jsonrpc": "2.0",
+"id": "638473",
 
 "result": {
 
-"difficulty": "0x0",
+"bestblockhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
-"extraData": "0x0",
+"blocks": 3461,
 
-"gasLimit": "0x0",
+"chain": "regtest",
 
-"gasUsed": "0x0",
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
 
-"hash": "0x070569f8c0be28a8d5c2ca64bdf254c4724913d9bdb42a704434dbeca0c3b48c",
+"difficulty": 4.656542373906925e-10,
 
-"logsBloom": "",
+"headers": 3461,
 
-"miner": "0x0000000000000000000000000000000000000000",
+"initialblockdownload": false,
 
-"nonce": "0x0",
+"mediantime": 1612549528,
 
-"number": "0xac7",
+"moneysupply": 69220000,
 
-"parentHash": "0x34c585e264259ad54b67c93ba3dcc3c7266f2306f6d65e436da0d66b5921a849",
+"pruned": false,
 
-"sha3Uncles": "",
+"size_on_disk": 7272947,
 
-"size": "0x335",
+"softforks": {
 
-"stateRoot": "0xa11c8c551dd9cbd764efed52f29504c5962a435d52cc52e382bb185b6e38c7a7",
+"bip34": {
 
-"timestamp": "0x6011e270",
+"active": true,
 
-"totalDifficulty": "0x0",
+"height": 0,
 
-"transactions": [
+"type": "buried"
 
-"0x21fcfe1489044a1b6e6c5f47aabd4d68baf9211c641e3006ad6e68dbefeacef1",
+},
 
-"0x5a85b57ed6c76db79a296dcbbfd6adf8cbd5aa5f7e2fa683323a8e50b0307c28"
+"bip65": {
 
-],
+"active": true,
 
-"transactionsRoot": "0x13aae5d1ed73dc17e86ba3cdefdebe214d5c751537eab8ca209b3b1b14f1ccf3",
+"height": 0,
 
-"uncles": []
+"type": "buried"
+
+},
+
+"bip66": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"csv": {
+
+"active": true,
+
+"height": 432,
+
+"type": "buried"
+
+},
+
+"segwit": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"testdummy": {
+
+"active": true,
+
+"bip9": {
+
+"since": 432,
+
+"start_time": 0,
+
+"status": "active",
+
+"timeout": 9223372036854776000
+
+},
+
+"height": 432,
+
+"type": "bip9"
+
+}
+
+},
+
+"verificationprogress": 1,
+
+"warnings": ""
 
 }
 
@@ -614,21 +222,13 @@ level=debug msg="ETH RPC"
 
 {
 
-"id": 21811,
+"id": 223977,
 
 "jsonrpc": "2.0",
 
-"method": "eth_getBlockByNumber",
+"method": "net_version",
 
-"params": [
-
-"0xafc",
-
-
-
-false
-
-]
+"params": []
 
 }
 
@@ -636,205 +236,149 @@ false
 
 {
 
-"id": 21811,
+"id": 223977,
 
 "jsonrpc": "2.0",
 
-"result": {
-
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x0a47bd8d9ec498631ca6ea5724c8978292d90ace6eeb592b8ede2be391349e26",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x5",
-
-"number": "0xafc",
-
-"parentHash": "0x7107c25a7a3c9cb2573b8fc31d8c6b2a1ae3c999b7d4aeaf3337f46f2c855052",
-
-"sha3Uncles": "",
-
-"size": "0x335",
-
-"stateRoot": "0x3f895721a2a884cb48b98a6e612556e25dc4aafee1292fee41a9848b85c46d0d",
-
-"timestamp": "0x6011e28c",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x5c164a95207c159c2c768eb58044121d19a158dc0a5341c7a47454e62aeaa059",
-
-"0x91e75691f071f475950021cdf99d39e6f7a148ae51781a66793795cdf1b2ad65"
-
-],
-
-"transactionsRoot": "0xf90ecc6abe1fe904b7023f72fbdf73c6bfd4562a3e1f7e2dde56323616b8c20b",
-
-"uncles": []
-
-}
-
-}
-
-=> ETH request
-
-{
-
-"id": 21803,
-
-"jsonrpc": "2.0",
-
-"method": "eth_getBlockByNumber",
-
-"params": [
-
-"0xaad",
-
-
-
-false
-
-]
-
-}
-
-<= ETH response
-
-{
-
-"id": 21803,
-
-"jsonrpc": "2.0",
-
-"result": {
-
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x55c5d40fb130946fb7e81097cc03783ebd66ba20d14e96bbf955220004ebdafc",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x0",
-
-"number": "0xaad",
-
-"parentHash": "0x6ecbc5cdedb94c8869623b62278752f06d08dc312a33d79abf8b514c5b76698b",
-
-"sha3Uncles": "",
-
-"size": "0x284b",
-
-"stateRoot": "0xabe9f8d6af9da6234272f7b8968eef987c3c217221d8c52bb28caf6f62b044e3",
-
-"timestamp": "0x6011e265",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x9aa865a2ac22af8f65f0d85e2bee8b5c353ca588ae2053ace1d5a7c1aaf442f7",
-
-"0xf3244854138400d7387d55de17279f731d3764207f26fd0bed0099e00a8b5c4b"
-
-],
-
-"transactionsRoot": "0x7608f58787aebb49547fb77ac01874d62d648b8aed4535b013799b4a7d1c9850",
-
-"uncles": []
-
-}
-
-}
-
-<= qtum RPC response
-
-{
-
-"error": null,
-
-"id": "278252",
-
-"result": {
-
-"bits": "207fffff",
-
-"chainwork": "0000000000000000000000000000000000000000000000000000000000001630",
-
-"confirmations": 13,
-
-"difficulty": 4.656542373906925e-10,
-
-"flags": "proof-of-work",
-
-"hash": "40a818b6f6403dc43fa95c81e65410e610380eef3d7fae64b313d692685df0cd",
-
-"hashStateRoot": "a07b685629cba306ce766b17920b11e01027ffcd8d00d7592abd49056121b66a",
-
-"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
-
-"height": 2839,
-
-"mediantime": 1611784853,
-
-"merkleroot": "ad216d46b7b13a5adcae3abe4e0ab2783500e94ba36f0784be9248a7245a34f6",
-
-"modifier": "50009a7f40a28dff89b9b863a6f0e1f3c110b566fa0cced4da188839cfa9c5c3",
-
-"nTx": 2,
-
-"nextblockhash": "68f51aaf63f16693767c198119ef913f5befdae07dd1fd362ac4f9d25890914f",
-
-"nonce": 0,
-
-"previousblockhash": "735648a8d0166a23b17ac13c290eba9d9d1d7db364b3c33a35ea7688a626ad32",
-
-"proofhash": "40a818b6f6403dc43fa95c81e65410e610380eef3d7fae64b313d692685df0cd",
-
-"size": 757,
-
-"strippedsize": 721,
-
-"time": 1611784856,
-
-"tx": [
-
-"7cc8a9712a1bafb36e5c1bf1b34baeb0da26483fc1015e95614972510c6a40f7",
-
-"834d6546251fd2ac7a738f2412a0c92cf892457c5857c2f4bd99727332d9dbef"
-
-],
-
-"version": 536870912,
-
-"versionHex": "20000000",
-
-"weight": 2920
-
-}
+"result": "0x1024"
 
 }
 
 level=info msg="proxy RPC" method=eth_getBlockByNumber
+
+level=debug component=qtum.Client method=getblockchaininfo
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockchaininfo",
+
+"id": "638474",
+
+"params": null
+
+}
+
+"latest"
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "638474",
+
+"result": {
+
+"bestblockhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"blocks": 3461,
+
+"chain": "regtest",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
+
+"difficulty": 4.656542373906925e-10,
+
+"headers": 3461,
+
+"initialblockdownload": false,
+
+"mediantime": 1612549528,
+
+"moneysupply": 69220000,
+
+"pruned": false,
+
+"size_on_disk": 7272947,
+
+"softforks": {
+
+"bip34": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip65": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip66": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"csv": {
+
+"active": true,
+
+"height": 432,
+
+"type": "buried"
+
+},
+
+"segwit": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"testdummy": {
+
+"active": true,
+
+"bip9": {
+
+"since": 432,
+
+"start_time": 0,
+
+"status": "active",
+
+"timeout": 9223372036854776000
+
+},
+
+"height": 432,
+
+"type": "bip9"
+
+}
+
+},
+
+"verificationprogress": 1,
+
+"warnings": ""
+
+}
+
+}
 
 level=debug component=qtum.Client method=getblockhash
 
@@ -846,93 +390,13 @@ level=debug component=qtum.Client method=getblockhash
 
 "method": "getblockhash",
 
-"id": "278262",
+"id": "638475",
 
 "params": [
 
-1
+3461
 
 ]
-
-}
-
-level=debug msg="ETH RPC"
-
-=> ETH request
-
-{
-
-"id": 21813,
-
-"jsonrpc": "2.0",
-
-"method": "eth_getBlockByNumber",
-
-"params": [
-
-"0xb17",
-
-
-
-false
-
-]
-
-}
-
-<= ETH response
-
-{
-
-"id": 21813,
-
-"jsonrpc": "2.0",
-
-"result": {
-
-"difficulty": "0x0",
-
-"extraData": "0x0",
-
-"gasLimit": "0x0",
-
-"gasUsed": "0x0",
-
-"hash": "0x40a818b6f6403dc43fa95c81e65410e610380eef3d7fae64b313d692685df0cd",
-
-"logsBloom": "",
-
-"miner": "0x0000000000000000000000000000000000000000",
-
-"nonce": "0x0",
-
-"number": "0xb17",
-
-"parentHash": "0x735648a8d0166a23b17ac13c290eba9d9d1d7db364b3c33a35ea7688a626ad32",
-
-"sha3Uncles": "",
-
-"size": "0x2f5",
-
-"stateRoot": "0xa07b685629cba306ce766b17920b11e01027ffcd8d00d7592abd49056121b66a",
-
-"timestamp": "0x6011e298",
-
-"totalDifficulty": "0x0",
-
-"transactions": [
-
-"0x7cc8a9712a1bafb36e5c1bf1b34baeb0da26483fc1015e95614972510c6a40f7",
-
-"0x834d6546251fd2ac7a738f2412a0c92cf892457c5857c2f4bd99727332d9dbef"
-
-],
-
-"transactionsRoot": "0xad216d46b7b13a5adcae3abe4e0ab2783500e94ba36f0784be9248a7245a34f6",
-
-"uncles": []
-
-}
 
 }
 
@@ -942,9 +406,9 @@ false
 
 "error": null,
 
-"id": "278262",
+"id": "638475",
 
-"result": "10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2"
+"result": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c"
 
 }
 
@@ -958,11 +422,11 @@ level=debug component=qtum.Client method=getblockheader
 
 "method": "getblockheader",
 
-"id": "278263",
+"id": "638476",
 
 "params": [
 
-"10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
+"005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
 true
 
@@ -976,45 +440,43 @@ true
 
 "error": null,
 
-"id": "278263",
+"id": "638476",
 
 "result": {
 
 "bits": "207fffff",
 
-"chainwork": "0000000000000000000000000000000000000000000000000000000000000004",
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
 
-"confirmations": 2851,
+"confirmations": 1,
 
 "difficulty": 4.656542373906925e-10,
 
 "flags": "proof-of-work",
 
-"hash": "10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
+"hash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
-"hashStateRoot": "e347448b257b1ec40ec2ace0a909751c1b8a07eabd4d13bf6c2f3c4c854f493b",
+"hashStateRoot": "97df3b895be99329b495987239c8ba4f83f7031cda09180371e969fb6565e0a6",
 
-"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+"hashUTXORoot": "d24fff051d0fbc8b66b24c9cb7b404f6db6185db9051170100d7b8761195f89e",
 
-"height": 1,
+"height": 3461,
 
-"mediantime": 1611782395,
+"mediantime": 1612549528,
 
-"merkleroot": "d5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9",
+"merkleroot": "84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
 
-"modifier": "16baeb42906335f5f37a5debc947dd1f56c3d6cdce7ba990cb97a220f232ab20",
+"modifier": "f6e6792a72b2f96354f2d5bdd20c90ecb10a67e6040191176f339b2ca2c3d820",
 
-"nTx": 1,
+"nTx": 2,
 
-"nextblockhash": "0987399929f9a3abbcc288f9bfca273d558eadcf6534257c572eb10078682b67",
+"nonce": 1,
 
-"nonce": 2,
+"previousblockhash": "0bb08524da2fb2546261db611a29ad0359850e2c1e008e3cfb043779e4d1e0b7",
 
-"previousblockhash": "665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943",
+"proofhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
-"proofhash": "10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
-
-"time": 1611782395,
+"time": 1612549533,
 
 "version": 536870912,
 
@@ -1034,11 +496,11 @@ level=debug component=qtum.Client method=getblock
 
 "method": "getblock",
 
-"id": "278264",
+"id": "638477",
 
 "params": [
 
-"10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
+"005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
 1
 
@@ -1052,53 +514,53 @@ level=debug component=qtum.Client method=getblock
 
 "error": null,
 
-"id": "278264",
+"id": "638477",
 
 "result": {
 
 "bits": "207fffff",
 
-"chainwork": "0000000000000000000000000000000000000000000000000000000000000004",
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
 
-"confirmations": 2851,
+"confirmations": 1,
 
 "difficulty": 4.656542373906925e-10,
 
 "flags": "proof-of-work",
 
-"hash": "10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
+"hash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
-"hashStateRoot": "e347448b257b1ec40ec2ace0a909751c1b8a07eabd4d13bf6c2f3c4c854f493b",
+"hashStateRoot": "97df3b895be99329b495987239c8ba4f83f7031cda09180371e969fb6565e0a6",
 
-"hashUTXORoot": "21b463e3b52f6201c0ad6c991be0485b6ef8c092e64583ffa655cc1b171fe856",
+"hashUTXORoot": "d24fff051d0fbc8b66b24c9cb7b404f6db6185db9051170100d7b8761195f89e",
 
-"height": 1,
+"height": 3461,
 
-"mediantime": 1611782395,
+"mediantime": 1612549528,
 
-"merkleroot": "d5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9",
+"merkleroot": "84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
 
-"modifier": "16baeb42906335f5f37a5debc947dd1f56c3d6cdce7ba990cb97a220f232ab20",
+"modifier": "f6e6792a72b2f96354f2d5bdd20c90ecb10a67e6040191176f339b2ca2c3d820",
 
-"nTx": 1,
+"nTx": 2,
 
-"nextblockhash": "0987399929f9a3abbcc288f9bfca273d558eadcf6534257c572eb10078682b67",
+"nonce": 1,
 
-"nonce": 2,
+"previousblockhash": "0bb08524da2fb2546261db611a29ad0359850e2c1e008e3cfb043779e4d1e0b7",
 
-"previousblockhash": "665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943",
+"proofhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
-"proofhash": "10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
+"size": 1253,
 
-"size": 353,
+"strippedsize": 1217,
 
-"strippedsize": 317,
-
-"time": 1611782395,
+"time": 1612549533,
 
 "tx": [
 
-"d5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9"
+"dae907260249b09a8a23b50e8d9849e1af20c60a41911ae491c511f053a9eacb",
+
+"9bf0af8d3d5e5ec509cc72f9ed92596169214619386121be2d5642e75519a894"
 
 ],
 
@@ -1106,7 +568,7 @@ level=debug component=qtum.Client method=getblock
 
 "versionHex": "20000000",
 
-"weight": 1304
+"weight": 4904
 
 }
 
@@ -1118,7 +580,7 @@ level=debug msg="ETH RPC"
 
 {
 
-"id": 21818,
+"id": 223978,
 
 "jsonrpc": "2.0",
 
@@ -1140,7 +602,7 @@ false
 
 {
 
-"id": 21818,
+"id": 223978,
 
 "jsonrpc": "2.0",
 
@@ -1148,41 +610,45 @@ false
 
 "difficulty": "0x0",
 
-"extraData": "0x0",
+"extraData": "0x00",
 
-"gasLimit": "0x0",
+"gasLimit": "0x5208",
 
 "gasUsed": "0x0",
 
-"hash": "0x10cc1b2e62138bb3de529128960ba81c1a0a2c9f52ed0024170050f9b6afb7a2",
+"hash": "0x005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
 
-"logsBloom": "",
+"logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
 
 "miner": "0x0000000000000000000000000000000000000000",
 
-"nonce": "0x2",
+"nonce": "0x0000000000000001",
 
-"number": "0x1",
+"number": "0xd85",
 
-"parentHash": "0x665ed5b402ac0b44efc37d8926332994363e8a7278b7ee9a58fb972efadae943",
+"parentHash": "0x0bb08524da2fb2546261db611a29ad0359850e2c1e008e3cfb043779e4d1e0b7",
 
-"sha3Uncles": "",
+"receiptsRoot": "0x84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
 
-"size": "0x161",
+"sha3Uncles": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
 
-"stateRoot": "0xe347448b257b1ec40ec2ace0a909751c1b8a07eabd4d13bf6c2f3c4c854f493b",
+"size": "0x4e5",
 
-"timestamp": "0x6011d8fb",
+"stateRoot": "0x97df3b895be99329b495987239c8ba4f83f7031cda09180371e969fb6565e0a6",
+
+"timestamp": "0x601d8d9d",
 
 "totalDifficulty": "0x0",
 
 "transactions": [
 
-"0xd5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9"
+"0xdae907260249b09a8a23b50e8d9849e1af20c60a41911ae491c511f053a9eacb",
+
+"0x9bf0af8d3d5e5ec509cc72f9ed92596169214619386121be2d5642e75519a894"
 
 ],
 
-"transactionsRoot": "0xd5fea3563ca68e9d78de173ed9a2b02949b85fa1646ed3042b748e28bed258a9",
+"transactionsRoot": "0x84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
 
 "uncles": []
 
@@ -1202,7 +668,7 @@ level=debug component=qtum.Client method=fromhexaddress
 
 "method": "fromhexaddress",
 
-"id": "278265",
+"id": "638478",
 
 "params": [
 
@@ -1218,7 +684,7 @@ level=debug component=qtum.Client method=fromhexaddress
 
 "error": null,
 
-"id": "278265",
+"id": "638478",
 
 "result": "qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW"
 
@@ -1234,17 +700,19 @@ level=debug component=qtum.Client method=callcontract
 
 "method": "callcontract",
 
-"id": "278266",
+"id": "638479",
 
 "params": [
 
-"0d7b84dcd44d2dc679c37842047c9751484891b2",
+"8f85156ce1eef6f8f48a3faf66e919255565d527",
 
 "a2bd3644ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
 
 "qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW",
 
-6721975
+
+
+10000
 
 ]
 
@@ -1256,11 +724,11 @@ level=debug component=qtum.Client method=callcontract
 
 "error": null,
 
-"id": "278266",
+"id": "638479",
 
 "result": {
 
-"address": "0d7b84dcd44d2dc679c37842047c9751484891b2",
+"address": "8f85156ce1eef6f8f48a3faf66e919255565d527",
 
 "executionResult": {
 
@@ -1268,7 +736,7 @@ level=debug component=qtum.Client method=callcontract
 
 "depositSize": 0,
 
-"excepted": "None",
+"excepted": "OutOfGasIntrinsic",
 
 "exceptedMessage": "",
 
@@ -1276,11 +744,11 @@ level=debug component=qtum.Client method=callcontract
 
 "gasRefunded": 0,
 
-"gasUsed": 42024,
+"gasUsed": 10000,
 
-"newAddress": "0d7b84dcd44d2dc679c37842047c9751484891b2",
+"newAddress": "8f85156ce1eef6f8f48a3faf66e919255565d527",
 
-"output": "0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004e313135373932303839323337333136313935343233353730393835303038363837393037383533323639393834363635363430353634303339343537353834303037393133313239363339393335000000000000000000000000000000000000"
+"output": ""
 
 },
 
@@ -1288,13 +756,13 @@ level=debug component=qtum.Client method=callcontract
 
 "bloom": "00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
 
-"gasUsed": 42024,
+"gasUsed": 10000,
 
 "log": [],
 
-"stateRoot": "62b43546797d7f1dab77cdc045417d355b30998272e9f49c62b6953dd3da8300",
+"stateRoot": "a6e06565fb69e971031809da1c03f7834fbac839729895b42993e95b893bdf97",
 
-"utxoRoot": "56e81f171bcc55a6ff8345e692c0f86e5b48e01b996cadc001622fb5e363b421"
+"utxoRoot": "9ef8951176b8d70001175190db8561dbf604b4b79c4cb2668bbc0f1d05ff4fd2"
 
 }
 
@@ -1308,7 +776,7 @@ level=debug msg="ETH RPC"
 
 {
 
-"id": 21819,
+"id": 223979,
 
 "jsonrpc": "2.0",
 
@@ -1326,7 +794,7 @@ level=debug msg="ETH RPC"
 
 "gasPrice": "0x64",
 
-"to": "0x0d7b84dcd44d2dc679c37842047c9751484891b2"
+"to": "0x8f85156ce1eef6f8f48a3faf66e919255565d527"
 
 },
 
@@ -1340,11 +808,519 @@ level=debug msg="ETH RPC"
 
 {
 
-"id": 21819,
+"error": {
+
+"code": -32000,
+
+"message": "VM exception: OutOfGasIntrinsic"
+
+},
+
+"id": 223979,
+
+"jsonrpc": "2.0"
+
+}
+
+level=info msg="proxy RPC" method=eth_getBlockByNumber
+
+level=debug component=qtum.Client method=getblockchaininfo
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockchaininfo",
+
+"id": "638480",
+
+"params": null
+
+}
+
+"latest"
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "638480",
+
+"result": {
+
+"bestblockhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"blocks": 3461,
+
+"chain": "regtest",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
+
+"difficulty": 4.656542373906925e-10,
+
+"headers": 3461,
+
+"initialblockdownload": false,
+
+"mediantime": 1612549528,
+
+"moneysupply": 69220000,
+
+"pruned": false,
+
+"size_on_disk": 7272947,
+
+"softforks": {
+
+"bip34": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip65": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"bip66": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"csv": {
+
+"active": true,
+
+"height": 432,
+
+"type": "buried"
+
+},
+
+"segwit": {
+
+"active": true,
+
+"height": 0,
+
+"type": "buried"
+
+},
+
+"testdummy": {
+
+"active": true,
+
+"bip9": {
+
+"since": 432,
+
+"start_time": 0,
+
+"status": "active",
+
+"timeout": 9223372036854776000
+
+},
+
+"height": 432,
+
+"type": "bip9"
+
+}
+
+},
+
+"verificationprogress": 1,
+
+"warnings": ""
+
+}
+
+}
+
+level=debug component=qtum.Client method=getblockhash
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockhash",
+
+"id": "638481",
+
+"params": [
+
+3461
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "638481",
+
+"result": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c"
+
+}
+
+level=debug component=qtum.Client method=getblockheader
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblockheader",
+
+"id": "638482",
+
+"params": [
+
+"005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+true
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "638482",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
+
+"confirmations": 1,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"hashStateRoot": "97df3b895be99329b495987239c8ba4f83f7031cda09180371e969fb6565e0a6",
+
+"hashUTXORoot": "d24fff051d0fbc8b66b24c9cb7b404f6db6185db9051170100d7b8761195f89e",
+
+"height": 3461,
+
+"mediantime": 1612549528,
+
+"merkleroot": "84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
+
+"modifier": "f6e6792a72b2f96354f2d5bdd20c90ecb10a67e6040191176f339b2ca2c3d820",
+
+"nTx": 2,
+
+"nonce": 1,
+
+"previousblockhash": "0bb08524da2fb2546261db611a29ad0359850e2c1e008e3cfb043779e4d1e0b7",
+
+"proofhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"time": 1612549533,
+
+"version": 536870912,
+
+"versionHex": "20000000"
+
+}
+
+}
+
+level=debug component=qtum.Client method=getblock
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "getblock",
+
+"id": "638483",
+
+"params": [
+
+"005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+1
+
+]
+
+}
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "638483",
+
+"result": {
+
+"bits": "207fffff",
+
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b0c",
+
+"confirmations": 1,
+
+"difficulty": 4.656542373906925e-10,
+
+"flags": "proof-of-work",
+
+"hash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"hashStateRoot": "97df3b895be99329b495987239c8ba4f83f7031cda09180371e969fb6565e0a6",
+
+"hashUTXORoot": "d24fff051d0fbc8b66b24c9cb7b404f6db6185db9051170100d7b8761195f89e",
+
+"height": 3461,
+
+"mediantime": 1612549528,
+
+"merkleroot": "84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
+
+"modifier": "f6e6792a72b2f96354f2d5bdd20c90ecb10a67e6040191176f339b2ca2c3d820",
+
+"nTx": 2,
+
+"nonce": 1,
+
+"previousblockhash": "0bb08524da2fb2546261db611a29ad0359850e2c1e008e3cfb043779e4d1e0b7",
+
+"proofhash": "005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"size": 1253,
+
+"strippedsize": 1217,
+
+"time": 1612549533,
+
+"tx": [
+
+"dae907260249b09a8a23b50e8d9849e1af20c60a41911ae491c511f053a9eacb",
+
+"9bf0af8d3d5e5ec509cc72f9ed92596169214619386121be2d5642e75519a894"
+
+],
+
+"version": 536870912,
+
+"versionHex": "20000000",
+
+"weight": 4904
+
+}
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 223980,
 
 "jsonrpc": "2.0",
 
-"result": "0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000004e313135373932303839323337333136313935343233353730393835303038363837393037383533323639393834363635363430353634303339343537353834303037393133313239363339393335000000000000000000000000000000000000"
+"method": "eth_getBlockByNumber",
+
+"params": [
+
+"latest",
+
+
+
+false
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 223980,
+
+"jsonrpc": "2.0",
+
+"result": {
+
+"difficulty": "0x0",
+
+"extraData": "0x00",
+
+"gasLimit": "0x5208",
+
+"gasUsed": "0x0",
+
+"hash": "0x005d24d892034a9423178fa5b925f0ceea1ee27fb214c3cf3bcc7483ba75306c",
+
+"logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+
+"miner": "0x0000000000000000000000000000000000000000",
+
+"nonce": "0x0000000000000001",
+
+"number": "0xd85",
+
+"parentHash": "0x0bb08524da2fb2546261db611a29ad0359850e2c1e008e3cfb043779e4d1e0b7",
+
+"receiptsRoot": "0x84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
+
+"sha3Uncles": "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347",
+
+"size": "0x4e5",
+
+"stateRoot": "0x97df3b895be99329b495987239c8ba4f83f7031cda09180371e969fb6565e0a6",
+
+"timestamp": "0x601d8d9d",
+
+"totalDifficulty": "0x0",
+
+"transactions": [
+
+"0xdae907260249b09a8a23b50e8d9849e1af20c60a41911ae491c511f053a9eacb",
+
+"0x9bf0af8d3d5e5ec509cc72f9ed92596169214619386121be2d5642e75519a894"
+
+],
+
+"transactionsRoot": "0x84d60d049e4aa162f264b3c37af8b2121ca73c14755b9b826214ce9546f80e52",
+
+"uncles": []
+
+}
+
+}
+
+level=info msg="proxy RPC" method=eth_getLogs
+
+level=debug component=qtum.Client method=searchlogs
+
+=> qtum RPC request
+
+{
+
+"jsonrpc": "1.0",
+
+"method": "searchlogs",
+
+"id": "638484",
+
+"params": [
+
+
+
+3461,
+
+
+
+3461,
+
+{
+
+"addresses": null
+
+}
+
+]
+
+}
+
+"0xd85"
+
+"0xd85"
+
+<= qtum RPC response
+
+{
+
+"error": null,
+
+"id": "638484",
+
+"result": []
+
+}
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 223981,
+
+"jsonrpc": "2.0",
+
+"method": "eth_getLogs",
+
+"params": [
+
+{
+
+"fromBlock": "0xd85",
+
+"toBlock": "0xd85",
+
+"topics": []
+
+}
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"id": 223981,
+
+"jsonrpc": "2.0",
+
+"result": []
 
 }
 
@@ -1408,9 +1384,51 @@ level=debug msg="ETH RPC"
 
 }
 
-level=info msg="proxy RPC" method=eth_chainId
+level=info msg="proxy RPC" method=eth_accounts
 
-level=error err="Unsupported method eth_chainId"
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 3,
+
+"jsonrpc": "2.0",
+
+"method": "eth_accounts",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 3,
+
+"jsonrpc": "2.0",
+
+"result": [
+
+"0x7926223070547d2d15b2ef5e7383e541c338ffe9",
+
+"0x2352be3db3177f0a07efbe6da5857615b8c9901d",
+
+"0x69b004ac2b3993bf2fdf56b02746a1f57997420d",
+
+"0x8c647515f03daeefd09872d7530fa8d8450f069a",
+
+"0x2191744eb5ebeac90e523a817b77a83a0058003b",
+
+"0x88b0bf4b301c21f8a47be2188bad6467ad556dcf"
+
+]
+
+}
+
+level=info msg="proxy RPC" method=eth_accounts
 
 level=debug msg="ETH RPC"
 
@@ -1419,6 +1437,52 @@ level=debug msg="ETH RPC"
 {
 
 "id": 4,
+
+"jsonrpc": "2.0",
+
+"method": "eth_accounts",
+
+"params": []
+
+}
+
+<= ETH response
+
+{
+
+"id": 4,
+
+"jsonrpc": "2.0",
+
+"result": [
+
+"0x7926223070547d2d15b2ef5e7383e541c338ffe9",
+
+"0x2352be3db3177f0a07efbe6da5857615b8c9901d",
+
+"0x69b004ac2b3993bf2fdf56b02746a1f57997420d",
+
+"0x8c647515f03daeefd09872d7530fa8d8450f069a",
+
+"0x2191744eb5ebeac90e523a817b77a83a0058003b",
+
+"0x88b0bf4b301c21f8a47be2188bad6467ad556dcf"
+
+]
+
+}
+
+level=info msg="proxy RPC" method=eth_chainId
+
+level=error err="couldn't get proxy: method eth_chainId is unsupported"
+
+level=debug msg="ETH RPC"
+
+=> ETH request
+
+{
+
+"id": 5,
 
 "jsonrpc": "2.0",
 
@@ -1436,103 +1500,13 @@ level=debug msg="ETH RPC"
 
 "code": 100,
 
-"message": "Unsupported method eth_chainId"
+"message": "method eth_chainId is unsupported"
 
 },
 
-"id": 4,
+"id": 5,
 
 "jsonrpc": "2.0"
-
-}
-
-level=error err="Unsupported method eth_chainId"
-
-level=info msg="proxy RPC" method=eth_accounts
-
-level=debug msg="ETH RPC"
-
-=> ETH request
-
-{
-
-"id": 3,
-
-"jsonrpc": "2.0",
-
-"method": "eth_accounts",
-
-"params": []
-
-}
-
-<= ETH response
-
-{
-
-"id": 3,
-
-"jsonrpc": "2.0",
-
-"result": [
-
-"0x7926223070547d2d15b2ef5e7383e541c338ffe9",
-
-"0x2352be3db3177f0a07efbe6da5857615b8c9901d",
-
-"0x69b004ac2b3993bf2fdf56b02746a1f57997420d",
-
-"0x8c647515f03daeefd09872d7530fa8d8450f069a",
-
-"0x2191744eb5ebeac90e523a817b77a83a0058003b",
-
-"0x88b0bf4b301c21f8a47be2188bad6467ad556dcf"
-
-]
-
-}
-
-level=info msg="proxy RPC" method=eth_accounts
-
-level=debug msg="ETH RPC"
-
-=> ETH request
-
-{
-
-"id": 5,
-
-"jsonrpc": "2.0",
-
-"method": "eth_accounts",
-
-"params": []
-
-}
-
-<= ETH response
-
-{
-
-"id": 5,
-
-"jsonrpc": "2.0",
-
-"result": [
-
-"0x7926223070547d2d15b2ef5e7383e541c338ffe9",
-
-"0x2352be3db3177f0a07efbe6da5857615b8c9901d",
-
-"0x69b004ac2b3993bf2fdf56b02746a1f57997420d",
-
-"0x8c647515f03daeefd09872d7530fa8d8450f069a",
-
-"0x2191744eb5ebeac90e523a817b77a83a0058003b",
-
-"0x88b0bf4b301c21f8a47be2188bad6467ad556dcf"
-
-]
 
 }
 
@@ -1548,7 +1522,7 @@ level=debug component=qtum.Client method=getblockchaininfo
 
 "method": "getblockchaininfo",
 
-"id": "278267",
+"id": "638485",
 
 "params": null
 
@@ -1560,31 +1534,31 @@ level=debug component=qtum.Client method=getblockchaininfo
 
 "error": null,
 
-"id": "278267",
+"id": "638485",
 
 "result": {
 
-"bestblockhash": "12f49b1db6f84978521b0f0227501cdec417c693da31eb64677d0872e7c62daa",
+"bestblockhash": "dcf39b9c0036535d285939f9776dbbddbc4d30cc19e40348aebe81c7a37d4d38",
 
-"blocks": 2884,
+"blocks": 3485,
 
 "chain": "regtest",
 
-"chainwork": "000000000000000000000000000000000000000000000000000000000000168a",
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b3c",
 
 "difficulty": 4.656542373906925e-10,
 
-"headers": 2884,
+"headers": 3485,
 
 "initialblockdownload": false,
 
-"mediantime": 1611785680,
+"mediantime": 1612550112,
 
-"moneysupply": 57680000,
+"moneysupply": 69700000,
 
 "pruned": false,
 
-"size_on_disk": 6983110,
+"size_on_disk": 7294789,
 
 "softforks": {
 
@@ -1700,7 +1674,7 @@ level=debug msg="ETH RPC"
 
 level=info msg="proxy RPC" method=eth_chainId
 
-level=error err="Unsupported method eth_chainId"
+level=error err="couldn't get proxy: method eth_chainId is unsupported"
 
 level=debug msg="ETH RPC"
 
@@ -1726,7 +1700,7 @@ level=debug msg="ETH RPC"
 
 "code": 100,
 
-"message": "Unsupported method eth_chainId"
+"message": "method eth_chainId is unsupported"
 
 },
 
@@ -1735,8 +1709,6 @@ level=debug msg="ETH RPC"
 "jsonrpc": "2.0"
 
 }
-
-level=error err="Unsupported method eth_chainId"
 
 level=info msg="proxy RPC" method=net_version
 
@@ -1750,7 +1722,7 @@ level=debug component=qtum.Client method=getblockchaininfo
 
 "method": "getblockchaininfo",
 
-"id": "278268",
+"id": "638486",
 
 "params": null
 
@@ -1762,31 +1734,31 @@ level=debug component=qtum.Client method=getblockchaininfo
 
 "error": null,
 
-"id": "278268",
+"id": "638486",
 
 "result": {
 
-"bestblockhash": "12f49b1db6f84978521b0f0227501cdec417c693da31eb64677d0872e7c62daa",
+"bestblockhash": "dcf39b9c0036535d285939f9776dbbddbc4d30cc19e40348aebe81c7a37d4d38",
 
-"blocks": 2884,
+"blocks": 3485,
 
 "chain": "regtest",
 
-"chainwork": "000000000000000000000000000000000000000000000000000000000000168a",
+"chainwork": "0000000000000000000000000000000000000000000000000000000000001b3c",
 
 "difficulty": 4.656542373906925e-10,
 
-"headers": 2884,
+"headers": 3485,
 
 "initialblockdownload": false,
 
-"mediantime": 1611785680,
+"mediantime": 1612550112,
 
-"moneysupply": 57680000,
+"moneysupply": 69700000,
 
 "pruned": false,
 
-"size_on_disk": 6983110,
+"size_on_disk": 7294789,
 
 "softforks": {
 
@@ -1912,7 +1884,7 @@ level=debug component=qtum.Client method=fromhexaddress
 
 "method": "fromhexaddress",
 
-"id": "278269",
+"id": "638487",
 
 "params": [
 
@@ -1928,72 +1900,100 @@ level=debug component=qtum.Client method=fromhexaddress
 
 "error": null,
 
-"id": "278269",
+"id": "638487",
 
 "result": "qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW"
 
 }
 
-echo: http: panic serving 172.19.0.1:49702: runtime error: invalid memory address or nil pointer dereference
+level=debug component=qtum.Client method=callcontract
 
-goroutine 948930 [running]:
+=> qtum RPC request
 
-net/http.(*conn).serve.func1(0xc0000d6640)
+{
 
-/usr/local/go/src/net/http/server.go:1800 +0x139
+"jsonrpc": "1.0",
 
-panic(0x912020, 0xf3ccf0)
+"method": "callcontract",
 
-/usr/local/go/src/runtime/panic.go:975 +0x3e3
+"id": "638488",
 
-github.com/qtumproject/janus/pkg/transformer.(*ProxyETHCall).ToRequest(0xc000010018, 0xc001876be0, 0x2000, 0x91df20, 0xc001876be0)
+"params": [
 
-/go/src/github.com/qtumproject/janus/pkg/transformer/eth_call.go:59 +0xd2
+"",
 
-github.com/qtumproject/janus/pkg/transformer.(*ProxyETHEstimateGas).Request(0xc000010070, 0xc001876b90, 0xb82b60, 0xc000010070, 0x0, 0x0)
+"60806040523480156200001157600080fd5b5060405162000dc838038062000dc8833981810160405260608110156200003757600080fd5b81019080805160405193929190846401000000008211156200005857600080fd5b9083019060208201858111156200006e57600080fd5b82516401000000008111828201881017156200008957600080fd5b82525081516020918201929091019080838360005b83811015620000b85781810151838201526020016200009e565b50505050905090810190601f168015620000e65780820380516001836020036101000a031916815260200191505b50604052602001805160405193929190846401000000008211156200010a57600080fd5b9083019060208201858111156200012057600080fd5b82516401000000008111828201881017156200013b57600080fd5b82525081516020918201929091019080838360005b838110156200016a57818101518382015260200162000150565b50505050905090810190601f168015620001985780820380516001836020036101000a031916815260200191505b5060405260209081015185519093508592508491620001bd916003918501906200020d565b508051620001d39060049060208401906200020d565b50506005805460ff1916601217905550620001ee81620001f7565b505050620002a9565b6005805460ff191660ff92909216919091179055565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106200025057805160ff191683800117855562000280565b8280016001018555821562000280579182015b828111156200028057825182559160200191906001019062000263565b506200028e92915062000292565b5090565b5b808211156200028e576000815560010162000293565b610b0f80620002b96000396000f3fe608060405234801561001057600080fd5b50600436106100a45760003560e01c806306fdde03146100a9578063095ea7b31461012657806318160ddd1461016657806323b872dd14610180578063313ce567146101b657806339509351146101d457806370a082311461020057806395d89b4114610226578063a0712d681461022e578063a457c2d71461024b578063a9059cbb14610277578063dd62ed3e146102a3575b600080fd5b6100b16102d1565b6040805160208082528351818301528351919283929083019185019080838360005b838110156100eb5781810151838201526020016100d3565b50505050905090810190601f1680156101185780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6101526004803603604081101561013c57600080fd5b506001600160a01b038135169060200135610367565b604080519115158252519081900360200190f35b61016e610384565b60408051918252519081900360200190f35b6101526004803603606081101561019657600080fd5b506001600160a01b0381358116916020810135909116906040013561038a565b6101be610411565b6040805160ff9092168252519081900360200190f35b610152600480360360408110156101ea57600080fd5b506001600160a01b03813516906020013561041a565b61016e6004803603602081101561021657600080fd5b50356001600160a01b0316610468565b6100b1610483565b6101526004803603602081101561024457600080fd5b50356104e4565b6101526004803603604081101561026157600080fd5b506001600160a01b0381351690602001356104ff565b6101526004803603604081101561028d57600080fd5b506001600160a01b038135169060200135610567565b61016e600480360360408110156102b957600080fd5b506001600160a01b038135811691602001351661057b565b60038054604080516020601f600260001961010060018816150201909516949094049384018190048102820181019092528281526060939092909183018282801561035d5780601f106103325761010080835404028352916020019161035d565b820191906000526020600020905b81548152906001019060200180831161034057829003601f168201915b5050505050905090565b600061037b6103746105a6565b84846105aa565b50600192915050565b60025490565b6000610397848484610696565b610407846103a36105a6565b61040285604051806060016040528060288152602001610a24602891396001600160a01b038a166000908152600160205260408120906103e16105a6565b6001600160a01b0316815260208101919091526040016000205491906107df565b6105aa565b5060019392505050565b60055460ff1690565b600061037b6104276105a6565b8461040285600160006104386105a6565b6001600160a01b03908116825260208083019390935260409182016000908120918c168152925290205490610876565b6001600160a01b031660009081526020819052604090205490565b60048054604080516020601f600260001961010060018816150201909516949094049384018190048102820181019092528281526060939092909183018282801561035d5780601f106103325761010080835404028352916020019161035d565b60006104f76104f16105a6565b836108d5565b506001919050565b600061037b61050c6105a6565b8461040285604051806060016040528060258152602001610ab560259139600160006105366105a6565b6001600160a01b03908116825260208083019390935260409182016000908120918d168152925290205491906107df565b600061037b6105746105a6565b8484610696565b6001600160a01b03918216600090815260016020908152604080832093909416825291909152205490565b3390565b6001600160a01b0383166105ef5760405162461bcd60e51b8152600401808060200182810382526024815260200180610a916024913960400191505060405180910390fd5b6001600160a01b0382166106345760405162461bcd60e51b81526004018080602001828103825260228152602001806109dc6022913960400191505060405180910390fd5b6001600160a01b03808416600081815260016020908152604080832094871680845294825291829020859055815185815291517f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259281900390910190a3505050565b6001600160a01b0383166106db5760405162461bcd60e51b8152600401808060200182810382526025815260200180610a6c6025913960400191505060405180910390fd5b6001600160a01b0382166107205760405162461bcd60e51b81526004018080602001828103825260238152602001806109b96023913960400191505060405180910390fd5b61072b8383836109b3565b610768816040518060600160405280602681526020016109fe602691396001600160a01b03861660009081526020819052604090205491906107df565b6001600160a01b0380851660009081526020819052604080822093909355908416815220546107979082610876565b6001600160a01b03808416600081815260208181526040918290209490945580518581529051919392871692600080516020610a4c83398151915292918290030190a3505050565b6000818484111561086e5760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b8381101561083357818101518382015260200161081b565b50505050905090810190601f1680156108605780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b505050900390565b6000828201838110156108ce576040805162461bcd60e51b815260206004820152601b60248201527a536166654d6174683a206164646974696f6e206f766572666c6f7760281b604482015290519081900360640190fd5b9392505050565b6001600160a01b038216610930576040805162461bcd60e51b815260206004820152601f60248201527f45524332303a206d696e7420746f20746865207a65726f206164647265737300604482015290519081900360640190fd5b61093c600083836109b3565b6002546109499082610876565b6002556001600160a01b03821660009081526020819052604090205461096f9082610876565b6001600160a01b038316600081815260208181526040808320949094558351858152935192939192600080516020610a4c8339815191529281900390910190a35050565b50505056fe45524332303a207472616e7366657220746f20746865207a65726f206164647265737345524332303a20617070726f766520746f20746865207a65726f206164647265737345524332303a207472616e7366657220616d6f756e7420657863656564732062616c616e636545524332303a207472616e7366657220616d6f756e74206578636565647320616c6c6f77616e6365ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef45524332303a207472616e736665722066726f6d20746865207a65726f206164647265737345524332303a20617070726f76652066726f6d20746865207a65726f206164647265737345524332303a2064656372656173656420616c6c6f77616e63652062656c6f77207a65726fa26469706673582212204a78d2ecd37e4ee3a8a55c5f33872d4c17598ba1f801ee034ebd942b0a0d29cc64736f6c634300060c0033000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000003444149000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034441490000000000000000000000000000000000000000000000000000000000",
 
-/go/src/github.com/qtumproject/janus/pkg/transformer/eth_estimateGas.go:25 +0x9e
+"qUbxboqjBRp96j3La8D1RYkyqx5uQbJPoW",
 
-github.com/qtumproject/janus/pkg/transformer.(*Transformer).Transform(0xc00011ddd0, 0xc001876b90, 0x4, 0x4, 0x0, 0x0)
+
 
-/go/src/github.com/qtumproject/janus/pkg/transformer/transformer.go:67 +0x82
+10000
 
-github.com/qtumproject/janus/pkg/server.httpHandler(0xb93d60, 0xc00012c850, 0xc0000a78b8, 0xc00058ee40)
+]
 
-/go/src/github.com/qtumproject/janus/pkg/server/handler.go:31 +0x304
+}
 
-github.com/qtumproject/janus/vendor/github.com/labstack/echo.(*Echo).Add.func1(0xb93d60, 0xc00012c850, 0xb84660, 0xc00058ee40)
+<= qtum RPC response
 
-/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/echo.go:490 +0x8a
+{
 
-github.com/qtumproject/janus/pkg/server.batchRequestsMiddleware.func1(0xb93d60, 0xc00012c850, 0x5, 0x998fe0)
+"error": {
 
-/go/src/github.com/qtumproject/janus/pkg/server/server.go:140 +0x4dd
+"code": -5,
 
-github.com/qtumproject/janus/pkg/server.(*Server).Start.func2.1(0xb93d60, 0xc00012c850, 0x2, 0xb7f0e0)
+"message": "Incorrect address"
 
-/go/src/github.com/qtumproject/janus/pkg/server/server.go:86 +0xe9
+},
 
-github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware.BodyDumpWithConfig.func1.1(0xb93d60, 0xc00012c850, 0x9ae26a, 0x1b)
+"id": "638488",
 
-/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware/body_dump.go:81 +0x355
+"result": null
 
-github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware.CORSWithConfig.func1.1(0xb93d60, 0xc00012c850, 0x4, 0xc00138c7c5)
+}
 
-/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/middleware/cors.go:117 +0x407
+level=error err="couldn't proxy eth_estimateGas request: responseBodyToResult: invalid address"
 
-github.com/qtumproject/janus/vendor/github.com/labstack/echo.(*Echo).ServeHTTP(0xc00000c1e0, 0xb87a80, 0xc00007c540, 0xc0000ae600)
+level=debug msg="ETH RPC"
 
-/go/src/github.com/qtumproject/janus/vendor/github.com/labstack/echo/echo.go:593 +0x222
+=> ETH request
 
-net/http.serverHandler.ServeHTTP(0xc00007c000, 0xb87a80, 0xc00007c540, 0xc0000ae600)
+{
 
-/usr/local/go/src/net/http/server.go:2836 +0xa3
+"id": 9,
 
-net/http.(*conn).serve(0xc0000d6640, 0xb88f40, 0xc0000ba880)
+"jsonrpc": "2.0",
 
-/usr/local/go/src/net/http/server.go:1924 +0x86c
+"method": "eth_estimateGas",
 
-created by net/http.(*Server).Serve
+"params": [
 
-/usr/local/go/src/net/http/server.go:2962 +0x35c
+{
+
+"data": "0x60806040523480156200001157600080fd5b5060405162000dc838038062000dc8833981810160405260608110156200003757600080fd5b81019080805160405193929190846401000000008211156200005857600080fd5b9083019060208201858111156200006e57600080fd5b82516401000000008111828201881017156200008957600080fd5b82525081516020918201929091019080838360005b83811015620000b85781810151838201526020016200009e565b50505050905090810190601f168015620000e65780820380516001836020036101000a031916815260200191505b50604052602001805160405193929190846401000000008211156200010a57600080fd5b9083019060208201858111156200012057600080fd5b82516401000000008111828201881017156200013b57600080fd5b82525081516020918201929091019080838360005b838110156200016a57818101518382015260200162000150565b50505050905090810190601f168015620001985780820380516001836020036101000a031916815260200191505b5060405260209081015185519093508592508491620001bd916003918501906200020d565b508051620001d39060049060208401906200020d565b50506005805460ff1916601217905550620001ee81620001f7565b505050620002a9565b6005805460ff191660ff92909216919091179055565b828054600181600116156101000203166002900490600052602060002090601f016020900481019282601f106200025057805160ff191683800117855562000280565b8280016001018555821562000280579182015b828111156200028057825182559160200191906001019062000263565b506200028e92915062000292565b5090565b5b808211156200028e576000815560010162000293565b610b0f80620002b96000396000f3fe608060405234801561001057600080fd5b50600436106100a45760003560e01c806306fdde03146100a9578063095ea7b31461012657806318160ddd1461016657806323b872dd14610180578063313ce567146101b657806339509351146101d457806370a082311461020057806395d89b4114610226578063a0712d681461022e578063a457c2d71461024b578063a9059cbb14610277578063dd62ed3e146102a3575b600080fd5b6100b16102d1565b6040805160208082528351818301528351919283929083019185019080838360005b838110156100eb5781810151838201526020016100d3565b50505050905090810190601f1680156101185780820380516001836020036101000a031916815260200191505b509250505060405180910390f35b6101526004803603604081101561013c57600080fd5b506001600160a01b038135169060200135610367565b604080519115158252519081900360200190f35b61016e610384565b60408051918252519081900360200190f35b6101526004803603606081101561019657600080fd5b506001600160a01b0381358116916020810135909116906040013561038a565b6101be610411565b6040805160ff9092168252519081900360200190f35b610152600480360360408110156101ea57600080fd5b506001600160a01b03813516906020013561041a565b61016e6004803603602081101561021657600080fd5b50356001600160a01b0316610468565b6100b1610483565b6101526004803603602081101561024457600080fd5b50356104e4565b6101526004803603604081101561026157600080fd5b506001600160a01b0381351690602001356104ff565b6101526004803603604081101561028d57600080fd5b506001600160a01b038135169060200135610567565b61016e600480360360408110156102b957600080fd5b506001600160a01b038135811691602001351661057b565b60038054604080516020601f600260001961010060018816150201909516949094049384018190048102820181019092528281526060939092909183018282801561035d5780601f106103325761010080835404028352916020019161035d565b820191906000526020600020905b81548152906001019060200180831161034057829003601f168201915b5050505050905090565b600061037b6103746105a6565b84846105aa565b50600192915050565b60025490565b6000610397848484610696565b610407846103a36105a6565b61040285604051806060016040528060288152602001610a24602891396001600160a01b038a166000908152600160205260408120906103e16105a6565b6001600160a01b0316815260208101919091526040016000205491906107df565b6105aa565b5060019392505050565b60055460ff1690565b600061037b6104276105a6565b8461040285600160006104386105a6565b6001600160a01b03908116825260208083019390935260409182016000908120918c168152925290205490610876565b6001600160a01b031660009081526020819052604090205490565b60048054604080516020601f600260001961010060018816150201909516949094049384018190048102820181019092528281526060939092909183018282801561035d5780601f106103325761010080835404028352916020019161035d565b60006104f76104f16105a6565b836108d5565b506001919050565b600061037b61050c6105a6565b8461040285604051806060016040528060258152602001610ab560259139600160006105366105a6565b6001600160a01b03908116825260208083019390935260409182016000908120918d168152925290205491906107df565b600061037b6105746105a6565b8484610696565b6001600160a01b03918216600090815260016020908152604080832093909416825291909152205490565b3390565b6001600160a01b0383166105ef5760405162461bcd60e51b8152600401808060200182810382526024815260200180610a916024913960400191505060405180910390fd5b6001600160a01b0382166106345760405162461bcd60e51b81526004018080602001828103825260228152602001806109dc6022913960400191505060405180910390fd5b6001600160a01b03808416600081815260016020908152604080832094871680845294825291829020859055815185815291517f8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b9259281900390910190a3505050565b6001600160a01b0383166106db5760405162461bcd60e51b8152600401808060200182810382526025815260200180610a6c6025913960400191505060405180910390fd5b6001600160a01b0382166107205760405162461bcd60e51b81526004018080602001828103825260238152602001806109b96023913960400191505060405180910390fd5b61072b8383836109b3565b610768816040518060600160405280602681526020016109fe602691396001600160a01b03861660009081526020819052604090205491906107df565b6001600160a01b0380851660009081526020819052604080822093909355908416815220546107979082610876565b6001600160a01b03808416600081815260208181526040918290209490945580518581529051919392871692600080516020610a4c83398151915292918290030190a3505050565b6000818484111561086e5760405162461bcd60e51b81526004018080602001828103825283818151815260200191508051906020019080838360005b8381101561083357818101518382015260200161081b565b50505050905090810190601f1680156108605780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b505050900390565b6000828201838110156108ce576040805162461bcd60e51b815260206004820152601b60248201527a536166654d6174683a206164646974696f6e206f766572666c6f7760281b604482015290519081900360640190fd5b9392505050565b6001600160a01b038216610930576040805162461bcd60e51b815260206004820152601f60248201527f45524332303a206d696e7420746f20746865207a65726f206164647265737300604482015290519081900360640190fd5b61093c600083836109b3565b6002546109499082610876565b6002556001600160a01b03821660009081526020819052604090205461096f9082610876565b6001600160a01b038316600081815260208181526040808320949094558351858152935192939192600080516020610a4c8339815191529281900390910190a35050565b50505056fe45524332303a207472616e7366657220746f20746865207a65726f206164647265737345524332303a20617070726f766520746f20746865207a65726f206164647265737345524332303a207472616e7366657220616d6f756e7420657863656564732062616c616e636545524332303a207472616e7366657220616d6f756e74206578636565647320616c6c6f77616e6365ddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef45524332303a207472616e736665722066726f6d20746865207a65726f206164647265737345524332303a20617070726f76652066726f6d20746865207a65726f206164647265737345524332303a2064656372656173656420616c6c6f77616e63652062656c6f77207a65726fa26469706673582212204a78d2ecd37e4ee3a8a55c5f33872d4c17598ba1f801ee034ebd942b0a0d29cc64736f6c634300060c0033000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000000000003444149000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000034441490000000000000000000000000000000000000000000000000000000000",
+
+"from": "0x7926223070547d2d15b2ef5e7383e541c338ffe9"
+
+}
+
+]
+
+}
+
+<= ETH response
+
+{
+
+"error": {
+
+"code": 100,
+
+"message": "invalid address"
+
+},
+
+"id": 9,
+
+"jsonrpc": "2.0"
+
+}
