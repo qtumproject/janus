@@ -682,12 +682,12 @@ type (
 	GetMiningResponse	StakingInfo
 
 	StakingInfo struct {
-		Enabled			bool `json:"enabled"`
+		Enabled			string `json:"enabled"`
 		Staking			bool `json:"staking"`
 		Errors			string `json:"errors"`
 		CurrentBlockTx	*big.Int `json:"currentblocktx"`
 		PooledTx		*big.Int `json:"pooledtx"`
-		Difficulty		float64 `json:"difficulty"`
+		Difficulty		*big.Int `json:"difficulty"`
 		SearchInterval	*big.Int `json:"search-interval"`
 		Weight			*big.Int `json:"weight"`
 		NetSakeWeight	*big.Int `json:"netstakeweight"`
