@@ -673,6 +673,52 @@ func (r *GetBlockCountResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// ========== GetHashrate & GetMining ============= //
+
+type (
+	//Switch things up to use Staking infor only
+	//Pass the reponse to their respective calls
+	GetHashrateResponse StakingInfo 
+	GetMiningResponse	StakingInfo
+
+	StakingInfo struct {
+		Enabled			string `json:"enabled"`
+		Staking			bool `json:"staking"`
+		Errors			string `json:"errors"`
+		CurrentBlockTx	*big.Int `json:"currentblocktx"`
+		PooledTx		*big.Int `json:"pooledtx"`
+		Difficulty		*big.Int `json:"difficulty"`
+		SearchInterval	*big.Int `json:"search-interval"`
+		Weight			*big.Int `json:"weight"`
+		NetSakeWeight	*big.Int `json:"netstakeweight"`
+		ExpectedTime	*big.Int `json:"expectedtime"`
+	}
+)
+
+func (resp *GetHashrateResponse) UnmarshalJSON(data []byte) error {
+
+
+	var stakingInfo StakingInfo
+	if err := json.Unmarshal(data, &stakingInfo); err != nil {
+		return  err
+	}
+
+	resp.Difficulty = stakingInfo.Difficulty
+	return nil
+}
+
+func (resp *GetMiningResponse) UnmarshalJSON(data []byte) error {
+
+
+	var stakingInfo StakingInfo
+	if err := json.Unmarshal(data, &stakingInfo); err != nil {
+		return  err
+	}
+
+	resp.Staking = stakingInfo.Staking
+	return nil
+}
+
 // ========== GetRawTransaction ============= //
 
 type (

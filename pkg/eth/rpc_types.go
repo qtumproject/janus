@@ -120,6 +120,8 @@ type (
 	PersonalUnlockAccountResponse bool
 	BlockNumberResponse           string
 	NetVersionResponse            string
+	HashrateResponse			  string
+	MiningResponse				  bool
 )
 
 // ========== eth_sign ============= //

@@ -36,6 +36,7 @@ const (
 	MethodCreateRawTx           = "createrawtransaction"
 	MethodSignRawTx             = "signrawtransactionwithwallet"
 	MethodSendRawTx             = "sendrawtransaction"
+	MethodGetStakingInfo		= "getstakinginfo"
 )
 
 type JSONRPCRequest struct {
