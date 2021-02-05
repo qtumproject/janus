@@ -58,7 +58,7 @@ run-janus:
 		--qtum-rpc=http://${test_user}:${test_user_passwd}@0.0.0.0:3889 \
 		--qtum-network=regtest \
 		--bind=0.0.0.0 \
-		--port=23889 \
+		--port=23888 \
 		--accounts=`pwd`/docker/standalone/myaccounts.txt \
 		--dev
 

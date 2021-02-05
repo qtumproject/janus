@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"math"
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -30,7 +31,7 @@ func (p *ProxyETHHashrate) request() (*eth.HashrateResponse, error) {
 }
 
 func (p *ProxyETHHashrate) ToResponse(qtumresp *qtum.GetHashrateResponse) *eth.HashrateResponse {
-	hexVal := hexutil.EncodeBig(qtumresp.Difficulty)
+	hexVal := hexutil.EncodeUint64(math.Float64bits(qtumresp.Difficulty))
 	ethresp := eth.HashrateResponse(hexVal)
 	return &ethresp
 }

@@ -1,5 +1,6 @@
 FROM golang:1.14-alpine
 
+RUN echo $GOPATH
 RUN apk add --no-cache make musl-dev git
 WORKDIR $GOPATH/src/github.com/qtumproject/janus
 COPY ./ $GOPATH/src/github.com/qtumproject/janus
