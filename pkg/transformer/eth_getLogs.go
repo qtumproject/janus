@@ -13,6 +13,7 @@ type ProxyETHGetLogs struct {
 	*qtum.Qtum
 }
 
+
 func (p *ProxyETHGetLogs) Method() string {
 	return "eth_getLogs"
 }
@@ -28,6 +29,7 @@ func (p *ProxyETHGetLogs) Request(rawreq *eth.JSONRPCRequest) (interface{}, erro
 	// 	return nil, errors.New("topics is not supported yet")
 	// }
 
+	// Calls ToRequest in order transform ETH-Request to a Qtum-Request
 	qtumreq, err := p.ToRequest(&req)
 	if err != nil {
 		return nil, err
@@ -53,16 +55,19 @@ func (p *ProxyETHGetLogs) request(req *qtum.SearchLogsRequest) (*eth.GetLogsResp
 }
 
 func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLogsRequest, error) {
+	//transform EthRequest fromBlock to QtumReq fromBlock:
 	from, err := getBlockNumberByParam(p.Qtum, ethreq.FromBlock, 0)
 	if err != nil {
 		return nil, err
 	}
 
+	//transform EthRequest toBlock to QtumReq toBlock:
 	to, err := getBlockNumberByParam(p.Qtum, ethreq.ToBlock, -1)
 	if err != nil {
 		return nil, err
 	}
 
+	//transform EthReq address to QtumReq address:
 	var addresses []string
 	if ethreq.Address != nil {
 		if isBytesOfString(ethreq.Address) {
@@ -81,9 +86,16 @@ func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLog
 		}
 	}
 
+	//transform EthReq topics to QtumReq topics:
+	topics, err := translateTopics(ethreq.Topics)
+	if err != nil {
+		return nil, err
+	}
+
 	return &qtum.SearchLogsRequest{
 		Addresses: addresses,
 		FromBlock: from,
 		ToBlock:   to,
+		Topics: topics,
 	}, nil
 }

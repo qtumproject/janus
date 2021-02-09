@@ -217,3 +217,43 @@ func extractETHLogsFromTransactionReceipt(receipt *qtum.TransactionReceipt) []et
 	}
 	return logs
 }
+
+// translateTopics takes in an ethReq's topics field and translates it to a it's equivalent QtumReq
+// topics (optional) has a max lenght of 4
+func translateTopics(rawParam json.RawMessage)  []interface{} {
+
+	if !rawParam.([]interface{}) {
+		return nil, errors.Errorf("invalid parameter type - []interface{} is expected")
+	}
+	if len(rawParm) > 4 {
+		return nil, errors.Errorf("invalid number of topics. Logs have a max of 4 topics.")
+	}
+
+	var topics []interface{}
+	var data []string
+	if rawParam != nil {
+		for _, val := range rawParam {
+
+			if isBytesOfString(val) {
+				var topic string
+				if err = json.Unmarshal(rawParam, &topic); err != nil {
+					return nil, err
+				}
+				data = append(data, RemoveHexPrefix(val))
+			}	
+			else {
+				return nil, errors.Errorf("invalid parameter format - string is expected") 
+			}
+			
+		}
+		topics = append(topics, data)
+	}
+	else {
+		return []interface{}
+	}
+
+	return topics
+
+	
+
+}
