@@ -2,7 +2,6 @@ package transformer
 
 import (
 	"encoding/json"
-	"math/big"
 	"reflect"
 	"testing"
 
@@ -24,7 +23,7 @@ func TestHashrateRequest(t *testing.T) {
 		panic(err)
 	}
 
-	getHashrateResponse := qtum.GetHashrateResponse{Difficulty: big.NewInt(457134700)}
+	getHashrateResponse := qtum.GetHashrateResponse{Difficulty: float64(457134700)}
 	err = mockedClientDoer.AddResponse(2, qtum.MethodGetStakingInfo, getHashrateResponse)
 	if err != nil {
 		panic(err)
