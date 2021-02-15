@@ -147,9 +147,19 @@ func formatQtumNonce(nonce int) string {
 // 	- string "latest" - for the latest mined block
 // 	- string "earliest" for the genesis block
 // 	- string "pending" - for the pending state/transactions
-func getBlockNumberByParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal int64) (*big.Int, error) {
+// Uses defaultVal to differntiate from a eth_getBlockByNumber req and eth_getLogs/eth_newFilter
+func getBlockNumberByParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal bool) (*big.Int, error) {
 	if len(rawParam) < 1 {
-		return nil, errors.Errorf("empty parameter value")
+		if (defaultVal) {
+			res, err := p.GetBlockChainInfo()
+			if err != nil {
+				return nil, err
+			}
+			return big.NewInt(res.Blocks), nil
+		} else {
+			return nil, errors.Errorf("empty parameter value")
+		}
+		
 	}
 	if !isBytesOfString(rawParam) {
 		return nil, errors.Errorf("invalid parameter format - string is expected")

@@ -2,7 +2,7 @@ module.exports = {
   networks: {
     development: {
       host: "127.0.0.1",
-      port: 23889, //Switch to 23888 for local HTTP Server, look at Makefile run-janus
+      port: 23888, //Switch to 23888 for local HTTP Server, look at Makefile run-janus
       network_id: "*",
       gasPrice: "0x64"
     },
@@ -22,12 +22,6 @@ module.exports = {
   compilers: {
     solc: {
       version: "^0.6.12",
-      settings: {
-        optimizer: {
-          enabled: true,
-          runs: 1
-        }
-      }
     }
   },
 }

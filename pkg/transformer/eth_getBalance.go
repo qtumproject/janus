@@ -50,19 +50,20 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest) (interface{}, e
 			return nil, err
 		}
 
+
 		balance := decimal.NewFromFloat(0)
 		for _, utxo := range *qtumresp {
 			balance = balance.Add(utxo.Amount)
 		}
 
 		// 1 QTUM = 10 ^ 8 Satoshi
-		
+		balance = balance.Mul(decimal.NewFromFloat(1e18))
 		floatBalance, exact := balance.Float64()
 		
 		if exact != true {
 			return exact, errors.New("precision error:  float64 value does not represent the original decimal precisely")
 		}
 		
-		return hexutil.EncodeUint64(uint64(floatBalance * 1e8)), nil
+		return hexutil.EncodeUint64(uint64(floatBalance)), nil
 	}
 }
