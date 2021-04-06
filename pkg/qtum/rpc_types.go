@@ -1401,3 +1401,37 @@ func (options ListUnspentQueryOptions) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(optionsObj)
 }
+
+// ======== getaddressbalance ========= //
+type (
+
+	/*
+		Arguments:
+		1. addresses       	(json array, required) The qtum addresses
+			[
+				"address",	(string) The qtum address
+				...
+			]
+		Result:
+		{					(json object)
+			"balance": n 	(numeric) The current balance in satoshis
+			"received": n   (numeric) The total number of satoshis received (including change)
+		}
+	*/
+	GetAddressBalanceRequest struct {
+		Address string
+	}
+
+	GetAddressBalanceResponse struct {
+		Balance  decimal.Decimal `json:"balance"`
+		Received decimal.Decimal `json:"received"`
+		Immature decimal.Decimal `json:"immature"`
+	}
+)
+
+func (req *GetAddressBalanceRequest) MarshalJSON() ([]byte, error) {
+	params := []interface{}{
+		req.Address,
+	}
+	return json.Marshal(params)
+}

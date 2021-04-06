@@ -217,6 +217,19 @@ func (m *Method) ListUnspent(req *ListUnspentRequest) (resp *ListUnspentResponse
 	return
 }
 
+func (m *Method) GetAddressBalance(req *GetAddressBalanceRequest) (resp *GetAddressBalanceResponse, err error) {
+	if err := m.Request(MethodGetAddressBalance, req, &resp); err != nil {
+		if m.IsDebugEnabled() {
+			m.GetDebugLogger().Log("function", "GetAddressBalance", "error", err)
+		}
+		return nil, err
+	}
+	if m.IsDebugEnabled() {
+		m.GetDebugLogger().Log("function", "GetAddressBalance", "request", marshalToString(req), "msg", "Successfully got address balance")
+	}
+	return
+}
+
 func (m *Method) SendRawTransaction(req *SendRawTransactionRequest) (resp *SendRawTransactionResposne, err error) {
 	if err := m.Request(MethodSendRawTx, req, &resp); err != nil {
 		return nil, err

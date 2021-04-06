@@ -7,7 +7,6 @@ import (
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
-	"github.com/shopspring/decimal"
 )
 
 // ProxyETHGetBalance implements ETHProxy
@@ -45,19 +44,16 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest) (interface{}, e
 			return nil, err
 		}
 
-		qtumreq := qtum.NewListUnspentRequest(qtum.ListUnspentQueryOptions{}, base58Addr)
-		qtumresp, err := p.ListUnspent(qtumreq)
+		qtumreq := qtum.GetAddressBalanceRequest{Address: base58Addr}
+		qtumresp, err := p.GetAddressBalance(&qtumreq)
 		if err != nil {
 			return nil, err
 		}
 
-		balance := decimal.NewFromFloat(0)
-		for _, utxo := range *qtumresp {
-			balance = balance.Add(utxo.Amount)
-		}
+		resp := *qtumresp
+		balance := resp.Balance
 
 		// 1 QTUM = 10 ^ 8 Satoshi
-		balance = balance.Mul(decimal.NewFromFloat(1e8))
 		floatBalance, exact := balance.Float64()
 
 		if exact != true {
