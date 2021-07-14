@@ -23,7 +23,7 @@ func (p *ProxyETHSyncing) Request(rpcReq *eth.JSONRPCRequest) (interface{}, erro
 	return p.request(req)
 }
 
-func (p *ProxyETHSyncing) request(req *eth.SyncingRequest) (*eth.SyncingResponse, error) {
+func (p *ProxyETHSyncing) request(req *eth.SyncingRequest) (interface{}, error) {
 
 	var (
 		getSyncStatusReq = &eth.SyncingRequest{

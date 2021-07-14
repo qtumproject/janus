@@ -417,3 +417,16 @@ func (m *Method) GetNetworkInfo() (resp *NetworkInfoResponse, err error) {
 	}
 	return
 }
+
+func (m *Method) GetSyncStatus() (resp *SyncResponse, err error) {
+	if err := m.Request(MethodGetPeerInfo, []string{}, &resp); err != nil {
+		if m.IsDebugEnabled() {
+			m.GetDebugLogger().Log("function", "GetSyncStatus", "error", err)
+		}
+		return nil, err
+	}
+	if m.IsDebugEnabled() {
+		m.GetDebugLogger().Log("function", "GetSyncStatus", "msg", "Successfully returned sync status")
+	}
+	return
+}

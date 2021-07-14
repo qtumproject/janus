@@ -815,9 +815,7 @@ func (r *SyncingRequest) UnmarshalJSON(data []byte) error {
 	}
 
 	paramsNum := len(params)
-	if paramsNum == 0 {
-		return errors.Errorf("missing value for required argument 0")
-	} else if paramsNum > 1 {
+	if paramsNum > 0 {
 		return errors.Errorf("too many arguments, want at most 1")
 	}
 

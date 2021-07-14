@@ -1639,3 +1639,12 @@ type (
 		Score   int64  `json:"score"`
 	}
 )
+
+// ========= getsyncstatus ========== //
+type (
+	SyncResponse struct {
+		StartingBlock string `json:"startingBlock"`
+		CurrentBlock  string `json:"currentBlock"`
+		HighestBlock  string `json:"highestBlock"`
+	}
+)
