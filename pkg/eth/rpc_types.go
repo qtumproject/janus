@@ -802,9 +802,7 @@ type (
 		Message string
 	}
 
-	SyncingResponse struct {
-		SyncStatus bool
-	}
+	SyncingResponse bool
 )
 
 func (r *SyncingRequest) UnmarshalJSON(data []byte) error {
