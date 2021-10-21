@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -23,7 +24,10 @@ type Server struct {
 	address       string
 	transformer   *transformer.Transformer
 	qtumRPCClient *qtum.Qtum
+	logWriter     io.Writer
 	logger        log.Logger
+	httpsKey      string
+	httpsCert     string
 	debug         bool
 	mutex         *sync.Mutex
 	echo          *echo.Echo
@@ -54,6 +58,7 @@ func New(
 }
 
 func (s *Server) Start() error {
+	logWriter := s.logWriter
 	e := s.echo
 	e.Use(middleware.CORS())
 	e.Use(middleware.BodyDump(func(c echo.Context, req []byte, res []byte) {
@@ -64,13 +69,12 @@ func (s *Server) Start() error {
 		}
 
 		if s.debug {
-			level.Debug(cc.logger).Log("msg", "ETH RPC")
-
 			reqBody, err := qtum.ReformatJSON(req)
 			resBody, err := qtum.ReformatJSON(res)
 			if err == nil {
-				fmt.Printf("=> ETH request\n%s\n", reqBody)
-				fmt.Printf("<= ETH response\n%s\n", resBody)
+				cc.GetDebugLogger().Log("msg", "ETH RPC")
+				fmt.Fprintf(logWriter, "=> ETH request\n%s\n", reqBody)
+				fmt.Fprintf(logWriter, "<= ETH response\n%s\n", resBody)
 			}
 		}
 	}))
@@ -79,6 +83,7 @@ func (s *Server) Start() error {
 		return func(c echo.Context) error {
 			cc := &myCtx{
 				Context:     c,
+				logWriter:   logWriter,
 				logger:      s.logger,
 				transformer: s.transformer,
 			}
@@ -96,6 +101,7 @@ func (s *Server) Start() error {
 	e.HideBanner = true
 	if s.mutex == nil {
 		e.POST("/*", httpHandler)
+		e.GET("/*", websocketHandler)
 	} else {
 		level.Info(s.logger).Log("msg", "Processing RPC requests single threaded")
 		e.POST("/*", func(c echo.Context) error {
@@ -103,13 +109,28 @@ func (s *Server) Start() error {
 			defer s.mutex.Unlock()
 			return httpHandler(c)
 		})
+		e.GET("/*", websocketHandler)
 	}
 
-	level.Warn(s.logger).Log("listen", s.address, "qtum_rpc", s.qtumRPCClient.URL, "msg", "proxy started")
-	return e.Start(s.address)
+	https := (s.httpsKey != "" && s.httpsCert != "")
+	level.Warn(s.logger).Log("listen", s.address, "qtum_rpc", s.qtumRPCClient.URL, "msg", "proxy started", "https", https)
+
+	if https {
+		level.Info(s.logger).Log("msg", "SSL enabled")
+		return e.StartTLS(s.address, s.httpsCert, s.httpsKey)
+	} else {
+		return e.Start(s.address)
+	}
 }
 
 type Option func(*Server) error
+
+func SetLogWriter(logWriter io.Writer) Option {
+	return func(p *Server) error {
+		p.logWriter = logWriter
+		return nil
+	}
+}
 
 func SetLogger(l log.Logger) Option {
 	return func(p *Server) error {
@@ -136,6 +157,14 @@ func SetSingleThreaded(singleThreaded bool) Option {
 	}
 }
 
+func SetHttps(key string, cert string) Option {
+	return func(p *Server) error {
+		p.httpsKey = key
+		p.httpsCert = cert
+		return nil
+	}
+}
+
 func batchRequestsMiddleware(h echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		myctx := c.Get("myctx")
@@ -154,7 +183,7 @@ func batchRequestsMiddleware(h echo.HandlerFunc) echo.HandlerFunc {
 			}
 		}
 		isBatchRequests := func(msg json.RawMessage) bool {
-			return msg[0] == '['
+			return len(msg) != 0 && msg[0] == '['
 		}
 		c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(reqBody)) // Reset
 
@@ -196,6 +225,7 @@ func callHttpHandler(cc *myCtx, req *eth.JSONRPCRequest) (*eth.JSONRPCResult, er
 	newCtx := cc.Echo().NewContext(httpreq, rec)
 	myCtx := &myCtx{
 		Context:     newCtx,
+		logWriter:   cc.GetLogWriter(),
 		logger:      cc.logger,
 		transformer: cc.transformer,
 	}

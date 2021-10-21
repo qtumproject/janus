@@ -1,6 +1,7 @@
 package qtum
 
 import (
+	"context"
 	"encoding/json"
 	"math/big"
 
@@ -12,15 +13,15 @@ type Method struct {
 	*Client
 }
 
-// func (m *Method) Base58AddressToHex(addr string) (string, error) {
-// 	var response GetHexAddressResponse
-// 	err := m.Request(MethodGetHexAddress, GetHexAddressRequest(addr), &response)
-// 	if err != nil {
-// 		return "", err
-// 	}
+func (m *Method) Base58AddressToHex(addr string) (string, error) {
+	var response GetHexAddressResponse
+	err := m.Request(MethodGetHexAddress, GetHexAddressRequest(addr), &response)
+	if err != nil {
+		return "", err
+	}
 
-// 	return string(response), nil
-// }
+	return string(response), nil
+}
 
 func marshalToString(i interface{}) string {
 	b, err := json.Marshal(i)
@@ -188,9 +189,10 @@ func (m *Method) GetMining() (resp *GetMiningResponse, err error) {
 
 // hard coded for now as there is only the minimum gas price
 func (m *Method) GetGasPrice() (*big.Int, error) {
-	gasPrice := big.NewInt(0x28)
-	m.GetDebugLogger().Log("Message", "GetGasPrice is hardcoded to "+gasPrice.String())
-	return gasPrice, nil
+	// 40 satoshi
+	minimumGas := big.NewInt(0x28)
+	m.GetDebugLogger().Log("Message", "GetGasPrice is hardcoded to "+minimumGas.String())
+	return minimumGas, nil
 }
 
 // hard coded 0x1 due to the unique nature of Qtums UTXO system, might
@@ -243,18 +245,28 @@ func (m *Method) GetBlock(hash string) (resp *GetBlockResponse, err error) {
 }
 
 func (m *Method) Generate(blockNum int, maxTries *int) (resp GenerateResponse, err error) {
-	if len(m.Accounts) == 0 {
+	generateToAccount := m.GetFlagString(FLAG_GENERATE_ADDRESS_TO)
+
+	if len(m.Accounts) == 0 && generateToAccount == nil {
 		return nil, errors.New("you must specify QTUM accounts")
 	}
 
-	acc := Account{m.Accounts[0]}
+	var qAddress string
 
-	qAddress, err := acc.ToBase58Address(m.isMain)
-	if err != nil {
-		if m.IsDebugEnabled() {
-			m.GetDebugLogger().Log("function", "Generate", "msg", "Error getting address for account", "error", err)
+	if generateToAccount == nil {
+		acc := Account{m.Accounts[0]}
+
+		qAddress, err = acc.ToBase58Address(m.isMain)
+		if err != nil {
+			if m.IsDebugEnabled() {
+				m.GetDebugLogger().Log("function", "Generate", "msg", "Error getting address for account", "error", err)
+			}
+			return nil, err
 		}
-		return nil, err
+		m.GetDebugLogger().Log("function", "Generate", "msg", "generating to account 0", "account", qAddress)
+	} else {
+		qAddress = *generateToAccount
+		m.GetDebugLogger().Log("function", "Generate", "msg", "generating to specified account", "account", qAddress)
 	}
 
 	req := GenerateRequest{
@@ -277,6 +289,10 @@ func (m *Method) Generate(blockNum int, maxTries *int) (resp GenerateResponse, e
 	return
 }
 
+/**
+ * Note that QTUM searchlogs api returns all logs in a transaction receipt if any log matches a topic
+ * While Ethereum behaves differently and will only return logs where topics match
+ */
 func (m *Method) SearchLogs(req *SearchLogsRequest) (receipts SearchLogsResponse, err error) {
 	if err := m.Request(MethodSearchLogs, req, &receipts); err != nil {
 		if m.IsDebugEnabled() {
@@ -316,6 +332,20 @@ func (m *Method) GetAccountInfo(req *GetAccountInfoRequest) (resp *GetAccountInf
 	return
 }
 
+func (m *Method) GetAddressUTXOs(req *GetAddressUTXOsRequest) (*GetAddressUTXOsResponse, error) {
+	resp := new(GetAddressUTXOsResponse)
+	if err := m.Request(MethodGetAddressUTXOs, req, resp); err != nil {
+		if m.IsDebugEnabled() {
+			m.GetDebugLogger().Log("function", "GetAddressUTXOs", "error", err)
+		}
+		return nil, err
+	}
+	if m.IsDebugEnabled() {
+		m.GetDebugLogger().Log("function", "GetAddressUTXOs", "request", marshalToString(req), "msg", "Successfully got address UTXOs")
+	}
+	return resp, nil
+}
+
 func (m *Method) ListUnspent(req *ListUnspentRequest) (resp *ListUnspentResponse, err error) {
 	if err := m.Request(MethodListUnspent, req, &resp); err != nil {
 		if m.IsDebugEnabled() {
@@ -328,7 +358,6 @@ func (m *Method) ListUnspent(req *ListUnspentRequest) (resp *ListUnspentResponse
 	}
 	return
 }
-
 
 func (m *Method) GetStorage(req *GetStorageRequest) (resp *GetStorageResponse, err error) {
 	if err := m.Request(MethodGetStorage, req, &resp); err != nil {
@@ -355,7 +384,6 @@ func (m *Method) GetAddressBalance(req *GetAddressBalanceRequest) (resp *GetAddr
 	}
 	return
 }
-
 
 func (m *Method) SendRawTransaction(req *SendRawTransactionRequest) (resp *SendRawTransactionResponse, err error) {
 	if err := m.Request(MethodSendRawTx, req, &resp); err != nil {
@@ -392,6 +420,23 @@ func (m *Method) GetNetworkInfo() (resp *NetworkInfoResponse, err error) {
 	}
 	if m.IsDebugEnabled() {
 		m.GetDebugLogger().Log("function", "GetPeerInfo", "msg", "Successfully got peer info")
+	}
+	return
+}
+
+func (m *Method) WaitForLogs(req *WaitForLogsRequest) (resp *WaitForLogsResponse, err error) {
+	return m.WaitForLogsWithContext(nil, req)
+}
+
+func (m *Method) WaitForLogsWithContext(ctx context.Context, req *WaitForLogsRequest) (resp *WaitForLogsResponse, err error) {
+	if err := m.RequestWithContext(ctx, MethodWaitForLogs, req, &resp); err != nil {
+		if m.IsDebugEnabled() {
+			m.GetDebugLogger().Log("function", "WaitForLogs", "error", err)
+		}
+		return nil, err
+	}
+	if m.IsDebugEnabled() {
+		m.GetDebugLogger().Log("function", "WaitForLogs", "request", marshalToString(req), "msg", "Successfully got waitforlogs response")
 	}
 	return
 }

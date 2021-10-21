@@ -34,7 +34,7 @@ quick-start:
 
 .PHONY: docker-dev
 docker-dev:
-	docker build --no-cache -t qtum/janus:dev .
+	docker build -t qtum/janus:dev .
 	
 .PHONY: local-dev
 local-dev: check-env
@@ -45,6 +45,15 @@ local-dev: check-env
 	docker exec qtum_testchain /bin/sh -c ./fill_user_account.sh
 	QTUM_RPC=http://qtum:testpasswd@localhost:3889 QTUM_NETWORK=regtest $(GOBIN)/janus --port $(JANUS_PORT) --accounts ./docker/standalone/myaccounts.txt --dev
 
+.PHONY: local-dev-https
+local-dev-https: check-env
+	go install github.com/qtumproject/janus/cli/janus
+	docker run --rm --name qtum_testchain -d -p 3889:3889 qtum/qtum qtumd -regtest -rpcbind=0.0.0.0:3889 -rpcallowip=0.0.0.0/0 -logevents=1 -rpcuser=qtum -rpcpassword=testpasswd -deprecatedrpc=accounts -printtoconsole | true
+	sleep 3
+	docker cp ${GOPATH}/src/github.com/qtumproject/janus/docker/fill_user_account.sh qtum_testchain:.
+	docker exec qtum_testchain /bin/sh -c ./fill_user_account.sh > /dev/null&
+	QTUM_RPC=http://qtum:testpasswd@localhost:3889 QTUM_NETWORK=regtest $(GOBIN)/janus --port $(JANUS_PORT) --accounts ./docker/standalone/myaccounts.txt --dev --https-key https/key.pem --https-cert https/cert.pem
+
 .PHONY: local-dev-logs
 local-dev-logs: check-env
 	go install github.com/qtumproject/janus/cli/janus
@@ -54,8 +63,9 @@ local-dev-logs: check-env
 	docker exec qtum_testchain /bin/sh -c ./fill_user_account.sh
 	QTUM_RPC=http://qtum:testpasswd@localhost:3889 QTUM_NETWORK=regtest $(GOBIN)/janus --port $(JANUS_PORT) --accounts ./docker/standalone/myaccounts.txt --dev > janus_dev_logs.txt
 
+.PHONY: unit-tests
 unit-tests: check-env
-	go test -v ./...
+	go test -v ./... -timeout 30s
 
 docker-build-unit-tests:
 	docker build -t qtum/tests.janus -f ./docker/unittests.Dockerfile .
@@ -64,6 +74,12 @@ docker-unit-tests:
 	docker run --rm -v `pwd`:/go/src/github.com/qtumproject/janus qtum/tests.janus
 
 docker-tests: docker-build-unit-tests docker-unit-tests openzeppelin-docker-compose
+
+docker-configure-https: docker-configure-https-build
+	docker/setup_self_signed_https.sh
+
+docker-configure-https-build:
+	docker build -t qtum/openssl.janus -f ./docker/openssl.Dockerfile ./docker
 
 # -------------------------------------------------------------------------------------------------------------------
 # NOTE:
@@ -84,9 +100,24 @@ run-janus:
 		--qtum-rpc=http://${test_user}:${test_user_passwd}@0.0.0.0:3889 \
 		--qtum-network=regtest \
 		--bind=0.0.0.0 \
-		--port=23888 \
+		--port=23889 \
 		--accounts=`pwd`/docker/standalone/myaccounts.txt \
+		--log-file=janusLogs.txt \
 		--dev
+
+run-janus-https:
+	@ printf "\nRunning Janus...\n\n"
+
+	go run `pwd`/cli/janus/main.go \
+		--qtum-rpc=http://${test_user}:${test_user_passwd}@0.0.0.0:3889 \
+		--qtum-network=regtest \
+		--bind=0.0.0.0 \
+		--port=23889 \
+		--accounts=`pwd`/docker/standalone/myaccounts.txt \
+		--log-file=janusLogs.txt \
+		--dev \
+		--https-key https/key.pem \
+		--https-cert https/cert.pem
 
 test_user = qtum
 test_user_passwd = testpasswd
@@ -105,6 +136,14 @@ run-qtum:
 	docker exec ${qtum_container_name} /bin/sh -c ./fill_user_account.sh > /dev/null
 	@ printf "\n... Done\n\n"
 
+seed-qtum:
+	@ printf "\n(2) Importing test accounts...\n\n"
+	docker cp ${shell pwd}/docker/fill_user_account.sh ${qtum_container_name}:.
+
+	@ printf "\n(3) Filling test accounts wallets...\n\n"
+	docker exec ${qtum_container_name} /bin/sh -c ./fill_user_account.sh
+	@ printf "\n... Done\n\n"
+
 qtum_container_name = test-chain
 
 # TODO: Research -v
@@ -120,6 +159,8 @@ qtumd_flags = \
 	-rpcbind=0.0.0.0:3889 \
 	-rpcallowip=0.0.0.0/0 \
 	-logevents \
+	-addrindex \
+	-reindex \
 	-txindex \
 	-rpcuser=${test_user} \
 	-rpcpassword=${test_user_passwd} \

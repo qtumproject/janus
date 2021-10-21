@@ -1,5 +1,5 @@
 var SimpleStore = artifacts.require("./SimpleStore.sol");
 
-module.exports = function(deployer) {
-  deployer.deploy(SimpleStore, ["100"]);
+module.exports = async function(deployer) {
+  await deployer.deploy(SimpleStore, ["100"]);
 };

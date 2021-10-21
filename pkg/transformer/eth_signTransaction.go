@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -20,7 +21,7 @@ func (p *ProxyETHSignTransaction) Method() string {
 	return "eth_signTransaction"
 }
 
-func (p *ProxyETHSignTransaction) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHSignTransaction) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.SendTransactionRequest
 	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		return nil, err
@@ -50,28 +51,24 @@ func (p *ProxyETHSignTransaction) getRequiredUtxos(from string, neededAmount dec
 		return nil, decimal.Decimal{}, err
 	}
 	// need to get utxos with txid and vouts. In order to do this we get a list of unspent transactions and begin summing them up
-	var unspentListReq *qtum.ListUnspentRequest = &qtum.ListUnspentRequest{MinConf: 6, MaxConf: 999, Addresses: []string{base58Addr}}
-	qtumresp, err := p.ListUnspent(unspentListReq)
+	var getaddressutxos *qtum.GetAddressUTXOsRequest = &qtum.GetAddressUTXOsRequest{Addresses: []string{base58Addr}}
+	qtumresp, err := p.GetAddressUTXOs(getaddressutxos)
 	if err != nil {
 		return nil, decimal.Decimal{}, err
 	}
 
-	balance := decimal.New(0, 0)
-	var inputs []qtum.RawTxInputs
-	var balanceReqMet bool
+	//Convert minSumAmount to Satoshis
+	minimumSum := convertFromQtumToSatoshis(neededAmount)
+	var utxos []qtum.RawTxInputs
+	var minUTXOsSum decimal.Decimal
 	for _, utxo := range *qtumresp {
-		balance = balance.Add(utxo.Amount)
-		inputs = append(inputs, qtum.RawTxInputs{TxID: utxo.Txid, Vout: utxo.Vout})
-		if balance.GreaterThanOrEqual(neededAmount) {
-			balanceReqMet = true
-			break
+		minUTXOsSum = minUTXOsSum.Add(utxo.Satoshis)
+		utxos = append(utxos, qtum.RawTxInputs{TxID: utxo.TXID, Vout: utxo.OutputIndex})
+		if minUTXOsSum.GreaterThanOrEqual(minimumSum) {
+			return utxos, minUTXOsSum, nil
 		}
 	}
-	if balanceReqMet {
-		// this is useful for figuring out which utxo was signed as list_unspent seems to be non deterministic
-		//fmt.Printf("utxos: %v\n", inputs)
-		return inputs, balance, nil
-	}
+
 	return nil, decimal.Decimal{}, fmt.Errorf("Insufficient UTXO value attempted to be sent")
 }
 
@@ -95,7 +92,7 @@ func (p *ProxyETHSignTransaction) requestSendToContract(ethtx *eth.SendTransacti
 	amount := decimal.NewFromFloat(0.0)
 	if ethtx.Value != "" {
 		var err error
-		amount, err = EthValueToQtumAmount(ethtx.Value)
+		amount, err = EthValueToQtumAmount(ethtx.Value, ZeroSatoshi)
 		if err != nil {
 			return "", errors.Wrap(err, "EthValueToQtumAmount:")
 		}
@@ -174,9 +171,9 @@ func (p *ProxyETHSignTransaction) requestSendToAddress(req *eth.SendTransactionR
 		return "", err
 	}
 
-	amount, err := EthValueToQtumAmount(req.Value)
+	amount, err := EthValueToQtumAmount(req.Value, ZeroSatoshi)
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "EthValueToQtumAmount:")
 	}
 
 	inputs, balance, err := p.getRequiredUtxos(req.From, amount)

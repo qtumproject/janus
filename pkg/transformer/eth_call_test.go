@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/qtumproject/janus/pkg/eth"
+	"github.com/qtumproject/janus/pkg/internal"
 	"github.com/qtumproject/janus/pkg/qtum"
 )
 
@@ -21,10 +22,10 @@ func TestEthCallRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 	requestParamsArray := []json.RawMessage{requestRaw}
-	requestRPC, err := prepareEthRPCRequest(1, requestParamsArray)
+	requestRPC, err := internal.PrepareEthRPCRequest(1, requestParamsArray)
 
-	clientDoerMock := newDoerMappedMock()
-	qtumClient, err := createMockedClient(clientDoerMock)
+	clientDoerMock := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(clientDoerMock)
 
 	//preparing response
 	callContractResponse := qtum.CallContractResponse{
@@ -73,7 +74,7 @@ func TestEthCallRequest(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got, err := proxyEth.Request(requestRPC)
+	got, err := proxyEth.Request(requestRPC, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -83,8 +84,8 @@ func TestEthCallRequest(t *testing.T) {
 		t.Errorf(
 			"error\ninput: %s\nwant: %s\ngot: %s",
 			requestRPC,
-			string(mustMarshalIndent(want, "", "  ")),
-			string(mustMarshalIndent(got, "", "  ")),
+			string(internal.MustMarshalIndent(want, "", "  ")),
+			string(internal.MustMarshalIndent(got, "", "  ")),
 		)
 	}
 }
@@ -100,10 +101,10 @@ func TestRetry(t *testing.T) {
 		t.Fatal(err)
 	}
 	requestParamsArray := []json.RawMessage{requestRaw}
-	requestRPC, err := prepareEthRPCRequest(1, requestParamsArray)
+	requestRPC, err := internal.PrepareEthRPCRequest(1, requestParamsArray)
 
-	clientDoerMock := newDoerMappedMock()
-	qtumClient, err := createMockedClient(clientDoerMock)
+	clientDoerMock := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(clientDoerMock)
 
 	//preparing response
 	callContractResponse := qtum.CallContractResponse{
@@ -136,27 +137,12 @@ func TestRetry(t *testing.T) {
 		},
 	}
 
-	// return QTUM is busy response
-	clientDoerMock.AddRawResponse(qtum.MethodCallContract, []byte(qtum.ErrQtumWorkQueueDepth.Error()))
-	testFinished := make(chan bool)
-
-	// async set the correct response after a time has elapsed
-	go func() {
-		time.Sleep(2 * time.Second)
-		err = clientDoerMock.AddResponseWithRequestID(1, qtum.MethodCallContract, callContractResponse)
-		if err != nil {
-			t.Fatal(err)
-		}
-		timer := time.NewTimer(2 * time.Second)
-		select {
-		case <-timer.C:
-			t.Error("Timed out waiting for test to finish")
-			t.FailNow()
-		case <-testFinished:
-			// test finished correctly
-			return
-		}
-	}()
+	// return QTUM is busy response 4 times
+	for i := 0; i < 4; i++ {
+		clientDoerMock.AddRawResponse(qtum.MethodCallContract, []byte(qtum.ErrQtumWorkQueueDepth.Error()))
+	}
+	// on 5th request, return correct value
+	clientDoerMock.AddResponseWithRequestID(1, qtum.MethodCallContract, callContractResponse)
 
 	fromHexAddressResponse := qtum.FromHexAddressResponse("0x1e6f89d7399081b4f8f8aa1ae2805a5efff2f960")
 	err = clientDoerMock.AddResponseWithRequestID(2, qtum.MethodFromHexAddress, fromHexAddressResponse)
@@ -170,19 +156,77 @@ func TestRetry(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	got, err := proxyEth.Request(requestRPC)
+	before := time.Now()
+
+	got, err := proxyEth.Request(requestRPC, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
-	testFinished <- true
+
+	after := time.Now()
 
 	want := eth.CallResponse("0x0000000000000000000000000000000000000000000000000000000000000001")
 	if !reflect.DeepEqual(got, &want) {
 		t.Errorf(
 			"error\ninput: %s\nwant: %s\ngot: %s",
 			requestRPC,
-			string(mustMarshalIndent(want, "", "  ")),
-			string(mustMarshalIndent(got, "", "  ")),
+			string(internal.MustMarshalIndent(want, "", "  ")),
+			string(internal.MustMarshalIndent(got, "", "  ")),
+		)
+	}
+
+	if after.Sub(before) < 2*time.Second {
+		t.Errorf("Retrying requests was too quick: %v < 2s", after.Sub(before))
+	}
+}
+
+func TestEthCallRequestOnUnknownContract(t *testing.T) {
+	//prepare request
+	request := eth.CallRequest{
+		From: "0x1e6f89d7399081b4f8f8aa1ae2805a5efff2f960",
+		To:   "0x1e6f89d7399081b4f8f8aa1ae2805a5efff2f960",
+	}
+	requestRaw, err := json.Marshal(&request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	requestParamsArray := []json.RawMessage{requestRaw}
+	requestRPC, err := internal.PrepareEthRPCRequest(1, requestParamsArray)
+
+	clientDoerMock := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(clientDoerMock)
+
+	fromHexAddressResponse := qtum.FromHexAddressResponse("0x1e6f89d7399081b4f8f8aa1ae2805a5efff2f960")
+	err = clientDoerMock.AddResponse(qtum.MethodFromHexAddress, fromHexAddressResponse)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	//preparing error response
+	unknownAddressResponse := qtum.GetErrorResponse(qtum.ErrInvalidAddress)
+	err = clientDoerMock.AddError(qtum.MethodCallContract, unknownAddressResponse)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	//preparing proxy & executing
+	proxyEth := ProxyETHCall{qtumClient}
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	got, err := proxyEth.Request(requestRPC, nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := eth.CallResponse("0x")
+	if !reflect.DeepEqual(got, &want) {
+		t.Errorf(
+			"error\ninput: %s\nwant: %s\ngot: %s",
+			requestRPC,
+			string(internal.MustMarshalIndent(want, "", "  ")),
+			string(internal.MustMarshalIndent(got, "", "  ")),
 		)
 	}
 }

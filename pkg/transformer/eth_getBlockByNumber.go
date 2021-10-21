@@ -3,6 +3,7 @@ package transformer
 import (
 	"math/big"
 
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -17,7 +18,7 @@ func (p *ProxyETHGetBlockByNumber) Method() string {
 	return "eth_getBlockByNumber"
 }
 
-func (p *ProxyETHGetBlockByNumber) Request(rpcReq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetBlockByNumber) Request(rpcReq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	req := new(eth.GetBlockByNumberRequest)
 	if err := unmarshalRequest(rpcReq.Params, req); err != nil {
 		return nil, errors.WithMessage(err, "couldn't unmarhsal rpc request")

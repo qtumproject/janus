@@ -7,6 +7,7 @@ import (
 
 	"github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -22,7 +23,7 @@ func (p *ProxyETHSign) Method() string {
 	return "eth_sign"
 }
 
-func (p *ProxyETHSign) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHSign) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.SignRequest
 	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		p.GetDebugLogger().Log("method", p.Method(), "error", err)

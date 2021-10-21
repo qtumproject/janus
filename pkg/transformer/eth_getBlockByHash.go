@@ -1,15 +1,15 @@
 package transformer
 
 import (
+	"fmt"
+
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
 )
-
-var EmptyLogsBloom = "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
-var DefaultSha3Uncles = "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
 
 // ProxyETHGetBlockByHash implements ETHProxy
 type ProxyETHGetBlockByHash struct {
@@ -20,7 +20,7 @@ func (p *ProxyETHGetBlockByHash) Method() string {
 	return "eth_getBlockByHash"
 }
 
-func (p *ProxyETHGetBlockByHash) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetBlockByHash) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	req := new(eth.GetBlockByHashRequest)
 	if err := unmarshalRequest(rawreq.Params, req); err != nil {
 		return nil, err
@@ -33,6 +33,11 @@ func (p *ProxyETHGetBlockByHash) Request(rawreq *eth.JSONRPCRequest) (interface{
 func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.GetBlockByHashResponse, error) {
 	blockHeader, err := p.GetBlockHeader(req.BlockHash)
 	if err != nil {
+		if err == qtum.ErrInvalidAddress {
+			// unknown block hash should return {result: null}
+			p.GetDebugLogger().Log("msg", "Unknown block hash", "blockHash", req.BlockHash)
+			return nil, nil
+		}
 		p.GetDebugLogger().Log("msg", "couldn't get block header", "blockHash", req.BlockHash)
 		return nil, errors.WithMessage(err, "couldn't get block header")
 	}
@@ -40,6 +45,9 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 	if err != nil {
 		return nil, errors.WithMessage(err, "couldn't get block")
 	}
+	nonce := hexutil.EncodeUint64(uint64(block.Nonce))
+	// left pad nonce with 0 to length 16, eg: 0x0000000000000042
+	nonce = utils.AddHexPrefix(fmt.Sprintf("%016v", utils.RemoveHexPrefix(nonce)))
 	resp := &eth.GetBlockByHashResponse{
 		// TODO: researching
 		// * If ETH block has pending status, then the following values must be null
@@ -63,19 +71,20 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		Uncles: []string{},
 
 		// TODO: check value correctness
-		Sha3Uncles: DefaultSha3Uncles,
+		Sha3Uncles: eth.DefaultSha3Uncles,
 
 		// TODO: backlog
 		// ! Not found
 		// - Temporary expect this value to be always zero, as Etherium logs are usually zeros
-		LogsBloom: EmptyLogsBloom,
+		LogsBloom: eth.EmptyLogsBloom,
 
 		// TODO: researching
 		// ? What value to put
 		// - Temporary set this value to be always zero
-		ExtraData: "0x0",
+		// - the graph requires this to be of length 64
+		ExtraData: "0x0000000000000000000000000000000000000000000000000000000000000000",
 
-		Nonce:            hexutil.EncodeUint64(uint64(block.Nonce)),
+		Nonce:            nonce,
 		Size:             hexutil.EncodeUint64(uint64(block.Size)),
 		Difficulty:       hexutil.EncodeUint64(uint64(blockHeader.Difficulty)),
 		StateRoot:        utils.AddHexPrefix(blockHeader.HashStateRoot),
@@ -114,7 +123,20 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 			if err != nil {
 				return nil, errors.WithMessage(err, "couldn't get transaction by hash")
 			}
-			resp.Transactions = append(resp.Transactions, *tx)
+			if tx == nil {
+				if block.Height == 0 {
+					// Error Invalid address - The genesis block coinbase is not considered an ordinary transaction and cannot be retrieved
+					// the coinbase we can ignore since its not a real transaction, mainnet ethereum also doesn't return any data about the genesis coinbase
+					p.GetDebugLogger().Log("msg", "Failed to get transaction in genesis block, probably the coinbase which we can't get")
+				} else {
+					p.GetDebugLogger().Log("msg", "Failed to get transaction by hash included in a block", "hash", txHash)
+					if !p.GetFlagBool(qtum.FLAG_IGNORE_UNKNOWN_TX) {
+						return nil, errors.WithMessage(err, "couldn't get transaction by hash included in a block")
+					}
+				}
+			} else {
+				resp.Transactions = append(resp.Transactions, *tx)
+			}
 			// TODO: fill gas used
 			// TODO: fill gas limit?
 		}

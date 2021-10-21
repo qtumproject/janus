@@ -2,6 +2,7 @@ package transformer
 
 import (
 	"github.com/dcb9/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 )
@@ -15,7 +16,7 @@ func (p *ProxyNetPeerCount) Method() string {
 	return "net_peerCount"
 }
 
-func (p *ProxyNetPeerCount) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyNetPeerCount) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	return p.request()
 }
 

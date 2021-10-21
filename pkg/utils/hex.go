@@ -26,6 +26,13 @@ func AddHexPrefix(hex string) string {
 	return "0x" + hex
 }
 
+func AddHexPrefixIfNotEmpty(hex string) string {
+	if hex == "" {
+		return hex
+	}
+	return AddHexPrefix(hex)
+}
+
 // DecodeBig decodes a hex string whether input is with 0x prefix or not.
 func DecodeBig(input string) (*big.Int, error) {
 	input = AddHexPrefix(input)

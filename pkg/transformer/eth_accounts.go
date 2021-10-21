@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -15,7 +16,7 @@ func (p *ProxyETHAccounts) Method() string {
 	return "eth_accounts"
 }
 
-func (p *ProxyETHAccounts) Request(_ *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHAccounts) Request(_ *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	return p.request()
 }
 

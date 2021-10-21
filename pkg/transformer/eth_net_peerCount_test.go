@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
+	"github.com/qtumproject/janus/pkg/internal"
 )
 
 func TestPeerCountRequest(t *testing.T) {
@@ -23,13 +24,13 @@ func TestPeerCountRequest(t *testing.T) {
 func testPeerCountRequest(t *testing.T, clients int) {
 	//preparing the request
 	requestParams := []json.RawMessage{} //net_peerCount has no params
-	request, err := prepareEthRPCRequest(1, requestParams)
+	request, err := internal.PrepareEthRPCRequest(1, requestParams)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	mockedClientDoer := newDoerMappedMock()
-	qtumClient, err := createMockedClient(mockedClientDoer)
+	mockedClientDoer := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(mockedClientDoer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -44,7 +45,7 @@ func testPeerCountRequest(t *testing.T, clients int) {
 	}
 
 	proxyEth := ProxyNetPeerCount{qtumClient}
-	got, err := proxyEth.Request(request)
+	got, err := proxyEth.Request(request, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

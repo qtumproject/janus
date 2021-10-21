@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -17,29 +18,30 @@ func (p *ProxyETHSendTransaction) Method() string {
 	return "eth_sendTransaction"
 }
 
-func (p *ProxyETHSendTransaction) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHSendTransaction) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.SendTransactionRequest
-	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
+	err := unmarshalRequest(rawreq.Params, &req)
+	if err != nil {
 		return nil, err
 	}
 
-	if p.Chain() == qtum.ChainRegTest {
-		defer func() {
-			if _, generateErr := p.Generate(1, nil); generateErr != nil {
-				p.GetErrorLogger().Log("Error generating new block", generateErr)
-			}
-		}()
-	}
+	var result interface{}
 
 	if req.IsCreateContract() {
-		return p.requestCreateContract(&req)
+		result, err = p.requestCreateContract(&req)
 	} else if req.IsSendEther() {
-		return p.requestSendToAddress(&req)
+		result, err = p.requestSendToAddress(&req)
 	} else if req.IsCallContract() {
-		return p.requestSendToContract(&req)
+		result, err = p.requestSendToContract(&req)
+	} else {
+		return nil, errors.New("Unknown operation")
 	}
 
-	return nil, errors.New("Unknown operation")
+	if p.CanGenerate() {
+		p.GenerateIfPossible()
+	}
+
+	return result, err
 }
 
 func (p *ProxyETHSendTransaction) requestSendToContract(ethtx *eth.SendTransactionRequest) (*eth.SendTransactionResponse, error) {
@@ -51,7 +53,7 @@ func (p *ProxyETHSendTransaction) requestSendToContract(ethtx *eth.SendTransacti
 	amount := decimal.NewFromFloat(0.0)
 	if ethtx.Value != "" {
 		var err error
-		amount, err = EthValueToQtumAmount(ethtx.Value)
+		amount, err = EthValueToQtumAmount(ethtx.Value, ZeroSatoshi)
 		if err != nil {
 			return nil, errors.Wrap(err, "EthValueToQtumAmount:")
 		}
@@ -100,10 +102,12 @@ func (p *ProxyETHSendTransaction) requestSendToAddress(req *eth.SendTransactionR
 		return nil, err
 	}
 
-	amount, err := EthValueToQtumAmount(req.Value)
+	amount, err := EthValueToQtumAmount(req.Value, ZeroSatoshi)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "EthValueToQtumAmount:")
 	}
+
+	p.GetDebugLogger().Log("msg", "successfully converted from wei to QTUM", "wei", req.Value, "qtum", amount)
 
 	qtumreq := qtum.SendToAddressRequest{
 		Address:       to,
@@ -113,6 +117,13 @@ func (p *ProxyETHSendTransaction) requestSendToAddress(req *eth.SendTransactionR
 
 	var qtumresp qtum.SendToAddressResponse
 	if err := p.Qtum.Request(qtum.MethodSendToAddress, &qtumreq, &qtumresp); err != nil {
+		// this can fail with:
+		// "error": {
+		//   "code": -3,
+		//   "message": "Sender address does not have any unspent outputs"
+		// }
+		// this can happen if there are enough coins but some required are untrusted
+		// you can get the trusted coin balance via getbalances rpc call
 		return nil, err
 	}
 

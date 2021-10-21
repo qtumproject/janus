@@ -1,0 +1,42 @@
+  
+version: "3.3"
+
+networks:
+  qtum-mainnet-network:
+volumes:
+  qtumd-mainnet-volume:
+
+services:
+  janus_mainnet:
+    image: qtum/janus
+    container_name: janus_mainnet
+    build: 
+        context: ../../
+        cache_from:
+          - golang:1.14-alpine
+    ports:
+        - "23890:23890"
+    environment: 
+        - QTUM_RPC=http://qtum:testpasswd@qtum_mainnet:3890
+        - COMPOSE_PROJECT_NAME=mainnet
+    volumes:
+        - ../standalone/myaccounts.txt:$GOPATH/github.com/qtumproject/janus/myaccounts.txt
+        - ../../https:/https
+    depends_on:
+      - qtum_mainnet
+    command: --bind 0.0.0.0 --port 23890 --ignoreTransactions --accounts $GOPATH/github.com/qtumproject/janus/myaccounts.txt --dev --https-key /https/key.pem --https-cert /https/cert.pem
+    networks:
+      - qtum-mainnet-network
+
+  qtum_mainnet:
+    ports:
+      - "3890:3890"
+    image: qtum/qtum
+    container_name: qtum_mainnet
+    environment: 
+        - COMPOSE_PROJECT_NAME=mainnet
+    command: qtumd  -txindex -addrindex=1 -rpcbind=0.0.0.0:3890 -rpcallowip=0.0.0.0/0 -rpcuser=qtum -rpcpassword=testpasswd -deprecatedrpc=accounts 
+    volumes:
+      - qtumd-volume-mainnet
+    networks:
+      - qtum-mainnet-network

@@ -38,6 +38,20 @@ func (c *Qtum) Chain() string {
 	return c.chain
 }
 
+func (c *Qtum) CanGenerate() bool {
+	return c.Chain() == ChainRegTest
+}
+
+func (c *Qtum) GenerateIfPossible() {
+	if !c.CanGenerate() {
+		return
+	}
+
+	if _, generateErr := c.Generate(1, nil); generateErr != nil {
+		c.GetErrorLogger().Log("Error generating new block", generateErr)
+	}
+}
+
 // Presents hexed address prefix of a specific chain without
 // `0x` prefix, this is a ready to use hexed string
 type HexAddressPrefix string

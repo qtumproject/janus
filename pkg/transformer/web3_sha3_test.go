@@ -3,6 +3,8 @@ package transformer
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/qtumproject/janus/pkg/internal"
 )
 
 func TestWeb3Sha3Request(t *testing.T) {
@@ -13,13 +15,13 @@ func TestWeb3Sha3Request(t *testing.T) {
 
 	for input, want := range values {
 		requestParams := []json.RawMessage{[]byte(`"` + input + `"`)}
-		request, err := prepareEthRPCRequest(1, requestParams)
+		request, err := internal.PrepareEthRPCRequest(1, requestParams)
 		if err != nil {
 			t.Fatal(err)
 		}
 
 		web3Sha3 := Web3Sha3{}
-		got, err := web3Sha3.Request(request)
+		got, err := web3Sha3.Request(request, nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -28,8 +30,8 @@ func TestWeb3Sha3Request(t *testing.T) {
 			t.Errorf(
 				"error\ninput: %s\nwant: %s\ngot: %s",
 				input,
-				string(mustMarshalIndent(want, "", "  ")),
-				string(mustMarshalIndent(got, "", "  ")),
+				string(internal.MustMarshalIndent(want, "", "  ")),
+				string(internal.MustMarshalIndent(got, "", "  ")),
 			)
 		}
 	}
@@ -42,13 +44,13 @@ func TestWeb3Sha3Errors(t *testing.T) {
 
 func testWeb3Sha3Errors(t *testing.T, input []json.RawMessage, want string) {
 	requestParams := input
-	request, err := prepareEthRPCRequest(1, requestParams)
+	request, err := internal.PrepareEthRPCRequest(1, requestParams)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	web3Sha3 := Web3Sha3{}
-	got, err := web3Sha3.Request(request)
+	got, err := web3Sha3.Request(request, nil)
 	if err == nil {
 		t.Errorf(
 			"Expected error\ninput: %s\nwant: %s\ngot: %s",

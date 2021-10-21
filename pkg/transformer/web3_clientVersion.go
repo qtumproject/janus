@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 )
 
@@ -13,7 +14,7 @@ func (p *Web3ClientVersion) Method() string {
 	return "web3_clientVersion"
 }
 
-func (p *Web3ClientVersion) Request(_ *eth.JSONRPCRequest) (interface{}, error) {
+func (p *Web3ClientVersion) Request(_ *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	return "QTUM ETHTestRPC/ethereum-js", nil
 }
 

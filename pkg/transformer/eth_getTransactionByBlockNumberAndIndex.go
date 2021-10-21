@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -18,7 +19,7 @@ func (p *ProxyETHGetTransactionByBlockNumberAndIndex) Method() string {
 	return "eth_getTransactionByBlockNumberAndIndex"
 }
 
-func (p *ProxyETHGetTransactionByBlockNumberAndIndex) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetTransactionByBlockNumberAndIndex) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.GetTransactionByBlockNumberAndIndex
 	if err := json.Unmarshal(rawreq.Params, &req); err != nil {
 		return nil, errors.Wrap(err, "couldn't unmarshal request")

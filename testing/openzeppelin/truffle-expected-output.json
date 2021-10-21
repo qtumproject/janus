@@ -1,10 +1,10 @@
 {
  "stats": {
-  "suites": 893,
-  "tests": 1515,
-  "passes": 1342,
+  "suites": 894,
+  "tests": 1528,
+  "passes": 1345,
   "pending": 4,
-  "failures": 179
+  "failures": 187
  },
  "failures": [
   {
@@ -34,14 +34,6 @@
   {
    "fullTitle": "active state accepts deposits",
    "title": "accepts deposits"
-  },
-  {
-   "fullTitle": "active state does not allow beneficiary withdrawal",
-   "title": "does not allow beneficiary withdrawal"
-  },
-  {
-   "fullTitle": "active state does not refund refundees",
-   "title": "does not refund refundees"
   },
   {
    "fullTitle": "add reverts on addition overflow",
@@ -94,10 +86,6 @@
   {
    "fullTitle": "balanceOfBatch reverts when one of the addresses is the zero address",
    "title": "reverts when one of the addresses is the zero address"
-  },
-  {
-   "fullTitle": "closed state \"before each\" hook for \"rejects deposits\"",
-   "title": "\"before each\" hook for \"rejects deposits\""
   },
   {
    "fullTitle": "dependency can execute after dependency",
@@ -260,8 +248,12 @@
    "title": "with short signature"
   },
   {
-   "fullTitle": "refund state \"before each\" hook for \"rejects deposits\"",
-   "title": "\"before each\" hook for \"rejects deposits\""
+   "fullTitle": "refund state \"after each\" hook: after test for \"refunds refundees\"",
+   "title": "\"after each\" hook: after test for \"refunds refundees\""
+  },
+  {
+   "fullTitle": "refund state refunds refundees",
+   "title": "refunds refundees"
   },
   {
    "fullTitle": "regression should add fallback function",
@@ -282,10 +274,6 @@
   {
    "fullTitle": "regression should remove function",
    "title": "should remove function"
-  },
-  {
-   "fullTitle": "release reverts if non-payee want to claim",
-   "title": "reverts if non-payee want to claim"
   },
   {
    "fullTitle": "safeBatchTransferFrom \"before each\" hook for \"reverts when transferring amount more than any of balances\"",
@@ -536,8 +524,36 @@
    "title": "throws"
   },
   {
-   "fullTitle": "when sender contract has funds \"before each\" hook for \"sends 0 wei\"",
-   "title": "\"before each\" hook for \"sends 0 wei\""
+   "fullTitle": "when sender contract has funds sends 0 wei",
+   "title": "sends 0 wei"
+  },
+  {
+   "fullTitle": "when sender contract has funds sends non-zero amounts",
+   "title": "sends non-zero amounts"
+  },
+  {
+   "fullTitle": "when sender contract has funds sends the whole balance",
+   "title": "sends the whole balance"
+  },
+  {
+   "fullTitle": "when sender contract has no funds sends 0 wei",
+   "title": "sends 0 wei"
+  },
+  {
+   "fullTitle": "when sending some balance has expected balance",
+   "title": "has expected balance"
+  },
+  {
+   "fullTitle": "when sending some balance has expected balance",
+   "title": "has expected balance"
+  },
+  {
+   "fullTitle": "when sending some balance has expected balance",
+   "title": "has expected balance"
+  },
+  {
+   "fullTitle": "when sending some balance has expected balance",
+   "title": "has expected balance"
   },
   {
    "fullTitle": "when sending some balance has expected balance",
@@ -574,6 +590,22 @@
   {
    "fullTitle": "when sending some balance initializes the proxy",
    "title": "initializes the proxy"
+  },
+  {
+   "fullTitle": "when sending some balance reverts",
+   "title": "reverts"
+  },
+  {
+   "fullTitle": "when sending some balance reverts",
+   "title": "reverts"
+  },
+  {
+   "fullTitle": "when sending some balance reverts",
+   "title": "reverts"
+  },
+  {
+   "fullTitle": "when sending some balance reverts",
+   "title": "reverts"
   },
   {
    "fullTitle": "when sending some balance reverts",
@@ -616,6 +648,10 @@
    "title": "calls the initializer function"
   },
   {
+   "fullTitle": "when the sender is the admin sends given value to the proxy",
+   "title": "sends given value to the proxy"
+  },
+  {
    "fullTitle": "when token is not minted reverts",
    "title": "reverts"
   },
@@ -636,10 +672,6 @@
    "title": "calls the 'migrate' function and sends given value to the proxy"
   },
   {
-   "fullTitle": "when withdrawal is disallowed reverts on withdrawals",
-   "title": "reverts on withdrawals"
-  },
-  {
    "fullTitle": "with 00 as version value reverts",
    "title": "reverts"
   },
@@ -658,6 +690,14 @@
   {
    "fullTitle": "with burnt token deletes the token",
    "title": "deletes the token"
+  },
+  {
+   "fullTitle": "with contract recipient reverts on recipient revert",
+   "title": "reverts on recipient revert"
+  },
+  {
+   "fullTitle": "with contract recipient sends funds",
+   "title": "sends funds"
   },
   {
    "fullTitle": "with correct signature returns signer address",
@@ -706,14 +746,6 @@
   {
    "fullTitle": "withdrawPayments can withdraw payment",
    "title": "can withdraw payment"
-  },
-  {
-   "fullTitle": "withdrawals can withdraw payments",
-   "title": "can withdraw payments"
-  },
-  {
-   "fullTitle": "withdrawals can withdraw payments",
-   "title": "can withdraw payments"
   },
   {
    "fullTitle": "withdrawals emits a withdrawn event",
@@ -1374,6 +1406,14 @@
    "title": "does not support mock interface via supportsInterface"
   },
   {
+   "fullTitle": "active state does not allow beneficiary withdrawal",
+   "title": "does not allow beneficiary withdrawal"
+  },
+  {
+   "fullTitle": "active state does not refund refundees",
+   "title": "does not refund refundees"
+  },
+  {
    "fullTitle": "active state has beneficiary and state",
    "title": "has beneficiary and state"
   },
@@ -1636,6 +1676,26 @@
   {
    "fullTitle": "cloneDeterministic address prediction",
    "title": "address prediction"
+  },
+  {
+   "fullTitle": "closed state allows beneficiary withdrawal",
+   "title": "allows beneficiary withdrawal"
+  },
+  {
+   "fullTitle": "closed state does not refund refundees",
+   "title": "does not refund refundees"
+  },
+  {
+   "fullTitle": "closed state prevents entering the refund state",
+   "title": "prevents entering the refund state"
+  },
+  {
+   "fullTitle": "closed state prevents re-entering the closed state",
+   "title": "prevents re-entering the closed state"
+  },
+  {
+   "fullTitle": "closed state rejects deposits",
+   "title": "rejects deposits"
   },
   {
    "fullTitle": "complex testing with inheritance initializes child",
@@ -2558,8 +2618,16 @@
    "title": "rejects reused signature"
   },
   {
+   "fullTitle": "refund state rejects deposits",
+   "title": "rejects deposits"
+  },
+  {
    "fullTitle": "release reverts if no funds to claim",
    "title": "reverts if no funds to claim"
+  },
+  {
+   "fullTitle": "release reverts if non-payee want to claim",
+   "title": "reverts if non-payee want to claim"
   },
   {
    "fullTitle": "remove adds and removes multiple keys",
@@ -4602,30 +4670,14 @@
    "title": "reverts when re-pausing"
   },
   {
+   "fullTitle": "when sender contract has funds reverts when sending more than the balance",
+   "title": "reverts when sending more than the balance"
+  },
+  {
    "fullTitle": "when sender contract has no funds reverts when sending non-zero amounts",
    "title": "reverts when sending non-zero amounts"
   },
   {
-   "fullTitle": "when sender contract has no funds sends 0 wei",
-   "title": "sends 0 wei"
-  },
-  {
-   "fullTitle": "when sending some balance has expected balance",
-   "title": "has expected balance"
-  },
-  {
-   "fullTitle": "when sending some balance has expected balance",
-   "title": "has expected balance"
-  },
-  {
-   "fullTitle": "when sending some balance has expected balance",
-   "title": "has expected balance"
-  },
-  {
-   "fullTitle": "when sending some balance has expected balance",
-   "title": "has expected balance"
-  },
-  {
    "fullTitle": "when sending some balance initializes the proxy",
    "title": "initializes the proxy"
   },
@@ -4652,22 +4704,6 @@
   {
    "fullTitle": "when sending some balance initializes the proxy",
    "title": "initializes the proxy"
-  },
-  {
-   "fullTitle": "when sending some balance reverts",
-   "title": "reverts"
-  },
-  {
-   "fullTitle": "when sending some balance reverts",
-   "title": "reverts"
-  },
-  {
-   "fullTitle": "when sending some balance reverts",
-   "title": "reverts"
-  },
-  {
-   "fullTitle": "when sending some balance reverts",
-   "title": "reverts"
   },
   {
    "fullTitle": "when sending some balance sets the implementation address",
@@ -5302,10 +5338,6 @@
    "title": "emits an event"
   },
   {
-   "fullTitle": "when the sender is the admin sends given value to the proxy",
-   "title": "sends given value to the proxy"
-  },
-  {
    "fullTitle": "when the sender is the admin upgrades to the requested implementation",
    "title": "upgrades to the requested implementation"
   },
@@ -5672,6 +5704,10 @@
   {
    "fullTitle": "when upgrading to V3 upgrades to the requested version and emits an event",
    "title": "upgrades to the requested version and emits an event"
+  },
+  {
+   "fullTitle": "when withdrawal is disallowed reverts on withdrawals",
+   "title": "reverts on withdrawals"
   },
   {
    "fullTitle": "with 27 as version value works",
@@ -6084,6 +6120,14 @@
   {
    "fullTitle": "withdrawals can do an empty withdrawal",
    "title": "can do an empty withdrawal"
+  },
+  {
+   "fullTitle": "withdrawals can withdraw payments",
+   "title": "can withdraw payments"
+  },
+  {
+   "fullTitle": "withdrawals can withdraw payments",
+   "title": "can withdraw payments"
   },
   {
    "fullTitle": "withdrawals only the owner can withdraw",

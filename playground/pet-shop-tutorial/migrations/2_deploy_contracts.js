@@ -1,5 +1,5 @@
 var Adoption = artifacts.require("Adoption");
 
-module.exports = function(deployer) {
-  deployer.deploy(Adoption);
+module.exports = async function(deployer) {
+  await deployer.deploy(Adoption);
 };

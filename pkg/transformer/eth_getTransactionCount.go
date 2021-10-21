@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 )
@@ -17,7 +18,7 @@ func (p *ProxyETHTxCount) Method() string {
 	return "eth_getTransactionCount"
 }
 
-func (p *ProxyETHTxCount) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHTxCount) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 
 	/* not sure we need this. Need to figure out how to best unmarshal this in the future. For now this will work.
 	var req eth.GetTransactionCountRequest

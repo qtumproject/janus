@@ -1,4 +1,7 @@
 module.exports = {
+  migrations: "./migrations",
+  contracts_directory: "./contracts",
+  contracts_build_directory: "./build/output",
   networks: {
     development: {
       host: "127.0.0.1",
@@ -21,7 +24,13 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "^0.4.17",
-    }
+      version: "^0.8.0",
+      settings: {
+        optimizer: {
+          enabled: true,
+          runs: 1,
+        },
+      },
+    },
   },
 }

@@ -8,18 +8,19 @@ import (
 
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
+	"github.com/qtumproject/janus/pkg/internal"
 )
 
 func TestGetFilterChangesRequest_EmptyResult(t *testing.T) {
 	//prepare request
 	requestParams := []json.RawMessage{[]byte(`"0x1"`)}
-	requestRPC, err := prepareEthRPCRequest(1, requestParams)
+	requestRPC, err := internal.PrepareEthRPCRequest(1, requestParams)
 	if err != nil {
 		t.Fatal(err)
 	}
 	//prepare client
-	mockedClientDoer := newDoerMappedMock()
-	qtumClient, err := createMockedClient(mockedClientDoer)
+	mockedClientDoer := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(mockedClientDoer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,7 +50,7 @@ func TestGetFilterChangesRequest_EmptyResult(t *testing.T) {
 
 	//preparing proxy & executing request
 	proxyEth := ProxyETHGetFilterChanges{qtumClient, filterSimulator}
-	got, err := proxyEth.Request(requestRPC)
+	got, err := proxyEth.Request(requestRPC, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -59,8 +60,8 @@ func TestGetFilterChangesRequest_EmptyResult(t *testing.T) {
 		t.Errorf(
 			"error\ninput: %s\nwant: %s\ngot: %s",
 			requestRPC,
-			string(mustMarshalIndent(want, "", "  ")),
-			string(mustMarshalIndent(got, "", "  ")),
+			string(internal.MustMarshalIndent(want, "", "  ")),
+			string(internal.MustMarshalIndent(got, "", "  ")),
 		)
 	}
 }
@@ -68,13 +69,13 @@ func TestGetFilterChangesRequest_EmptyResult(t *testing.T) {
 func TestGetFilterChangesRequest_NoNewBlocks(t *testing.T) {
 	//prepare request
 	requestParams := []json.RawMessage{[]byte(`"0x1"`)}
-	requestRPC, err := prepareEthRPCRequest(1, requestParams)
+	requestRPC, err := internal.PrepareEthRPCRequest(1, requestParams)
 	if err != nil {
 		t.Fatal(err)
 	}
 	//prepare client
-	mockedClientDoer := newDoerMappedMock()
-	qtumClient, err := createMockedClient(mockedClientDoer)
+	mockedClientDoer := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(mockedClientDoer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -95,7 +96,7 @@ func TestGetFilterChangesRequest_NoNewBlocks(t *testing.T) {
 
 	//preparing proxy & executing request
 	proxyEth := ProxyETHGetFilterChanges{qtumClient, filterSimulator}
-	got, err := proxyEth.Request(requestRPC)
+	got, err := proxyEth.Request(requestRPC, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -105,8 +106,8 @@ func TestGetFilterChangesRequest_NoNewBlocks(t *testing.T) {
 		t.Errorf(
 			"error\ninput: %s\nwant: %s\ngot: %s",
 			requestRPC,
-			string(mustMarshalIndent(want, "", "  ")),
-			string(mustMarshalIndent(got, "", "  ")),
+			string(internal.MustMarshalIndent(want, "", "  ")),
+			string(internal.MustMarshalIndent(got, "", "  ")),
 		)
 	}
 }
@@ -114,13 +115,13 @@ func TestGetFilterChangesRequest_NoNewBlocks(t *testing.T) {
 func TestGetFilterChangesRequest_NoSuchFilter(t *testing.T) {
 	//prepare request
 	requestParams := []json.RawMessage{[]byte(`"0x1"`)}
-	requestRPC, err := prepareEthRPCRequest(1, requestParams)
+	requestRPC, err := internal.PrepareEthRPCRequest(1, requestParams)
 	if err != nil {
 		t.Fatal(err)
 	}
 	//prepare client
-	mockedClientDoer := newDoerMappedMock()
-	qtumClient, err := createMockedClient(mockedClientDoer)
+	mockedClientDoer := internal.NewDoerMappedMock()
+	qtumClient, err := internal.CreateMockedClient(mockedClientDoer)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -128,23 +129,23 @@ func TestGetFilterChangesRequest_NoSuchFilter(t *testing.T) {
 	//preparing proxy & executing request
 	filterSimulator := eth.NewFilterSimulator()
 	proxyEth := ProxyETHGetFilterChanges{qtumClient, filterSimulator}
-	got, err := proxyEth.Request(requestRPC)
+	got, err := proxyEth.Request(requestRPC, nil)
 	expectedErr := "Invalid filter id"
 
 	if got != nil {
 		t.Errorf(
 			"error\ninput: %s\nwant: %s\ngot: %s",
 			requestRPC,
-			string(mustMarshalIndent(expectedErr, "", "  ")),
-			string(mustMarshalIndent(err.Error(), "", "  ")),
+			string(internal.MustMarshalIndent(expectedErr, "", "  ")),
+			string(internal.MustMarshalIndent(err.Error(), "", "  ")),
 		)
 	}
 	if err.Error() != expectedErr {
 		t.Errorf(
 			"error\ninput: %s\nwant error: %s\ngot: %s",
 			requestRPC,
-			string(mustMarshalIndent(expectedErr, "", "  ")),
-			string(mustMarshalIndent(err.Error(), "", "  ")),
+			string(internal.MustMarshalIndent(expectedErr, "", "  ")),
+			string(internal.MustMarshalIndent(err.Error(), "", "  ")),
 		)
 	}
 }

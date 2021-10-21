@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -19,7 +20,7 @@ func (p *ProxyETHGetTransactionByHash) Method() string {
 	return "eth_getTransactionByHash"
 }
 
-func (p *ProxyETHGetTransactionByHash) Request(req *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetTransactionByHash) Request(req *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var txHash eth.GetTransactionByHashRequest
 	if err := json.Unmarshal(req.Params, &txHash); err != nil {
 		return nil, errors.Wrap(err, "couldn't unmarshal request")
@@ -42,7 +43,7 @@ func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) 
 	return ethTx, nil
 }
 
-// TODO: think of returning flag if it's a rewrad transaction for miner
+// TODO: think of returning flag if it's a reward transaction for miner
 func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, error) {
 	qtumTx, err := p.GetTransaction(hash)
 	if err != nil {
@@ -51,7 +52,22 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 		}
 		ethTx, err := getRewardTransactionByHash(p, hash)
 		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get reward transaction by hash")
+			if errors.Cause(err) == qtum.ErrInvalidAddress {
+				return nil, nil
+			}
+			rawTx, err := p.GetRawTransaction(hash, false)
+			if err != nil {
+				if errors.Cause(err) == qtum.ErrInvalidAddress {
+					return nil, nil
+				}
+				return nil, err
+			} else {
+				qtumTx = &qtum.GetTransactionResponse{
+					BlockHash:  rawTx.BlockHash,
+					BlockIndex: 1, // TODO: Possible to get this somewhere?
+					Hex:        rawTx.Hex,
+				}
+			}
 		}
 		return ethTx, nil
 	}
@@ -93,12 +109,20 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	}
 	if isContractTx {
 		// TODO: research is this allowed? ethTx.Input = utils.AddHexPrefix(qtumTxContractInfo.UserInput)
-		ethTx.Input = "0x"
 		if qtumTxContractInfo.UserInput == "" {
+			ethTx.Input = "0x0"
+		} else {
 			ethTx.Input = utils.AddHexPrefix(qtumTxContractInfo.UserInput)
 		}
 		ethTx.From = utils.AddHexPrefix(qtumTxContractInfo.From)
-		ethTx.To = utils.AddHexPrefix(qtumTxContractInfo.To)
+		//TODO: research if 'To' adress could be other than zero address when 'isContractTx == TRUE'
+		if len(qtumTxContractInfo.To) == 0 {
+			ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)
+
+		} else {
+			ethTx.To = utils.AddHexPrefix(qtumTxContractInfo.To)
+
+		}
 		ethTx.Gas = hexutil.Encode([]byte(qtumTxContractInfo.GasLimit))
 		ethTx.GasPrice = hexutil.Encode([]byte(qtumTxContractInfo.GasPrice))
 
@@ -108,10 +132,15 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	if qtumTx.Generated {
 		ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
 	} else {
-		ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx.Vins)
-		if err != nil {
-			return nil, errors.WithMessage(err, "couldn't get non contract transaction sender address")
-		}
+		// TODO: Figure out proper way to do this
+		// There is a problem with this function, sometimes it returns errors on regtest, empty block?
+		// commenting it out as its being overwritten below anyway
+		/*
+			ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx.Vins)
+			if err != nil {
+				return nil, errors.WithMessage(err, "couldn't get non contract transaction sender address")
+			}
+		*/
 		// TODO: discuss
 		// ? Does func above return incorrect address for graph-node (len is < 40)
 		// ! Temporary solution
@@ -133,13 +162,12 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 
 	// TODO: researching
 	// ! Temporary solution
-	ethTx.Input = "0x"
-	for _, detail := range qtumTx.Details {
-		if detail.Label != "" {
-			ethTx.Input = utils.AddHexPrefix(detail.Label)
-			break
-		}
-	}
+	//	if len(qtumTx.Hex) == 0 {
+	//		ethTx.Input = "0x0"
+	//	} else {
+	//		ethTx.Input = utils.AddHexPrefix(qtumTx.Hex)
+	//	}
+	ethTx.Input = utils.AddHexPrefix(qtumTx.Hex)
 
 	// TODO: researching
 	// ? Is it correct for non contract transaction
@@ -154,7 +182,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, error) {
 	rawQtumTx, err := p.GetRawTransaction(hash, false)
 	if err != nil {
-		return nil, errors.WithMessage(err, "couldn't get raw transaction")
+		return nil, errors.WithMessage(err, "couldn't get raw reward transaction")
 	}
 
 	ethTx := &eth.GetTransactionByHashResponse{
@@ -209,6 +237,23 @@ func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionB
 	// TODO: discuss
 	// ? Do we have to set `from` == `0x00..00`
 	ethTx.From = utils.AddHexPrefix(qtum.ZeroAddress)
+
+	// I used Base58AddressToHex at the moment
+	// because convertQtumAddress functions causes error for
+	// P2Sh address(such as MUrenj2sPqEVTiNbHQ2RARiZYyTAAeKiDX) and BECH32 address (such as qc1qkt33x6hkrrlwlr6v59wptwy6zskyrjfe40y0lx)
+	if rawQtumTx.OP_SENDER != "" {
+		// addr, err := convertQtumAddress(rawQtumTx.OP_SENDER)
+		addr, err := p.Base58AddressToHex(rawQtumTx.OP_SENDER)
+		if err == nil {
+			ethTx.From = utils.AddHexPrefix(addr)
+		}
+	} else if len(rawQtumTx.Vins) > 0 && rawQtumTx.Vins[0].Address != "" {
+		// addr, err := convertQtumAddress(rawQtumTx.Vins[0].Address)
+		addr, err := p.Base58AddressToHex(rawQtumTx.Vins[0].Address)
+		if err == nil {
+			ethTx.From = utils.AddHexPrefix(addr)
+		}
+	}
 	// TODO: discuss
 	// ? Where is a `to`
 	ethTx.To = utils.AddHexPrefix(qtum.ZeroAddress)

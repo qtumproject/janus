@@ -1,7 +1,10 @@
 package transformer
 
 import (
+	"math/big"
+
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -16,7 +19,7 @@ func (p *ProxyETHGetBalance) Method() string {
 	return "eth_getBalance"
 }
 
-func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.GetBalanceRequest
 	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		return nil, err
@@ -56,6 +59,11 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest) (interface{}, e
 		}
 
 		// 1 QTUM = 10 ^ 8 Satoshi
-		return hexutil.EncodeUint64(qtumresp.Balance), nil
+		balance := new(big.Int).SetUint64(qtumresp.Balance)
+
+		//Balance for ETH response is represented in Weis (1 QTUM Satoshi = 10 ^ 10 Wei)
+		balance = balance.Mul(balance, big.NewInt(10000000000))
+
+		return hexutil.EncodeBig(balance), nil
 	}
 }

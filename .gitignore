@@ -14,6 +14,29 @@
 
 .DS_Store
 build
+node_modules
+metamask/dist
+https
+janusLogs.txt
+
+# local env files
+.env.local
+.env.*.local
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 
 # VS Code extension RestClient
 api.rest
@@ -21,3 +44,11 @@ api.rest
 # Truffle test result files
 truffle-pruned-output.json
 truffle-result-output.json
+output.json
+
+.parcel-cache
+playground/pet-shop-tutorial/dist
+playground/pet-shop-tutorial/js/Adoption.json
+playground/pet-shop-tutorial/js/Migrations.json
+playground/pet-shop-tutorial/js/QRC20Token.json
+

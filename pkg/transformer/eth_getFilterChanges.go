@@ -4,8 +4,10 @@ import (
 	"encoding/json"
 	"math/big"
 
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 
+	"github.com/qtumproject/janus/pkg/conversion"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -21,7 +23,7 @@ func (p *ProxyETHGetFilterChanges) Method() string {
 	return "eth_getFilterChanges"
 }
 
-func (p *ProxyETHGetFilterChanges) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetFilterChanges) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 
 	filter, err := processFilter(p, rawreq)
 	if err != nil {
@@ -104,13 +106,13 @@ func (p *ProxyETHGetFilterChanges) requestFilter(filter *eth.Filter) (qtumresp e
 }
 
 func (p *ProxyETHGetFilterChanges) doSearchLogs(req *qtum.SearchLogsRequest) (eth.GetFilterChangesResponse, error) {
-	resp, err := p.SearchLogs(req)
+	resp, err := conversion.SearchLogsAndFilterExtraTopics(p.Qtum, req)
 	if err != nil {
 		return nil, err
 	}
 
 	receiptToResult := func(receipt *qtum.TransactionReceipt) []interface{} {
-		logs := extractETHLogsFromTransactionReceipt(receipt)
+		logs := conversion.ExtractETHLogsFromTransactionReceipt(receipt, receipt.Log)
 		res := make([]interface{}, len(logs))
 		for i := range res {
 			res[i] = logs[i]
@@ -155,7 +157,7 @@ func (p *ProxyETHGetFilterChanges) toSearchLogsReq(filter *eth.Filter, from, to 
 
 	topics, ok := filter.Data.Load("topics")
 	if ok {
-		qtumreq.Topics = topics.([]interface{})
+		qtumreq.Topics = topics.([]qtum.SearchLogsTopic)
 	}
 
 	return qtumreq, nil

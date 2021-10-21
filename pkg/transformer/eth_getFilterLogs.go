@@ -1,9 +1,11 @@
 package transformer
 
 import (
+	"math/big"
+
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
-	"math/big"
 )
 
 // ProxyETHGetFilterLogs implements ETHProxy
@@ -15,7 +17,7 @@ func (p *ProxyETHGetFilterLogs) Method() string {
 	return "eth_getFilterLogs"
 }
 
-func (p *ProxyETHGetFilterLogs) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetFilterLogs) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 
 	filter, err := processFilter(p.ProxyETHGetFilterChanges, rawreq)
 	if err != nil {

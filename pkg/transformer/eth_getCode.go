@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -15,7 +16,7 @@ func (p *ProxyETHGetCode) Method() string {
 	return "eth_getCode"
 }
 
-func (p *ProxyETHGetCode) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetCode) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.GetCodeRequest
 	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		return nil, err

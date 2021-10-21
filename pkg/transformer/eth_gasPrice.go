@@ -4,6 +4,7 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 )
@@ -17,7 +18,7 @@ func (p *ProxyETHGasPrice) Method() string {
 	return "eth_gasPrice"
 }
 
-func (p *ProxyETHGasPrice) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGasPrice) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	qtumresp, err := p.Qtum.GetGasPrice()
 	if err != nil {
 		return nil, err
@@ -28,5 +29,6 @@ func (p *ProxyETHGasPrice) Request(rawreq *eth.JSONRPCRequest) (interface{}, err
 }
 
 func (p *ProxyETHGasPrice) response(qtumresp *big.Int) string {
-	return hexutil.EncodeBig(qtumresp)
+	// 34 GWEI is the minimum price that QTUM will confirm tx with
+	return hexutil.EncodeBig(convertFromSatoshiToWei(qtumresp))
 }

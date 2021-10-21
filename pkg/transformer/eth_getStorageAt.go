@@ -3,6 +3,7 @@ package transformer
 import (
 	"fmt"
 
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
@@ -17,7 +18,7 @@ func (p *ProxyETHGetStorageAt) Method() string {
 	return "eth_getStorageAt"
 }
 
-func (p *ProxyETHGetStorageAt) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHGetStorageAt) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var req eth.GetStorageRequest
 	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		return nil, err

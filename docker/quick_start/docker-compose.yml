@@ -1,8 +1,11 @@
-  
 version: "3.3"
+volumes:
+   qtumd-volume:
+
 services:
   janus:
     image: qtum/janus:dev
+    container_name: janus
     build: 
         context: ../../
         cache_from:
@@ -13,12 +16,16 @@ services:
         - QTUM_RPC=http://qtum:testpasswd@qtum:3889
     volumes:
         - ../standalone/myaccounts.txt:$GOPATH/github.com/qtumproject/janus/myaccounts.txt
+        - ../../https:/https
+        - ../../logs:/logs
     depends_on:
       - qtum
-    command: --bind 0.0.0.0 --accounts $GOPATH/github.com/qtumproject/janus/myaccounts.txt --dev
+    command: --bind 0.0.0.0 --accounts $GOPATH/github.com/qtumproject/janus/myaccounts.txt --log-file /logs/janusLogs.txt --dev --https-key /https/key.pem --https-cert /https/cert.pem
   qtum:
     ports:
       - "3889:3889"
     image: qtum/qtum
     container_name: qtum_testchain
-    command: qtumd -regtest -addrindex=1 -rpcbind=0.0.0.0:3889 -rpcallowip=0.0.0.0/0 -logevents -rpcuser=qtum -rpcpassword=testpasswd -deprecatedrpc=accounts -printtoconsole
+    command: qtumd -testnet -txindex -addrindex=1 -rpcbind=0.0.0.0:3889 -rpcallowip=0.0.0.0/0 -logevents -rpcuser=qtum -rpcpassword=testpasswd -deprecatedrpc=accounts -printtoconsole
+    volumes:
+      - qtumd-volume:/root/.qtum

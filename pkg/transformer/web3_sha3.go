@@ -5,6 +5,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/labstack/echo"
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/eth"
 )
@@ -15,7 +16,7 @@ func (p *Web3Sha3) Method() string {
 	return "web3_sha3"
 }
 
-func (p *Web3Sha3) Request(rawreq *eth.JSONRPCRequest) (interface{}, error) {
+func (p *Web3Sha3) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	var err error
 	var req eth.Web3Sha3Request
 	if err = json.Unmarshal(rawreq.Params, &req); err != nil {

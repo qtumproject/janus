@@ -4,10 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "ethers": "^5.2.0",
     "minimist": "^1.2.0",
     "ora": "^3.0.0",
-    "truffle": "^4.1.13",
     "qtumjs": "ceoimon/qtumjs-eth#master",
+    "truffle": "^4.1.13",
     "truffle-contract": "^3.0.6",
     "truffle-require": "^1.0.7"
   },

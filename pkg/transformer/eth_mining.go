@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 )
@@ -14,7 +15,7 @@ func (p *ProxyETHMining) Method() string {
 	return "eth_mining"
 }
 
-func (p *ProxyETHMining) Request(_ *eth.JSONRPCRequest) (interface{}, error) {
+func (p *ProxyETHMining) Request(_ *eth.JSONRPCRequest, c echo.Context) (interface{}, error) {
 	return p.request()
 }
 

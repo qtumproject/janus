@@ -55,6 +55,14 @@ type (
 		Address string   `json:"address"`
 		Topics  []string `json:"topics"`
 		Data    string   `json:"data"`
+		Index   int      `json:"-"` // Keep track of which index the log is at
+	}
+
+	LogBlockData interface {
+		GetTransactionHash() string
+		GetTransactionIndex() uint64
+		GetBlockHash() string
+		GetBlockNumber() uint64
 	}
 
 	/*
@@ -144,6 +152,18 @@ type (
 		Verificationprogress float64 `json:"verificationprogress"`
 	}
 )
+
+func (l Log) GetAddress() string {
+	return l.Address
+}
+
+func (l Log) GetTopics() []string {
+	return l.Topics
+}
+
+func (l Log) GetData() string {
+	return l.Data
+}
 
 // ========== SendToAddress ============= //
 
@@ -337,12 +357,23 @@ type (
 )
 
 func (r *CallContractRequest) MarshalJSON() ([]byte, error) {
-	return json.Marshal([]interface{}{
+	params := []interface{}{
 		utils.RemoveHexPrefix(r.To),
 		utils.RemoveHexPrefix(r.Data),
 		r.From,
-		r.GasLimit,
-	})
+	}
+	if r.GasLimit != nil {
+		// optional parameter, null will not work
+		params = append(params, r.GasLimit)
+	}
+	/*
+		1. "address" (string, required) The account address
+		2. "data"    (string, required) The data hex string
+		3. address   (string, optional) The sender address hex string
+		4. gasLimit  (string, optional) The gas limit for executing the contract
+	*/
+
+	return json.Marshal(params)
 }
 
 // ========== FromHexAddress ============= //
@@ -635,6 +666,22 @@ type (
 	}
 )
 
+func (r TransactionReceipt) GetTransactionHash() string {
+	return r.TransactionHash
+}
+
+func (r TransactionReceipt) GetTransactionIndex() uint64 {
+	return r.TransactionIndex
+}
+
+func (r TransactionReceipt) GetBlockHash() string {
+	return r.BlockHash
+}
+
+func (r TransactionReceipt) GetBlockNumber() uint64 {
+	return r.BlockNumber
+}
+
 func (r GetTransactionReceiptRequest) MarshalJSON() ([]byte, error) {
 	/*
 		1. "hash"          (string, required) The transaction hash
@@ -745,6 +792,8 @@ type (
 		Time          int64  `json:"time"`
 		BlockTime     int64  `json:"blocktime"`
 
+		OP_SENDER string `json:"OP_SENDER"`
+
 		Vins  []RawTransactionVin  `json:"vin"`
 		Vouts []RawTransactionVout `json:"vout"`
 
@@ -754,8 +803,10 @@ type (
 
 	}
 	RawTransactionVin struct {
-		ID    string `json:"txid"`
-		VoutN int64  `json:"vout"`
+		ID     string  `json:"txid"`
+		VoutN  int64   `json:"vout"`
+		Amount float64 `json:"value"`
+		Address string `json:"address"`
 
 		// Additional fields:
 		// - "scriptSig"
@@ -782,7 +833,6 @@ func (r *GetRawTransactionRequest) MarshalJSON() ([]byte, error) {
 		1. "txid"      (string, required) The transaction id
 		2. verbose     (bool, optional, default=false) If false, return a string, otherwise return a json object
 		3. "blockhash" (string, optional) The block in which to look for the transaction
-
 	*/
 	return json.Marshal([]interface{}{
 		r.TxID,
@@ -792,6 +842,20 @@ func (r *GetRawTransactionRequest) MarshalJSON() ([]byte, error) {
 
 func (r *GetRawTransactionResponse) IsPending() bool {
 	return r.BlockHash == ""
+}
+
+func (r *GetRawTransactionResponse) GetMiningFeeInQTUM() float64 {
+	var vinsTotals float64
+	var voutsTotals float64
+
+	for _, in := range r.Vins {
+		vinsTotals += in.Amount
+	}
+	for _, out := range r.Vouts {
+		voutsTotals += out.Amount
+	}
+
+	return vinsTotals - voutsTotals
 }
 
 // ========== GetTransaction ============= //
@@ -899,14 +963,44 @@ func (r *GetTransactionResponse) IsPending() bool {
 
 type (
 	SearchLogsRequest struct {
-		FromBlock *big.Int
-		ToBlock   *big.Int
-		Addresses []string
-		Topics    []interface{}
+		FromBlock            *big.Int
+		ToBlock              *big.Int
+		Addresses            []string
+		Topics               []SearchLogsTopic
+		MinimumConfirmations *uint
 	}
 
 	SearchLogsResponse []TransactionReceipt
+	SearchLogsTopic    []string
 )
+
+func NewSearchLogsTopics(topics [][]string) []SearchLogsTopic {
+	result := make([]SearchLogsTopic, len(topics))
+
+	for i, topic := range topics {
+		result[i] = NewSearchLogsTopic(topic)
+	}
+
+	return result
+}
+
+func NewSearchLogsTopic(topics []string) SearchLogsTopic {
+	result := SearchLogsTopic{}
+
+	for _, topic := range topics {
+		result = append(result, topic)
+	}
+
+	return result
+}
+
+func (t SearchLogsTopic) MarshalJSON() ([]byte, error) {
+	if len(t) == 1 {
+		return []byte(`"` + t[0] + `"`), nil
+	}
+
+	return []byte("null"), nil
+}
 
 func (r *SearchLogsRequest) MarshalJSON() ([]byte, error) {
 	/*
@@ -916,18 +1010,46 @@ func (r *SearchLogsRequest) MarshalJSON() ([]byte, error) {
 		4. "topics"           (string, optional) An array of values from which at least one must appear in the log entries. The order is important, if you want to leave topics out use null, e.g. ["null", "0x00..."].
 		5. "minconf"          (uint, optional, default=0) Minimal number of confirmations before a log is returned
 	*/
+	var addresses interface{}
+	if r.Addresses != nil && len(r.Addresses) != 0 {
+		addresses = map[string][]string{
+			"addresses": r.Addresses,
+		}
+	}
+
+	var topics interface{}
+	if len(r.Topics) > 0 {
+		// if all topics are null, filter them all out
+		nullCount := 0
+		for _, topic := range r.Topics {
+			byts, err := json.Marshal(topic)
+			if err != nil {
+				return []byte{}, err
+			}
+
+			if string(byts) == "null" {
+				nullCount++
+			}
+		}
+
+		if nullCount != len(r.Topics) {
+			topics = map[string][]SearchLogsTopic{
+				"topics": r.Topics,
+			}
+		}
+	}
+
 	data := []interface{}{
 		r.FromBlock,
 		r.ToBlock,
-		map[string][]string{
-			"addresses": r.Addresses,
-		},
+		// should be null if not specified
+		addresses,
+		// should be null if not specified
+		topics,
 	}
 
-	if len(r.Topics) > 0 {
-		data = append(data, map[string][]interface{}{
-			"topics": r.Topics,
-		})
+	if r.MinimumConfirmations != nil {
+		data = append(data, r.MinimumConfirmations)
 	}
 
 	return json.Marshal(data)
@@ -1284,6 +1406,69 @@ func (r *SendRawTransactionResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// ========== GetAddressUTXOs ============= //
+
+type (
+	/*
+		Arguments:
+		1. Input params              (json object, required) Json object
+			{
+			"addresses": [        (json array, required) The qtum addresses
+				"address",          (string) The qtum address
+				...
+			],
+			"chainInfo": bool,    (boolean, optional) Include chain info with results
+			}
+
+		Result:
+		{                       (json object)
+		"address" : "str",    (string) The address base58check encoded
+		"txid" : "hex",       (string) The output txid
+		"height" : n,         (numeric) The block height
+		"outputIndex" : n,    (numeric) The output index
+		"script" : "hex",     (string) The script hex encoded
+		"satoshis" : n        (numeric) The number of satoshis of the output
+		}
+	*/
+
+	GetAddressUTXOsRequest struct {
+		Addresses []string `json:"addresses"`
+	}
+
+	UTXO struct {
+		Address     string          `json:"address"`
+		TXID        string          `json:"txid"`
+		OutputIndex uint            `json:"outputIndex"`
+		Script      string          `json:"string"`
+		Satoshis    decimal.Decimal `json:"satoshis"`
+		Height      *big.Int        `json:"height"`
+		IsStake     bool            `json:"isStake"`
+	}
+
+	GetAddressUTXOsResponse []UTXO
+)
+
+func (resp *GetAddressUTXOsResponse) UnmarshalJSON(data []byte) error {
+	// NOTE: do not use `GetTransactionReceiptResponse`, 'cause
+	// it may violate to infinite loop, while calling
+	// UnmarshalJSON interface
+	var utxos []UTXO
+	if err := json.Unmarshal(data, &utxos); err != nil {
+		return err
+	}
+	*resp = GetAddressUTXOsResponse(utxos)
+	return nil
+}
+
+func (r *GetAddressUTXOsRequest) MarshalJSON() ([]byte, error) {
+	params := []map[string]interface{}{}
+	addresses := map[string]interface{}{
+		"addresses": r.Addresses,
+	}
+	params = append(params, addresses)
+	return json.Marshal(params)
+}
+
 // ========== ListUnspent ============= //
 type (
 
@@ -1415,7 +1600,6 @@ func (options ListUnspentQueryOptions) MarshalJSON() ([]byte, error) {
 	return json.Marshal(optionsObj)
 }
 
-
 // ======== getstorage ======== //
 type (
 	GetStorageRequest struct {
@@ -1460,7 +1644,7 @@ type (
 	GetAddressBalanceResponse struct {
 		Balance  uint64 `json:"balance"`
 		Received uint64 `json:"received"`
-		Immature int64 `json:"immature"`
+		Immature int64  `json:"immature"`
 	}
 )
 
@@ -1470,8 +1654,6 @@ func (req *GetAddressBalanceRequest) MarshalJSON() ([]byte, error) {
 	}
 	return json.Marshal(params)
 }
-
-
 
 // ======== getpeerinfo ========= //
 type (
@@ -1580,3 +1762,104 @@ type (
 	}
 )
 
+// ========= waitforlogs ========== //
+type (
+	WaitForLogsRequest struct {
+		FromBlock            interface{}       `json:"fromBlock"`
+		ToBlock              interface{}       `json:"toBlock`
+		Filter               WaitForLogsFilter `json:"filter"`
+		MinimumConfirmations int64             `json:"miniconf"`
+	}
+
+	WaitForLogsFilter struct {
+		Addresses *[]string          `json:"addresses,omitempty"`
+		Topics    *[]SearchLogsTopic `json:"topics,omitempty"`
+	}
+
+	WaitForLogsEntry struct {
+		BlockHash        string `json:"blockHash"`
+		BlockNumber      uint64 `json:"blockNumber"`
+		Bloom            string `json:"bloom"`
+		TransactionHash  string `json:"transactionHash"`
+		TransactionIndex uint64 `json:"transactionIndex"`
+		From             string `json:"from"`
+		// (does this apply to waitforlogs or only searchlogs?)
+		// NOTE: will be null for a contract creation transaction
+		To                string `json:"to"`
+		CumulativeGasUsed uint64 `json:"cumulativeGasUsed"`
+		GasUsed           uint64 `json:"gasUsed"`
+
+		// (does this apply to waitforlogs or only searchlogs?)
+		// TODO: discuss -
+		// 	? May be a contract transaction created by non-contract
+		//
+		// The created contract address. If this tx is created by the contract,
+		// return the contract address, else return null
+		ContractAddress string   `json:"contractAddress"`
+		Data            string   `json:"data"`
+		Topics          []string `json:"topics"`
+
+		// May has "None" value, which means, that transaction is not executed
+		Excepted        string `json:"excepted"`
+		ExceptedMessage string `json:"exceptedMessage"`
+
+		OutputIndex int64 `json:"outputIndex"`
+	}
+
+	WaitForLogsResponse struct {
+		Entries   []WaitForLogsEntry `json:"entries"`
+		Count     uint64             `json:"count"`
+		NextBlock uint64             `json:"nextBlock"`
+	}
+)
+
+func (e WaitForLogsEntry) Log() Log {
+	return Log{
+		Address: e.ContractAddress,
+		Topics:  []string(e.Topics),
+		Data:    e.Data,
+	}
+}
+
+func (e WaitForLogsEntry) GetTransactionHash() string {
+	return e.TransactionHash
+}
+
+func (e WaitForLogsEntry) GetTransactionIndex() uint64 {
+	return e.TransactionIndex
+}
+
+func (e WaitForLogsEntry) GetBlockHash() string {
+	return e.BlockHash
+}
+
+func (e WaitForLogsEntry) GetBlockNumber() uint64 {
+	return e.BlockNumber
+}
+
+func (e WaitForLogsEntry) GetAddress() string {
+	return e.ContractAddress
+}
+
+func (e WaitForLogsEntry) GetTopics() []string {
+	return e.Topics
+}
+
+func (e WaitForLogsEntry) GetData() string {
+	return e.Data
+}
+
+func (r *WaitForLogsRequest) MarshalJSON() ([]byte, error) {
+	/*
+		1. fromBlock (int | "latest", optional, default=null) The block number to start looking for logs. ()
+		2. toBlock   (int | "latest", optional, default=null) The block number to stop looking for logs. If null, will wait indefinitely into the future.
+		3. filter    ({ addresses?: Hex160String[], topics?: Hex256String[] }, optional default={}) Filter conditions for logs. Addresses and topics are specified as array of hexadecimal strings
+		4. minconf   (uint, optional, default=6) Minimal number of confirmations before a log is returned
+	*/
+	return json.Marshal([]interface{}{
+		r.FromBlock,
+		r.ToBlock,
+		r.Filter,
+		r.MinimumConfirmations,
+	})
+}

@@ -11,4 +11,4 @@ ENV QTUM_NETWORK=regtest
 
 EXPOSE 23889
 
-ENTRYPOINT [ "janus"]
+ENTRYPOINT [ "janus" ]

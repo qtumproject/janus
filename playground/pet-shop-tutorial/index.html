@@ -1,0 +1,72 @@
+<!doctype html>
+<html class="no-js" lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/main.css">
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+  <div style="position: fixed; left: 0">
+    <button onclick="App.handleLogout()">Logout</button>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12 col-sm-8 col-sm-push-2">
+        <h1 class="text-center">Pete's Pet Shop</h1>
+        <hr/>
+        <br/>
+      </div>
+    </div>
+
+    <div id="petsRow" class="row">
+      <!-- PETS LOAD HERE -->
+    </div>
+  </div>
+
+  <div id="petTemplate" style="display: none;">
+    <div class="col-sm-6 col-md-4 col-lg-4">
+      <div class="panel panel-default panel-pet">
+        <div class="panel-heading">
+          <h3 class="panel-title">Scrappy</h3>
+        </div>
+        <div class="panel-body">
+          <img alt="140x140" width="328" height="328" data-src="holder.js/140x140" class="img-rounded img-center" src="https://animalso.com/wp-content/uploads/2017/01/Golden-Retriever_6.jpg" data-holder-rendered="true">
+          <br/><br/>
+          <strong>Breed</strong>: <span class="pet-breed">Golden Retriever</span><br/>
+          <strong>Age</strong>: <span class="pet-age">3</span><br/>
+          <strong>Location</strong>: <span class="pet-location">Warren, MI</span>
+          <p class="pet-adopter-container"><strong>Adopter</strong>: <span class="pet-adopter-address"></span></p>
+          <p><button class="btn btn-default btn-adopt" type="button" data-id="0">Adopt</button></p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="js/vendor/modernizr-3.11.2.min.js"></script>
+  <script src="js/vendor/jquery.min.js"></script>
+  <script src="js/vendor/web3.min.js"></script>
+  <script src="js/vendor/truffle-contract.js"></script>
+  <script src="js/plugins.js"></script>
+  <!--<script type="module" src="js/main.js"></script>-->
+  <script src="dist/build.js"></script>
+  <script src="js/vendor/bootstrap.min.js"></script>
+</body>
+
+</html>

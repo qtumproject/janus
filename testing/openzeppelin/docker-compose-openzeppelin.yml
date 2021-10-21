@@ -27,7 +27,7 @@ services:
       cache_from:
         - qtum/qtum-seeded
     container_name: qtum_seeded_testchain
-    command: qtumd -regtest -rpcbind=0.0.0.0:3889 -rpcallowip=0.0.0.0/0 -logevents -rpcuser=qtum -rpcpassword=testpasswd -deprecatedrpc=accounts -printtoconsole
+    command: qtumd -regtest -addrindex -txindex -rpcbind=0.0.0.0:3889 -rpcallowip=0.0.0.0/0 -logevents -rpcuser=qtum -rpcpassword=testpasswd -deprecatedrpc=accounts -printtoconsole
   openzeppelin:
     image: qtum/janus-openzeppelin
     build:
@@ -35,6 +35,8 @@ services:
       dockerfile: ./openzeppelin.Dockerfile
       cache_from:
         - qtum/janus-openzeppelin
+    environment:
+      - GENERATE_TO_ADDRESS=qW28njWueNpBXYWj2KDmtFG2gbLeALeHfV
     depends_on:
       - janus
     command: truffle test --network docker

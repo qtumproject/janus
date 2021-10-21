@@ -2,6 +2,7 @@ package qtum
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -20,6 +21,11 @@ import (
 	"github.com/pkg/errors"
 )
 
+var FLAG_GENERATE_ADDRESS_TO = "REGTEST_GENERATE_ADDRESS_TO"
+var FLAG_IGNORE_UNKNOWN_TX = "IGNORE_UNKNOWN_TX"
+var FLAG_DISABLE_SNIPPING_LOGS = "DISABLE_SNIPPING_LOGS"
+var FLAG_HIDE_QTUMD_LOGS = "HIDE_QTUMD_LOGS"
+
 var maximumRequestTime = 10000
 var maximumBackoff = (2 * time.Second).Milliseconds()
 
@@ -30,8 +36,9 @@ type Client struct {
 	// hex addresses to return for eth_accounts
 	Accounts Accounts
 
-	logger log.Logger
-	debug  bool
+	logWriter io.Writer
+	logger    log.Logger
+	debug     bool
 
 	// is this client using the main network?
 	isMain bool
@@ -39,6 +46,9 @@ type Client struct {
 	id      *big.Int
 	idStep  *big.Int
 	idMutex sync.Mutex
+
+	mutex *sync.RWMutex
+	flags map[string]interface{}
 }
 
 func ReformatJSON(input []byte) ([]byte, error) {
@@ -64,6 +74,8 @@ func NewClient(isMain bool, rpcURL string, opts ...func(*Client) error) (*Client
 		debug:  false,
 		id:     big.NewInt(0),
 		idStep: big.NewInt(1),
+		mutex:  &sync.RWMutex{},
+		flags:  make(map[string]interface{}),
 	}
 
 	for _, opt := range opts {
@@ -80,6 +92,10 @@ func (c *Client) IsMain() bool {
 }
 
 func (c *Client) Request(method string, params interface{}, result interface{}) error {
+	return c.RequestWithContext(nil, method, params, result)
+}
+
+func (c *Client) RequestWithContext(ctx context.Context, method string, params interface{}, result interface{}) error {
 	req, err := c.NewRPCRequest(method, params)
 	if err != nil {
 		return errors.WithMessage(err, "couldn't make new rpc request")
@@ -88,7 +104,7 @@ func (c *Client) Request(method string, params interface{}, result interface{}) 
 	var resp *SuccessJSONRPCResult
 	max := int(math.Floor(math.Max(float64(maximumRequestTime/int(maximumBackoff)), 1)))
 	for i := 0; i < max; i++ {
-		resp, err = c.Do(req)
+		resp, err = c.Do(ctx, req)
 		if err != nil {
 			if strings.Contains(err.Error(), ErrQtumWorkQueueDepth.Error()) && i != max-1 {
 				requestString := marshalToString(req)
@@ -115,7 +131,7 @@ func (c *Client) Request(method string, params interface{}, result interface{}) 
 	return nil
 }
 
-func (c *Client) Do(req *JSONRPCRequest) (*SuccessJSONRPCResult, error) {
+func (c *Client) Do(ctx context.Context, req *JSONRPCRequest) (*SuccessJSONRPCResult, error) {
 	reqBody, err := json.MarshalIndent(req, "", "  ")
 	if err != nil {
 		return nil, err
@@ -125,25 +141,27 @@ func (c *Client) Do(req *JSONRPCRequest) (*SuccessJSONRPCResult, error) {
 
 	debugLogger.Log("method", req.Method)
 
-	if c.IsDebugEnabled() {
-		fmt.Printf("=> qtum RPC request\n%s\n", reqBody)
+	if c.IsDebugEnabled() && !c.GetFlagBool(FLAG_HIDE_QTUMD_LOGS) {
+		fmt.Fprintf(c.logWriter, "=> qtum RPC request\n%s\n", reqBody)
 	}
 
-	respBody, err := c.do(bytes.NewReader(reqBody))
+	respBody, err := c.do(ctx, bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, errors.Wrap(err, "Client#do")
 	}
 
-	if c.IsDebugEnabled() {
-		maxBodySize := 1024 * 8
+	if c.IsDebugEnabled() && !c.GetFlagBool(FLAG_HIDE_QTUMD_LOGS) {
 		formattedBody, err := ReformatJSON(respBody)
 		formattedBodyStr := string(formattedBody)
-		if len(formattedBodyStr) > maxBodySize {
-			formattedBodyStr = formattedBodyStr[0:maxBodySize/2] + "\n...snip...\n" + formattedBodyStr[len(formattedBody)-maxBodySize/2:]
+		if !c.GetFlagBool(FLAG_DISABLE_SNIPPING_LOGS) {
+			maxBodySize := 1024 * 8
+			if len(formattedBodyStr) > maxBodySize {
+				formattedBodyStr = formattedBodyStr[0:maxBodySize/2] + "\n...snip...\n" + formattedBodyStr[len(formattedBody)-maxBodySize/2:]
+			}
 		}
 
 		if err == nil {
-			fmt.Printf("<= qtum RPC response\n%s\n", formattedBodyStr)
+			fmt.Fprintf(c.logWriter, "<= qtum RPC response\n%s\n", formattedBodyStr)
 		}
 	}
 
@@ -185,8 +203,14 @@ func (c *Client) NewRPCRequest(method string, params interface{}) (*JSONRPCReque
 	}, nil
 }
 
-func (c *Client) do(body io.Reader) ([]byte, error) {
-	req, err := http.NewRequest(http.MethodPost, c.URL, body)
+func (c *Client) do(ctx context.Context, body io.Reader) ([]byte, error) {
+	var req *http.Request
+	var err error
+	if ctx != nil {
+		req, err = http.NewRequestWithContext(ctx, http.MethodPost, c.URL, body)
+	} else {
+		req, err = http.NewRequest(http.MethodPost, c.URL, body)
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -209,6 +233,47 @@ func (c *Client) do(body io.Reader) ([]byte, error) {
 	return reader, nil
 }
 
+func (c *Client) SetFlag(key string, value interface{}) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+	c.setFlagImpl(key, value)
+}
+
+func (c *Client) setFlagImpl(key string, value interface{}) {
+	c.flags[key] = value
+}
+
+func (c *Client) GetFlag(key string) interface{} {
+	c.mutex.RLock()
+	defer c.mutex.RUnlock()
+	return c.getFlagImpl(key)
+}
+
+func (c *Client) getFlagImpl(key string) interface{} {
+	return c.flags[key]
+}
+
+func (c *Client) GetFlagString(key string) *string {
+	value := c.GetFlag(key)
+	if value == nil {
+		return nil
+	}
+	result := fmt.Sprintf("%v", value)
+	return &result
+}
+
+func (c *Client) GetFlagBool(key string) bool {
+	value := c.GetFlag(key)
+	if value == nil {
+		return false
+	}
+	result, ok := value.(bool)
+	if !ok {
+		return false
+	}
+	return result
+}
+
 type doer interface {
 	Do(*http.Request) (*http.Response, error)
 }
@@ -227,6 +292,13 @@ func SetDebug(debug bool) func(*Client) error {
 	}
 }
 
+func SetLogWriter(logWriter io.Writer) func(*Client) error {
+	return func(c *Client) error {
+		c.logWriter = logWriter
+		return nil
+	}
+}
+
 func SetLogger(l log.Logger) func(*Client) error {
 	return func(c *Client) error {
 		c.logger = log.WithPrefix(l, "component", "qtum.Client")
@@ -239,6 +311,40 @@ func SetAccounts(accounts Accounts) func(*Client) error {
 		c.Accounts = accounts
 		return nil
 	}
+}
+
+func SetGenerateToAddress(address string) func(*Client) error {
+	return func(c *Client) error {
+		if address != "" {
+			c.SetFlag(FLAG_GENERATE_ADDRESS_TO, address)
+		}
+		return nil
+	}
+}
+
+func SetIgnoreUnknownTransactions(ignore bool) func(*Client) error {
+	return func(c *Client) error {
+		c.SetFlag(FLAG_IGNORE_UNKNOWN_TX, ignore)
+		return nil
+	}
+}
+
+func SetDisableSnippingQtumRpcOutput(disable bool) func(*Client) error {
+	return func(c *Client) error {
+		c.SetFlag(FLAG_DISABLE_SNIPPING_LOGS, !disable)
+		return nil
+	}
+}
+
+func SetHideQtumdLogs(hide bool) func(*Client) error {
+	return func(c *Client) error {
+		c.SetFlag(FLAG_HIDE_QTUMD_LOGS, hide)
+		return nil
+	}
+}
+
+func (c *Client) GetLogWriter() io.Writer {
+	return c.logWriter
 }
 
 func (c *Client) GetLogger() log.Logger {
