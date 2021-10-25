@@ -423,7 +423,7 @@ func QtumWaitForLogsEntry(log qtum.Log) qtum.WaitForLogsEntry {
 		To:                GetTransactionByHashResponseData.To,
 		CumulativeGasUsed: hexutil.MustDecodeUint64(GetTransactionByHashResponseData.Gas),
 		GasUsed:           hexutil.MustDecodeUint64(GetTransactionByHashResponseData.Gas),
-		ContractAddress:   GetTransactionByHashResponseData.To,
+		ContractAddress:   strings.TrimPrefix(GetTransactionByHashResponseData.To, "0x"),
 		Topics:            log.Topics,
 		Data:              log.Data,
 	}

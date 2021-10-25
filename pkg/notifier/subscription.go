@@ -63,8 +63,13 @@ func (s *subscriptionInformation) run() {
 	}
 	stringAddresses := make([]string, len(ethAddresses))
 	for i, ethAddress := range ethAddresses {
-		stringAddresses[i] = ethAddress.String()
+		if strings.HasPrefix(ethAddress.String(), "0x") {
+			stringAddresses[i] = strings.TrimPrefix(ethAddress.String(), "0x")
+		} else {
+			stringAddresses[i] = ethAddress.String()
+		}
 	}
+
 	qtumTopics := qtum.NewSearchLogsTopics(translatedTopics)
 	req := &qtum.WaitForLogsRequest{
 		FromBlock: nextBlock,
