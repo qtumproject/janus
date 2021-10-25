@@ -215,6 +215,8 @@ func (c *Client) do(ctx context.Context, body io.Reader) ([]byte, error) {
 		return nil, err
 	}
 
+	req.Close = true
+
 	resp, err := c.doer.Do(req)
 	if err != nil {
 		return nil, err
