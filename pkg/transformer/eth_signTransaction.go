@@ -92,7 +92,7 @@ func (p *ProxyETHSignTransaction) requestSendToContract(ethtx *eth.SendTransacti
 	amount := decimal.NewFromFloat(0.0)
 	if ethtx.Value != "" {
 		var err error
-		amount, err = EthValueToQtumAmount(ethtx.Value, ZeroSatoshi)
+		amount, err = ParseValue(p.Qtum, ethtx.Value, ZeroSatoshi)
 		if err != nil {
 			return "", eth.NewInvalidParamsError(err.Error())
 		}
@@ -171,7 +171,7 @@ func (p *ProxyETHSignTransaction) requestSendToAddress(req *eth.SendTransactionR
 		return "", eth.NewCallbackError(err.Error())
 	}
 
-	amount, err := EthValueToQtumAmount(req.Value, ZeroSatoshi)
+	amount, err := ParseValue(p.Qtum, req.Value, ZeroSatoshi)
 	if err != nil {
 		return "", eth.NewInvalidParamsError(err.Error())
 	}

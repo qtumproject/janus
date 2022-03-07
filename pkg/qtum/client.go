@@ -26,6 +26,7 @@ var FLAG_IGNORE_UNKNOWN_TX = "IGNORE_UNKNOWN_TX"
 var FLAG_DISABLE_SNIPPING_LOGS = "DISABLE_SNIPPING_LOGS"
 var FLAG_HIDE_QTUMD_LOGS = "HIDE_QTUMD_LOGS"
 var FLAG_MATURE_BLOCK_HEIGHT_OVERRIDE = "FLAG_MATURE_BLOCK_HEIGHT_OVERRIDE"
+var FLAG_USE_SATOSHI_INSTEAD_OF_WEI = "FLAG_USE_SATOSHI_INSTEAD_OF_WEI"
 
 var maximumRequestTime = 10000
 var maximumBackoff = (2 * time.Second).Milliseconds()
@@ -374,6 +375,18 @@ func SetMatureBlockHeight(height *int) func(*Client) error {
 	return func(c *Client) error {
 		if height != nil {
 			c.SetFlag(FLAG_MATURE_BLOCK_HEIGHT_OVERRIDE, height)
+		}
+		return nil
+	}
+}
+
+func SetUseSatoshisInsteadOfWei(useSatoshisInsteadOfWei *bool) func(*Client) error {
+	return func(c *Client) error {
+		if useSatoshisInsteadOfWei != nil {
+			if *useSatoshisInsteadOfWei {
+				c.GetLogger().Log("msg", "Warning: Interpreting amounts in satoshi instead of wei - your dapps could end up sending much more QTUM than intended if they have not been programmed to use satoshis")
+			}
+			c.SetFlag(FLAG_USE_SATOSHI_INSTEAD_OF_WEI, useSatoshisInsteadOfWei)
 		}
 		return nil
 	}

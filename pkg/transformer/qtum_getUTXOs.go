@@ -123,7 +123,10 @@ func (p *ProxyQTUMGetUTXOs) request(params eth.GetUTXOsRequest) (*eth.GetUTXOsRe
 		}
 	}
 
+	// sort utxos by largest to smallest value so client's spend the least amount of time processing dust
+
 	if queryingAll {
+		p.Qtum.GetLogger().Log("msg", "Spendable balance: "+minUTXOsSum.String())
 		return (*eth.GetUTXOsResponse)(&utxos), nil
 	}
 

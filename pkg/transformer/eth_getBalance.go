@@ -36,7 +36,16 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest, c echo.Context)
 		if err == nil {
 			// the unit of the balance Satoshi
 			p.GetDebugLogger().Log("method", p.Method(), "address", req.Address, "msg", "is a contract")
-			return hexutil.EncodeUint64(uint64(qtumresp.Balance)), nil
+
+			// 1 QTUM = 10 ^ 8 Satoshi
+			balance := new(big.Int).SetUint64(uint64(qtumresp.Balance))
+
+			if !p.GetFlagBool(qtum.FLAG_USE_SATOSHI_INSTEAD_OF_WEI) {
+				//Balance for ETH response is represented in Weis (1 QTUM Satoshi = 10 ^ 10 Wei)
+				balance = balance.Mul(balance, big.NewInt(10000000000))
+			}
+
+			return hexutil.EncodeBig(balance), nil
 		}
 	}
 
@@ -62,8 +71,10 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest, c echo.Context)
 		// 1 QTUM = 10 ^ 8 Satoshi
 		balance := new(big.Int).SetUint64(qtumresp.Balance)
 
-		//Balance for ETH response is represented in Weis (1 QTUM Satoshi = 10 ^ 10 Wei)
-		balance = balance.Mul(balance, big.NewInt(10000000000))
+		if !p.GetFlagBool(qtum.FLAG_USE_SATOSHI_INSTEAD_OF_WEI) {
+			//Balance for ETH response is represented in Weis (1 QTUM Satoshi = 10 ^ 10 Wei)
+			balance = balance.Mul(balance, big.NewInt(10000000000))
+		}
 
 		return hexutil.EncodeBig(balance), nil
 	}

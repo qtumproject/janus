@@ -58,7 +58,15 @@ func QtumGasToEth(g EthGas) (gasLimit *big.Int, gasPrice string, err error) {
 	return
 }
 
-func EthValueToQtumAmount(val string, defaultValue decimal.Decimal) (decimal.Decimal, error) {
+func ParseValue(c *qtum.Qtum, val string, defaultValue decimal.Decimal) (decimal.Decimal, error) {
+	if c.GetFlagBool(qtum.FLAG_USE_SATOSHI_INSTEAD_OF_WEI) {
+		return ParseDecimalWithDefaultValue(val, defaultValue)
+	} else {
+		return EthValueToQtumAmount(val, defaultValue)
+	}
+}
+
+func ParseDecimalWithDefaultValue(val string, defaultValue decimal.Decimal) (decimal.Decimal, error) {
 	if val == "" {
 		return defaultValue, nil
 	}
@@ -76,6 +84,15 @@ func EthValueToQtumAmount(val string, defaultValue decimal.Decimal) (decimal.Dec
 	return EthDecimalValueToQtumAmount(ethValDecimal), nil
 }
 
+func EthValueToQtumAmount(val string, defaultValue decimal.Decimal) (decimal.Decimal, error) {
+	ethValDecimal, err := ParseDecimalWithDefaultValue(val, defaultValue)
+	if err != nil {
+		return ethValDecimal, err
+	}
+
+	return EthDecimalValueToQtumAmount(ethValDecimal), nil
+}
+
 func EthDecimalValueToQtumAmount(ethValDecimal decimal.Decimal) decimal.Decimal {
 	// Convert Wei to Qtum
 	// 10000000000
@@ -83,6 +100,7 @@ func EthDecimalValueToQtumAmount(ethValDecimal decimal.Decimal) decimal.Decimal 
 	// we need to drop precision for values smaller than that
 	maximumPrecision := ethValDecimal.Mul(decimal.NewFromFloat(float64(1e-8))).Floor()
 	amount := maximumPrecision.Mul(decimal.NewFromFloat(float64(1e-10)))
+	fmt.Printf("***************** convert %s => %s => %s\n", ethValDecimal.String(), maximumPrecision.String(), amount.String())
 
 	return amount
 }

@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -60,10 +62,13 @@ func (p *ProxyETHSendTransaction) requestSendToContract(ethtx *eth.SendTransacti
 	amount := decimal.NewFromFloat(0.0)
 	if ethtx.Value != "" {
 		var err error
-		amount, err = EthValueToQtumAmount(ethtx.Value, ZeroSatoshi)
+		amount, err = ParseValue(p.Qtum, ethtx.Value, ZeroSatoshi)
 		if err != nil {
 			return nil, eth.NewInvalidParamsError(err.Error())
 		}
+
+		fmt.Println("****************************")
+		fmt.Println(amount.String())
 	}
 
 	qtumreq := qtum.SendToContractRequest{
@@ -109,7 +114,7 @@ func (p *ProxyETHSendTransaction) requestSendToAddress(req *eth.SendTransactionR
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}
 
-	amount, err := EthValueToQtumAmount(req.Value, ZeroSatoshi)
+	amount, err := ParseValue(p.Qtum, req.Value, ZeroSatoshi)
 	if err != nil {
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}

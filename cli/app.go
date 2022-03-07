@@ -24,15 +24,16 @@ var (
 
 	accountsFile = app.Flag("accounts", "account private keys (in WIF) returned by eth_accounts").Envar("ACCOUNTS").File()
 
-	qtumRPC             = app.Flag("qtum-rpc", "URL of qtum RPC service").Envar("QTUM_RPC").Default("").String()
-	qtumNetwork         = app.Flag("qtum-network", "if 'regtest' (or connected to a regtest node with 'auto') Janus will generate blocks").Envar("QTUM_NETWORK").Default("auto").String()
-	generateToAddressTo = app.Flag("generateToAddressTo", "[regtest only] configure address to mine blocks to when mining new transactions in blocks").Envar("GENERATE_TO_ADDRESS").Default("").String()
-	bind                = app.Flag("bind", "network interface to bind to (e.g. 0.0.0.0) ").Default("localhost").String()
-	port                = app.Flag("port", "port to serve proxy").Default("23889").Int()
-	httpsKey            = app.Flag("https-key", "https keyfile").Default("").String()
-	httpsCert           = app.Flag("https-cert", "https certificate").Default("").String()
-	logFile             = app.Flag("log-file", "write logs to a file").Envar("LOG_FILE").Default("").String()
-	matureBlockHeight   = app.Flag("mature-block-height-override", "override how old a coinbase/coinstake needs to be to be considered mature enough for spending (QTUM uses 2000 blocks after the 32s block fork) - if this value is incorrect transactions can be rejected").Int()
+	qtumRPC                 = app.Flag("qtum-rpc", "URL of qtum RPC service").Envar("QTUM_RPC").Default("").String()
+	qtumNetwork             = app.Flag("qtum-network", "if 'regtest' (or connected to a regtest node with 'auto') Janus will generate blocks").Envar("QTUM_NETWORK").Default("auto").String()
+	generateToAddressTo     = app.Flag("generateToAddressTo", "[regtest only] configure address to mine blocks to when mining new transactions in blocks").Envar("GENERATE_TO_ADDRESS").Default("").String()
+	bind                    = app.Flag("bind", "network interface to bind to (e.g. 0.0.0.0) ").Default("localhost").String()
+	port                    = app.Flag("port", "port to serve proxy").Default("23889").Int()
+	httpsKey                = app.Flag("https-key", "https keyfile").Default("").String()
+	httpsCert               = app.Flag("https-cert", "https certificate").Default("").String()
+	logFile                 = app.Flag("log-file", "write logs to a file").Envar("LOG_FILE").Default("").String()
+	matureBlockHeight       = app.Flag("mature-block-height-override", "override how old a coinbase/coinstake needs to be to be considered mature enough for spending (QTUM uses 2000 blocks after the 32s block fork) - if this value is incorrect transactions can be rejected").Int()
+	useSatoshisInsteadOfWei = app.Flag("use-satoshis-instead-of-wei", "override default behavior to interpret values in satoshi instead of wei").Bool()
 
 	devMode        = app.Flag("dev", "[Insecure] Developer mode").Envar("DEV").Default("false").Bool()
 	singleThreaded = app.Flag("singleThreaded", "[Non-production] Process RPC requests in a single thread").Envar("SINGLE_THREADED").Default("false").Bool()
@@ -120,6 +121,7 @@ func action(pc *kingpin.ParseContext) error {
 		qtum.SetHideQtumdLogs(*hideQtumdLogs),
 		qtum.SetMatureBlockHeight(matureBlockHeight),
 		qtum.SetContext(context.Background()),
+		qtum.SetUseSatoshisInsteadOfWei(useSatoshisInsteadOfWei),
 	)
 	if err != nil {
 		return errors.Wrap(err, "Failed to setup QTUM client")

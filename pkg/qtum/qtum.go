@@ -10,6 +10,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/qtumproject/janus/pkg/utils"
+	"github.com/shopspring/decimal"
 )
 
 type Qtum struct {
@@ -127,6 +128,10 @@ func (c *Qtum) GenerateIfPossible() {
 	if _, generateErr := c.Generate(1, nil); generateErr != nil {
 		c.GetErrorLogger().Log("Error generating new block", generateErr)
 	}
+}
+
+func (c *Qtum) ConvertUnits(val string) (decimal.Decimal, error) {
+
 }
 
 // Presents hexed address prefix of a specific chain without
