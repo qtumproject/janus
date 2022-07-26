@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"math"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -19,11 +20,11 @@ func (p *ProxyETHHashrate) Method() string {
 }
 
 func (p *ProxyETHHashrate) Request(_ *eth.JSONRPCRequest, c echo.Context) (interface{}, eth.JSONRPCError) {
-	return p.request()
+	return p.request(c.Request().Context())
 }
 
-func (p *ProxyETHHashrate) request() (*eth.HashrateResponse, eth.JSONRPCError) {
-	qtumresp, err := p.Qtum.GetHashrate()
+func (p *ProxyETHHashrate) request(ctx context.Context) (*eth.HashrateResponse, eth.JSONRPCError) {
+	qtumresp, err := p.Qtum.GetHashrate(ctx)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"context"
+
 	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -16,11 +18,11 @@ func (p *ProxyETHMining) Method() string {
 }
 
 func (p *ProxyETHMining) Request(_ *eth.JSONRPCRequest, c echo.Context) (interface{}, eth.JSONRPCError) {
-	return p.request()
+	return p.request(c.Request().Context())
 }
 
-func (p *ProxyETHMining) request() (*eth.MiningResponse, eth.JSONRPCError) {
-	qtumresp, err := p.Qtum.GetMining()
+func (p *ProxyETHMining) request(ctx context.Context) (*eth.MiningResponse, eth.JSONRPCError) {
+	qtumresp, err := p.Qtum.GetMining(ctx)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

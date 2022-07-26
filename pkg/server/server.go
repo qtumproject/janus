@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -17,6 +18,7 @@ import (
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
 	"github.com/pkg/errors"
+	"github.com/qtumproject/janus/pkg/blockhash"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/transformer"
@@ -33,6 +35,7 @@ type Server struct {
 	debug         bool
 	mutex         *sync.Mutex
 	echo          *echo.Echo
+	blockHash     *blockhash.BlockHash
 
 	blocksMutex     sync.RWMutex
 	lastBlock       int64
@@ -54,7 +57,18 @@ func New(
 		transformer:   transformer,
 	}
 
-	var err error
+	blockHashProcessor, err := blockhash.NewBlockHash(
+		qtumRPCClient.GetContext(),
+		func() log.Logger {
+			return p.qtumRPCClient.GetLogger()
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	p.blockHash = blockHashProcessor
+
 	for _, opt := range opts {
 		if err = opt(p); err != nil {
 			return nil, err
@@ -103,9 +117,11 @@ func (s *Server) Start() error {
 				logWriter:   logWriter,
 				logger:      s.logger,
 				transformer: s.transformer,
+				blockHash:   s.blockHash,
 			}
 
 			c.Set("myctx", cc)
+			c.Set("blockHash", cc.blockHash)
 
 			return h(c)
 		}
@@ -144,12 +160,43 @@ func (s *Server) Start() error {
 	url := s.qtumRPCClient.GetURL().Redacted()
 	level.Info(s.logger).Log("listen", s.address, "qtum_rpc", url, "msg", "proxy started", "https", https)
 
+	var err error
+
+	// shutdown echo server when context ends
+	go func(ctx context.Context, e *echo.Echo) {
+		select {
+		case <-ctx.Done():
+			e.Close()
+		}
+	}(s.qtumRPCClient.GetContext(), e)
+
+	if s.qtumRPCClient.DbConfig.String() == "" {
+		level.Warn(s.logger).Log("msg", "Database not configured - won't be able to respond to Ethereum block hash requests")
+	} else {
+		chainIdChan := make(chan int, 1)
+		err := s.blockHash.Start(&s.qtumRPCClient.DbConfig, chainIdChan)
+		if err != nil {
+			level.Error(s.logger).Log("msg", "Failed to launch block hash converter", "error", err)
+			/*
+				level.Error(s.logger).Log("msg", "Failed to connect to database, quitting")
+				e.Close()
+				return errors.Wrap(err, "Failed to connect to database")
+			*/
+		}
+
+		go func() {
+			chainIdChan <- s.qtumRPCClient.ChainId()
+		}()
+	}
+
 	if https {
 		level.Info(s.logger).Log("msg", "SSL enabled")
-		return e.StartTLS(s.address, s.httpsCert, s.httpsKey)
+		err = e.StartTLS(s.address, s.httpsCert, s.httpsKey)
 	} else {
-		return e.Start(s.address)
+		err = e.Start(s.address)
 	}
+
+	return err
 }
 
 type Option func(*Server) error

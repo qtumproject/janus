@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/labstack/echo"
@@ -26,20 +27,24 @@ func (p *ProxyETHGetStorageAt) Request(rawreq *eth.JSONRPCRequest, c echo.Contex
 	}
 
 	qtumAddress := utils.RemoveHexPrefix(req.Address)
-	blockNumber, err := getBlockNumberByParam(p.Qtum, req.BlockNumber, false)
+	blockNumber, err := getBlockNumberByParam(c.Request().Context(), p.Qtum, req.BlockNumber, false)
 	if err != nil {
 		p.GetDebugLogger().Log("msg", fmt.Sprintf("Failed to get block number by param for '%s'", req.BlockNumber), "err", err)
 		return nil, err
 	}
 
-	return p.request(&qtum.GetStorageRequest{
-		Address:     qtumAddress,
-		BlockNumber: blockNumber,
-	}, utils.RemoveHexPrefix(req.Index))
+	return p.request(
+		c.Request().Context(),
+		&qtum.GetStorageRequest{
+			Address:     qtumAddress,
+			BlockNumber: blockNumber,
+		},
+		utils.RemoveHexPrefix(req.Index),
+	)
 }
 
-func (p *ProxyETHGetStorageAt) request(ethreq *qtum.GetStorageRequest, index string) (*eth.GetStorageResponse, eth.JSONRPCError) {
-	qtumresp, err := p.Qtum.GetStorage(ethreq)
+func (p *ProxyETHGetStorageAt) request(ctx context.Context, ethreq *qtum.GetStorageRequest, index string) (*eth.GetStorageResponse, eth.JSONRPCError) {
+	qtumresp, err := p.Qtum.GetStorage(ctx, ethreq)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

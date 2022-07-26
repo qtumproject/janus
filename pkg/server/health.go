@@ -14,7 +14,7 @@ var ErrLostLotsOfBlocks = errors.New("Lost a lot of blocks, expected block heigh
 var ErrLostFewBlocks = errors.New("Lost a few blocks, expected block height to be higher")
 
 func (s *Server) testConnectionToQtumd() error {
-	networkInfo, err := s.qtumRPCClient.GetNetworkInfo()
+	networkInfo, err := s.qtumRPCClient.GetNetworkInfo(s.qtumRPCClient.GetContext())
 	if err == nil {
 		// chain can theoretically block forever if qtumd isn't up
 		// but then GetNetworkInfo would be erroring
@@ -43,7 +43,7 @@ func (s *Server) testConnectionToQtumd() error {
 }
 
 func (s *Server) testLogEvents() error {
-	_, err := s.qtumRPCClient.GetTransactionReceipt("0000000000000000000000000000000000000000000000000000000000000000")
+	_, err := s.qtumRPCClient.GetTransactionReceipt(s.qtumRPCClient.GetContext(), "0000000000000000000000000000000000000000000000000000000000000000")
 	if err == qtum.ErrInternalError {
 		return errors.Wrap(err, "-logevents might not be enabled")
 	}
@@ -71,7 +71,7 @@ func (s *Server) testBlocksSyncing() error {
 	}
 	defer s.blocksMutex.Unlock()
 
-	blockChainInfo, err := s.qtumRPCClient.GetBlockChainInfo()
+	blockChainInfo, err := s.qtumRPCClient.GetBlockChainInfo(s.qtumRPCClient.GetContext())
 	if err != nil {
 		return err
 	}

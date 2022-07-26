@@ -20,6 +20,7 @@ import (
 	"github.com/go-kit/log"
 	"github.com/go-kit/log/level"
 	"github.com/pkg/errors"
+	"github.com/qtumproject/janus/pkg/blockhash"
 )
 
 var FLAG_GENERATE_ADDRESS_TO = "REGTEST_GENERATE_ADDRESS_TO"
@@ -34,10 +35,11 @@ var maximumBackoff = (2 * time.Second).Milliseconds()
 type ErrorHandler func(context.Context, error) error
 
 type Client struct {
-	URL  string
-	url  *url.URL
-	doer doer
-	ctx  context.Context
+	URL      string
+	url      *url.URL
+	doer     doer
+	ctx      context.Context
+	DbConfig blockhash.DatabaseConfig
 
 	// hex addresses to return for eth_accounts
 	Accounts Accounts
@@ -143,6 +145,9 @@ func (c *Client) Request(method string, params interface{}, result interface{}) 
 }
 
 func (c *Client) RequestWithContext(ctx context.Context, method string, params interface{}, result interface{}) error {
+	if ctx == nil {
+		ctx = c.GetContext()
+	}
 
 	// check if method is cacheable first
 	if c.cache.isCachable(method) {
@@ -177,16 +182,15 @@ func (c *Client) RequestWithContext(ctx context.Context, method string, params i
 		resp, err = c.Do(ctx, req)
 		if err != nil {
 			errorHandlerErr := c.errorHandler(ctx, err)
-			if errorHandlerErr == nil && i != max-1 {
+			retry := false
+			if errorHandlerErr != nil && i != max-1 {
 				// only allow recovering from a specific error once
-				if _, ok := handledErrors[err]; !ok {
+				if _, ok := handledErrors[errorHandlerErr]; !ok {
 					handledErrors[err] = true
-					// retry
-					c.GetLogger().Log("msg", "Retrying Qtum request, error was handled", "err", err)
-					continue
+					retry = true
 				}
 			}
-			if strings.Contains(err.Error(), ErrQtumWorkQueueDepth.Error()) && i != max-1 {
+			if (retry || strings.Contains(err.Error(), ErrQtumWorkQueueDepth.Error())) && i != max-1 {
 				requestString := marshalToString(req)
 				backoffTime := computeBackoff(i, true)
 				c.GetLogger().Log("msg", fmt.Sprintf("QTUM process busy, backing off for %f seconds", backoffTime.Seconds()), "request", requestString)
@@ -202,7 +206,6 @@ func (c *Client) RequestWithContext(ctx context.Context, method string, params i
 				case <-done:
 					return errors.WithMessage(ctx.Err(), "context cancelled")
 				}
-				// time.Sleep(backoffTime)
 				c.GetLogger().Log("msg", "Retrying QTUM command")
 			} else {
 				if i != 0 {
@@ -466,6 +469,55 @@ func SetMatureBlockHeight(height *int) func(*Client) error {
 func SetContext(ctx context.Context) func(*Client) error {
 	return func(c *Client) error {
 		c.ctx = ctx
+		return nil
+	}
+}
+
+func SetSqlHost(host string) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.Host = host
+		return nil
+	}
+}
+
+func SetSqlPort(port int) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.Port = port
+		return nil
+	}
+}
+
+func SetSqlUser(user string) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.User = user
+		return nil
+	}
+}
+
+func SetSqlPassword(password string) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.Password = password
+		return nil
+	}
+}
+
+func SetSqlSSL(ssl bool) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.SSL = ssl
+		return nil
+	}
+}
+
+func SetSqlDatabaseName(databaseName string) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.DatabaseName = databaseName
+		return nil
+	}
+}
+
+func SetSqlConnectionString(connectionString string) func(*Client) error {
+	return func(c *Client) error {
+		c.DbConfig.ConnectionString = connectionString
 		return nil
 	}
 }

@@ -30,7 +30,7 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest, c echo.Context)
 	{
 		// is address a contract or an account?
 		qtumreq := qtum.GetAccountInfoRequest(addr)
-		qtumresp, err := p.GetAccountInfo(&qtumreq)
+		qtumresp, err := p.GetAccountInfo(c.Request().Context(), &qtumreq)
 
 		// the address is a contract
 		if err == nil {
@@ -49,7 +49,7 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest, c echo.Context)
 		}
 
 		qtumreq := qtum.GetAddressBalanceRequest{Address: base58Addr}
-		qtumresp, err := p.GetAddressBalance(&qtumreq)
+		qtumresp, err := p.GetAddressBalance(c.Request().Context(), &qtumreq)
 		if err != nil {
 			if err == qtum.ErrInvalidAddress {
 				// invalid address should return 0x0

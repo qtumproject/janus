@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"context"
+
 	"github.com/dcb9/go-ethereum/common/hexutil"
 	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
@@ -17,11 +19,11 @@ func (p *ProxyNetPeerCount) Method() string {
 }
 
 func (p *ProxyNetPeerCount) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, eth.JSONRPCError) {
-	return p.request()
+	return p.request(c.Request().Context())
 }
 
-func (p *ProxyNetPeerCount) request() (*eth.NetPeerCountResponse, eth.JSONRPCError) {
-	peerInfos, err := p.GetPeerInfo()
+func (p *ProxyNetPeerCount) request(ctx context.Context) (*eth.NetPeerCountResponse, eth.JSONRPCError) {
+	peerInfos, err := p.GetPeerInfo(ctx)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

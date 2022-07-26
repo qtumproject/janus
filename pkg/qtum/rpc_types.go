@@ -1978,3 +1978,12 @@ type (
 		Warning string `json:"warning"`
 	}
 )
+
+// ========= loadwallet ========== //
+type (
+	LoadWalletRequest  []string
+	LoadWalletResponse struct {
+		Name    string `json:"name"`
+		Warning string `json:"warning"`
+	}
+)

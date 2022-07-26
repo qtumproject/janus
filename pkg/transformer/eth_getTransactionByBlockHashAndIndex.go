@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -29,10 +30,10 @@ func (p *ProxyETHGetTransactionByBlockHashAndIndex) Request(rawreq *eth.JSONRPCR
 		return nil, eth.NewInvalidParamsError("invalid argument 0: empty hex string")
 	}
 
-	return p.request(&req)
+	return p.request(c.Request().Context(), &req)
 }
 
-func (p *ProxyETHGetTransactionByBlockHashAndIndex) request(req *eth.GetTransactionByBlockHashAndIndex) (interface{}, eth.JSONRPCError) {
+func (p *ProxyETHGetTransactionByBlockHashAndIndex) request(ctx context.Context, req *eth.GetTransactionByBlockHashAndIndex) (interface{}, eth.JSONRPCError) {
 	transactionIndex, err := hexutil.DecodeUint64(req.TransactionIndex)
 	if err != nil {
 		// TODO: Correct error code?
@@ -41,7 +42,7 @@ func (p *ProxyETHGetTransactionByBlockHashAndIndex) request(req *eth.GetTransact
 
 	// Proxy eth_getBlockByHash and return the transaction at requested index
 	getBlockByNumber := ProxyETHGetBlockByHash{p.Qtum}
-	blockByNumber, jsonErr := getBlockByNumber.request(&eth.GetBlockByHashRequest{BlockHash: req.BlockHash, FullTransaction: true})
+	blockByNumber, jsonErr := getBlockByNumber.request(ctx, &eth.GetBlockByHashRequest{BlockHash: req.BlockHash, FullTransaction: true})
 
 	if jsonErr != nil {
 		return nil, jsonErr

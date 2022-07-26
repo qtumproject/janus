@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"context"
+
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/labstack/echo"
 	"github.com/pkg/errors"
@@ -36,13 +38,13 @@ func (p *ProxyETHGetTransactionReceipt) Request(rawreq *eth.JSONRPCRequest, c ec
 		txHash  = utils.RemoveHexPrefix(string(req))
 		qtumReq = qtum.GetTransactionReceiptRequest(txHash)
 	)
-	return p.request(&qtumReq)
+	return p.request(c.Request().Context(), &qtumReq)
 }
 
-func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptRequest) (*eth.GetTransactionReceiptResponse, eth.JSONRPCError) {
-	qtumReceipt, err := p.Qtum.GetTransactionReceipt(string(*req))
+func (p *ProxyETHGetTransactionReceipt) request(ctx context.Context, req *qtum.GetTransactionReceiptRequest) (*eth.GetTransactionReceiptResponse, eth.JSONRPCError) {
+	qtumReceipt, err := p.Qtum.GetTransactionReceipt(ctx, string(*req))
 	if err != nil {
-		ethTx, _, getRewardTransactionErr := getRewardTransactionByHash(p.Qtum, string(*req))
+		ethTx, _, getRewardTransactionErr := getRewardTransactionByHash(ctx, p.Qtum, string(*req))
 		if getRewardTransactionErr != nil {
 			errCause := errors.Cause(err)
 			if errCause == qtum.EmptyResponseErr {
@@ -101,12 +103,12 @@ func (p *ProxyETHGetTransactionReceipt) request(req *qtum.GetTransactionReceiptR
 	r := qtum.TransactionReceipt(*qtumReceipt)
 	ethReceipt.Logs = conversion.ExtractETHLogsFromTransactionReceipt(&r, r.Log)
 
-	qtumTx, err := p.Qtum.GetRawTransaction(qtumReceipt.TransactionHash, false)
+	qtumTx, err := p.Qtum.GetRawTransaction(ctx, qtumReceipt.TransactionHash, false)
 	if err != nil {
 		p.GetDebugLogger().Log("msg", "couldn't get transaction", "err", err)
 		return nil, eth.NewCallbackError("couldn't get transaction")
 	}
-	decodedRawQtumTx, err := p.Qtum.DecodeRawTransaction(qtumTx.Hex)
+	decodedRawQtumTx, err := p.Qtum.DecodeRawTransaction(ctx, qtumTx.Hex)
 	if err != nil {
 		p.GetDebugLogger().Log("msg", "couldn't decode raw transaction", "err", err)
 		return nil, eth.NewCallbackError("couldn't decode raw transaction")

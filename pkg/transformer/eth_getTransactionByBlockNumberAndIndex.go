@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -29,22 +30,22 @@ func (p *ProxyETHGetTransactionByBlockNumberAndIndex) Request(rawreq *eth.JSONRP
 		return nil, eth.NewInvalidParamsError("invalid argument 0: empty hex string")
 	}
 
-	return p.request(&req)
+	return p.request(c.Request().Context(), &req)
 }
 
-func (p *ProxyETHGetTransactionByBlockNumberAndIndex) request(req *eth.GetTransactionByBlockNumberAndIndex) (interface{}, eth.JSONRPCError) {
+func (p *ProxyETHGetTransactionByBlockNumberAndIndex) request(ctx context.Context, req *eth.GetTransactionByBlockNumberAndIndex) (interface{}, eth.JSONRPCError) {
 	// Decoded by ProxyETHGetTransactionByBlockHashAndIndex, quickly decode so we can fail cheaply without making any calls
 	_, decodeErr := hexutil.DecodeUint64(req.TransactionIndex)
 	if decodeErr != nil {
 		return nil, eth.NewInvalidParamsError("invalid argument 1")
 	}
 
-	blockNum, err := getBlockNumberByParam(p.Qtum, req.BlockNumber, false)
+	blockNum, err := getBlockNumberByParam(ctx, p.Qtum, req.BlockNumber, false)
 	if err != nil {
 		return nil, eth.NewCallbackError("couldn't get block number by parameter")
 	}
 
-	blockHash, err := proxyETHGetBlockByHash(p, p.Qtum, blockNum)
+	blockHash, err := proxyETHGetBlockByHash(ctx, p, p.Qtum, blockNum)
 	if err != nil {
 		return nil, err
 	}
@@ -59,5 +60,5 @@ func (p *ProxyETHGetTransactionByBlockNumberAndIndex) request(req *eth.GetTransa
 		}
 		proxy = &ProxyETHGetTransactionByBlockHashAndIndex{Qtum: p.Qtum}
 	)
-	return proxy.request(getBlockByHashReq)
+	return proxy.request(ctx, getBlockByHashReq)
 }

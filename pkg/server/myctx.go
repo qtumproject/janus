@@ -8,6 +8,7 @@ import (
 	"github.com/go-kit/kit/log"
 	"github.com/go-kit/kit/log/level"
 	"github.com/labstack/echo"
+	"github.com/qtumproject/janus/pkg/blockhash"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/transformer"
 )
@@ -18,6 +19,7 @@ type myCtx struct {
 	logWriter   io.Writer
 	logger      log.Logger
 	transformer *transformer.Transformer
+	blockHash   *blockhash.BlockHash
 }
 
 func (c *myCtx) GetJSONRPCResult(result interface{}) (*eth.JSONRPCResult, error) {

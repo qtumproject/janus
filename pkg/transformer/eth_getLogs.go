@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/labstack/echo"
@@ -32,16 +33,16 @@ func (p *ProxyETHGetLogs) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (i
 	// }
 
 	// Calls ToRequest in order transform ETH-Request to a Qtum-Request
-	qtumreq, err := p.ToRequest(&req)
+	qtumreq, err := p.ToRequest(c.Request().Context(), &req)
 	if err != nil {
 		return nil, err
 	}
 
-	return p.request(qtumreq)
+	return p.request(c.Request().Context(), qtumreq)
 }
 
-func (p *ProxyETHGetLogs) request(req *qtum.SearchLogsRequest) (*eth.GetLogsResponse, eth.JSONRPCError) {
-	receipts, err := conversion.SearchLogsAndFilterExtraTopics(p.Qtum, req)
+func (p *ProxyETHGetLogs) request(ctx context.Context, req *qtum.SearchLogsRequest) (*eth.GetLogsResponse, eth.JSONRPCError) {
+	receipts, err := conversion.SearchLogsAndFilterExtraTopics(ctx, p.Qtum, req)
 	if err != nil {
 		return nil, err
 	}
@@ -56,15 +57,15 @@ func (p *ProxyETHGetLogs) request(req *qtum.SearchLogsRequest) (*eth.GetLogsResp
 	return &resp, nil
 }
 
-func (p *ProxyETHGetLogs) ToRequest(ethreq *eth.GetLogsRequest) (*qtum.SearchLogsRequest, eth.JSONRPCError) {
+func (p *ProxyETHGetLogs) ToRequest(ctx context.Context, ethreq *eth.GetLogsRequest) (*qtum.SearchLogsRequest, eth.JSONRPCError) {
 	//transform EthRequest fromBlock to QtumReq fromBlock:
-	from, err := getBlockNumberByRawParam(p.Qtum, ethreq.FromBlock, true)
+	from, err := getBlockNumberByRawParam(ctx, p.Qtum, ethreq.FromBlock, true)
 	if err != nil {
 		return nil, err
 	}
 
 	//transform EthRequest toBlock to QtumReq toBlock:
-	to, err := getBlockNumberByRawParam(p.Qtum, ethreq.ToBlock, true)
+	to, err := getBlockNumberByRawParam(ctx, p.Qtum, ethreq.ToBlock, true)
 	if err != nil {
 		return nil, err
 	}

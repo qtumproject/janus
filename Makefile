@@ -119,7 +119,7 @@ run-janus:
 	@ printf "\nRunning Janus...\n\n"
 
 	go run `pwd`/main.go \
-		--qtum-rpc=http://${test_user}:${test_user_passwd}@0.0.0.0:3889 \
+		--qtum-rpc=http://${test_user}:${test_user_passwd}@0.0.0.0:4889 \
 		--qtum-network=auto \
 		--bind=0.0.0.0 \
 		--port=23889 \

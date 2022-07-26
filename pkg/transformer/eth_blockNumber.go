@@ -24,7 +24,7 @@ func (p *ProxyETHBlockNumber) Request(_ *eth.JSONRPCRequest, c echo.Context) (in
 }
 
 func (p *ProxyETHBlockNumber) request(c echo.Context, retries int) (*eth.BlockNumberResponse, eth.JSONRPCError) {
-	qtumresp, err := p.Qtum.GetBlockCount()
+	qtumresp, err := p.Qtum.GetBlockCount(c.Request().Context())
 	if err != nil {
 		if retries > 0 && strings.Contains(err.Error(), qtum.ErrTryAgain.Error()) {
 			ctx := c.Request().Context()

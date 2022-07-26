@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"math"
 	"strings"
 	"sync"
@@ -71,7 +72,7 @@ func (c *Qtum) detectChain() {
 
 	// detect chain we are pointing at
 	for i := 0; ; i++ {
-		blockchainInfo, err := c.GetBlockChainInfo()
+		blockchainInfo, err := c.GetBlockChainInfo(c.ctx)
 		if err == nil {
 			chain := strings.ToLower(blockchainInfo.Chain)
 			if utils.InStrSlice(AllChains, chain) {
@@ -129,6 +130,23 @@ func (c *Qtum) Chain() string {
 	return c.chain
 }
 
+func (c *Qtum) ChainId() int {
+	var chainId int
+	switch strings.ToLower(c.Chain()) {
+	case "main":
+		chainId = 81
+	case "test":
+		chainId = 8889
+	case "regtest":
+		chainId = 8890
+	default:
+		chainId = 8890
+		c.GetDebugLogger().Log("msg", fmt.Sprintf("Unknown chain %d", chainId))
+	}
+
+	return chainId
+}
+
 func (c *Qtum) GetMatureBlockHeight() int {
 	blockHeightOverride := c.GetFlagInt(FLAG_MATURE_BLOCK_HEIGHT_OVERRIDE)
 	if blockHeightOverride != nil {
@@ -147,7 +165,7 @@ func (c *Qtum) GenerateIfPossible() {
 		return
 	}
 
-	if _, generateErr := c.Generate(1, nil); generateErr != nil {
+	if _, generateErr := c.Generate(c.ctx, 1, nil); generateErr != nil {
 		c.GetErrorLogger().Log("Error generating new block", generateErr)
 	}
 }

@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"math/big"
 
 	"github.com/labstack/echo"
@@ -25,13 +26,13 @@ func (p *ProxyETHGetFilterLogs) Request(rawreq *eth.JSONRPCRequest, c echo.Conte
 
 	switch filter.Type {
 	case eth.NewFilterTy:
-		return p.request(filter)
+		return p.request(c.Request().Context(), filter)
 	default:
 		return nil, eth.NewInvalidParamsError("filter not found")
 	}
 }
 
-func (p *ProxyETHGetFilterLogs) request(filter *eth.Filter) (qtumresp eth.GetFilterChangesResponse, err eth.JSONRPCError) {
+func (p *ProxyETHGetFilterLogs) request(ctx context.Context, filter *eth.Filter) (qtumresp eth.GetFilterChangesResponse, err eth.JSONRPCError) {
 	qtumresp = make(eth.GetFilterChangesResponse, 0)
 
 	_lastBlockNumber, ok := filter.Data.Load("lastBlockNumber")
@@ -51,6 +52,6 @@ func (p *ProxyETHGetFilterLogs) request(filter *eth.Filter) (qtumresp eth.GetFil
 		return nil, err
 	}
 
-	return p.ProxyETHGetFilterChanges.doSearchLogs(searchLogsReq)
+	return p.ProxyETHGetFilterChanges.doSearchLogs(ctx, searchLogsReq)
 
 }

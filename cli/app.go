@@ -34,6 +34,15 @@ var (
 	logFile             = app.Flag("log-file", "write logs to a file").Envar("LOG_FILE").Default("").String()
 	matureBlockHeight   = app.Flag("mature-block-height-override", "override how old a coinbase/coinstake needs to be to be considered mature enough for spending (QTUM uses 2000 blocks after the 32s block fork) - if this value is incorrect transactions can be rejected").Int()
 
+	sqlHost     = app.Flag("sql-host", "database hostname").Envar("SQL_HOST").Default("127.0.0.1").String()
+	sqlPort     = app.Flag("sql-port", "database port").Envar("SQL_PORT").Default("5432").Int()
+	sqlUser     = app.Flag("sql-user", "database username").Envar("SQL_USER").Default("postgres").String()
+	sqlPassword = app.Flag("sql-password", "database password").Envar("SQL_PASSWORD").Default("dbpass").String()
+	sqlSSL      = app.Flag("sql-ssl", "use SSL to connect to database").Envar("SQL_SSL").Bool()
+	sqlDbname   = app.Flag("sql-dbname", "database name").Envar("SQL_DBNAME").Default("postgres").String()
+
+	dbConnectionString = app.Flag("dbstring", "database connection string").String()
+
 	devMode        = app.Flag("dev", "[Insecure] Developer mode").Envar("DEV").Default("false").Bool()
 	singleThreaded = app.Flag("singleThreaded", "[Non-production] Process RPC requests in a single thread").Envar("SINGLE_THREADED").Default("false").Bool()
 
@@ -107,6 +116,9 @@ func action(pc *kingpin.ParseContext) error {
 
 	isMain := *qtumNetwork == qtum.ChainMain
 
+	ctx, shutdownQtum := context.WithCancel(context.Background())
+	defer shutdownQtum()
+
 	qtumJSONRPC, err := qtum.NewClient(
 		isMain,
 		*qtumRPC,
@@ -119,7 +131,14 @@ func action(pc *kingpin.ParseContext) error {
 		qtum.SetDisableSnippingQtumRpcOutput(*disableSnipping),
 		qtum.SetHideQtumdLogs(*hideQtumdLogs),
 		qtum.SetMatureBlockHeight(matureBlockHeight),
-		qtum.SetContext(context.Background()),
+		qtum.SetContext(ctx),
+		qtum.SetSqlHost(*sqlHost),
+		qtum.SetSqlPort(*sqlPort),
+		qtum.SetSqlUser(*sqlUser),
+		qtum.SetSqlPassword(*sqlPassword),
+		qtum.SetSqlSSL(*sqlSSL),
+		qtum.SetSqlDatabaseName(*sqlDbname),
+		qtum.SetSqlConnectionString(*dbConnectionString),
 	)
 	if err != nil {
 		return errors.Wrap(err, "Failed to setup QTUM client")

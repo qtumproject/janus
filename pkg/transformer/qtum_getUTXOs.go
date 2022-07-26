@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"fmt"
 	"math/big"
 
@@ -34,10 +35,10 @@ func (p *ProxyQTUMGetUTXOs) Request(req *eth.JSONRPCRequest, c echo.Context) (in
 		return nil, eth.NewInvalidParamsError("couldn't validate parameters value")
 	}
 
-	return p.request(params)
+	return p.request(c.Request().Context(), params)
 }
 
-func (p *ProxyQTUMGetUTXOs) request(params eth.GetUTXOsRequest) (*eth.GetUTXOsResponse, eth.JSONRPCError) {
+func (p *ProxyQTUMGetUTXOs) request(ctx context.Context, params eth.GetUTXOsRequest) (*eth.GetUTXOsResponse, eth.JSONRPCError) {
 	address, err := convertETHAddress(utils.RemoveHexPrefix(params.Address), p.Chain())
 	if err != nil {
 		return nil, eth.NewInvalidParamsError("couldn't convert Ethereum address to Qtum address")
@@ -47,12 +48,12 @@ func (p *ProxyQTUMGetUTXOs) request(params eth.GetUTXOsRequest) (*eth.GetUTXOsRe
 		Addresses: []string{address},
 	}
 
-	resp, err := p.Qtum.GetAddressUTXOs(&req)
+	resp, err := p.Qtum.GetAddressUTXOs(ctx, &req)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}
 
-	blockCount, err := p.Qtum.GetBlockCount()
+	blockCount, err := p.Qtum.GetBlockCount(ctx)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

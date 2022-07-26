@@ -346,7 +346,7 @@ func (a *Agent) run() {
 		if transformer == nil {
 			a.qtum.GetErrorLogger().Log("msg", "Agent does not have access to eth transformer, cannot process 'newHeads' subscriptions")
 		} else {
-			blockchainInfo, err := a.qtum.GetBlockChainInfo()
+			blockchainInfo, err := a.qtum.GetBlockChainInfo(a.ctx)
 			if err != nil {
 				a.qtum.GetErrorLogger().Log("msg", "Failure getting blockchaininfo", "err", err)
 			} else {

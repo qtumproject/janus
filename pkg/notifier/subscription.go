@@ -115,7 +115,7 @@ func (s *subscriptionInformation) run() {
 		req.FromBlock = nextBlock
 		timeBeforeCall := time.Now()
 		rolling.Push(&timeBeforeCall)
-		resp, err := s.qtum.WaitForLogsWithContext(s.ctx, req)
+		resp, err := s.qtum.WaitForLogs(s.ctx, req)
 		timeAfterCall := time.Now()
 		if err == nil {
 			nextBlock = int(resp.NextBlock)
@@ -125,7 +125,7 @@ func (s *subscriptionInformation) run() {
 				Addresses: *req.Filter.Addresses,
 				Topics:    *req.Filter.Topics,
 			}
-			receiptsSearchLogs, err := s.qtum.SearchLogs(&reqSearchLogs)
+			receiptsSearchLogs, err := s.qtum.SearchLogs(s.ctx, &reqSearchLogs)
 			if err != nil {
 				s.qtum.GetErrorLogger().Log("msg", "Error calling searchLogs", "subscriptionId", s.id, "error", err)
 				return

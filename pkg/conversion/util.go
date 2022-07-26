@@ -1,6 +1,7 @@
 package conversion
 
 import (
+	"context"
 	"strings"
 
 	"github.com/qtumproject/janus/pkg/eth"
@@ -43,8 +44,8 @@ func ConvertLogTopicsToStringArray(topics []interface{}) []string {
 	return requestedTopics
 }
 
-func SearchLogsAndFilterExtraTopics(q *qtum.Qtum, req *qtum.SearchLogsRequest) (qtum.SearchLogsResponse, eth.JSONRPCError) {
-	receipts, err := q.SearchLogs(req)
+func SearchLogsAndFilterExtraTopics(ctx context.Context, q *qtum.Qtum, req *qtum.SearchLogsRequest) (qtum.SearchLogsResponse, eth.JSONRPCError) {
+	receipts, err := q.SearchLogs(ctx, req)
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

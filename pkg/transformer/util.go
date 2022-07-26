@@ -2,6 +2,7 @@ package transformer
 
 import (
 	"bytes"
+	"context"
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
@@ -140,9 +141,9 @@ func unmarshalRequest(data []byte, v interface{}) error {
 // TODO: Investigate if limitations on Qtum RPC command GetRawTransaction can cause issues here
 // Brief explanation: A default config Qtum node can only serve this command for transactions in the mempool, so it will likely break for SOME setup at SOME point.
 // However the same info can be found with getblock verbosity = 2, so maybe use that instead?
-func getNonContractTxSenderAddress(p *qtum.Qtum, tx *qtum.DecodedRawTransactionResponse) (string, error) {
+func getNonContractTxSenderAddress(ctx context.Context, p *qtum.Qtum, tx *qtum.DecodedRawTransactionResponse) (string, error) {
 	// Fetch raw Tx struct, which contains address data for Vins
-	rawTx, err := p.GetRawTransaction(tx.ID, false)
+	rawTx, err := p.GetRawTransaction(ctx, tx.ID, false)
 
 	if err != nil {
 		return "", errors.New("Couldn't get raw Transaction data from Transaction ID: " + err.Error())
@@ -168,7 +169,7 @@ func getNonContractTxSenderAddress(p *qtum.Qtum, tx *qtum.DecodedRawTransactionR
 	}
 
 	// If we get here, we have no Vins with a valid address, so search for sender address in previous Tx's vouts
-	hexAddr, err := searchSenderAddressInPreviousTransactions(p, rawTx)
+	hexAddr, err := searchSenderAddressInPreviousTransactions(ctx, p, rawTx)
 	if err != nil {
 		return "", errors.New("Couldn't find sender address in previous transactions: " + err.Error())
 	}
@@ -177,7 +178,7 @@ func getNonContractTxSenderAddress(p *qtum.Qtum, tx *qtum.DecodedRawTransactionR
 }
 
 // Searchs recursively for the sender address in previous transactions
-func searchSenderAddressInPreviousTransactions(p *qtum.Qtum, rawTx *qtum.GetRawTransactionResponse) (string, error) {
+func searchSenderAddressInPreviousTransactions(ctx context.Context, p *qtum.Qtum, rawTx *qtum.GetRawTransactionResponse) (string, error) {
 	// search within current rawTx for vin containing opcode OP_SPEND
 	var vout int64 = -1
 	var txid string = ""
@@ -192,7 +193,7 @@ func searchSenderAddressInPreviousTransactions(p *qtum.Qtum, rawTx *qtum.GetRawT
 		return "", errors.New("Couldn't find OP_SPEND in transaction Vins")
 	}
 	// fetch previous transaction using txid found in vin above
-	prevRawTx, err := p.GetRawTransaction(txid, false)
+	prevRawTx, err := p.GetRawTransaction(ctx, txid, false)
 	if err != nil {
 		p.GetDebugLogger().Log("msg", "Failed to GetRawTransaction", "tx", txid, "err", err)
 		return "", errors.New("Couldn't get raw transaction: " + err.Error())
@@ -204,7 +205,7 @@ func searchSenderAddressInPreviousTransactions(p *qtum.Qtum, rawTx *qtum.GetRawT
 	switch finalOp {
 	// If the vout is an OP_SPEND recurse and keep fetching until we find an OP_CREATE or OP_CALL
 	case "OP_SPEND":
-		return searchSenderAddressInPreviousTransactions(p, prevRawTx)
+		return searchSenderAddressInPreviousTransactions(ctx, p, prevRawTx)
 	// If we find an OP_CREATE, compute the contract address and set that as the "from"
 	case "OP_CREATE":
 		createInfo, err := qtum.ParseCreateSenderASM(script)
@@ -252,8 +253,8 @@ func findNonContractTxReceiverAddress(vouts []*qtum.DecodedRawTransactionOutV) (
 	return "", errors.New("not found")
 }
 
-func getBlockNumberByHash(p *qtum.Qtum, hash string) (uint64, error) {
-	block, err := p.GetBlock(hash)
+func getBlockNumberByHash(ctx context.Context, p *qtum.Qtum, hash string) (uint64, error) {
+	block, err := p.GetBlock(ctx, hash)
 	if err != nil {
 		return 0, errors.WithMessage(err, "couldn't get block")
 	}
@@ -261,8 +262,8 @@ func getBlockNumberByHash(p *qtum.Qtum, hash string) (uint64, error) {
 	return uint64(block.Height), nil
 }
 
-func getTransactionIndexInBlock(p *qtum.Qtum, txHash string, blockHash string) (int64, error) {
-	block, err := p.GetBlock(blockHash)
+func getTransactionIndexInBlock(ctx context.Context, p *qtum.Qtum, txHash string, blockHash string) (int64, error) {
+	block, err := p.GetBlock(ctx, blockHash)
 	if err != nil {
 		return -1, errors.WithMessage(err, "couldn't get block")
 	}
@@ -295,7 +296,7 @@ func formatQtumNonce(nonce int) string {
 // 	- string "earliest" for the genesis block
 // 	- string "pending" - for the pending state/transactions
 // Uses defaultVal to differntiate from a eth_getBlockByNumber req and eth_getLogs/eth_newFilter
-func getBlockNumberByRawParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal bool) (*big.Int, eth.JSONRPCError) {
+func getBlockNumberByRawParam(ctx context.Context, p *qtum.Qtum, rawParam json.RawMessage, defaultVal bool) (*big.Int, eth.JSONRPCError) {
 	var param string
 	if isBytesOfString(rawParam) {
 		param = string(rawParam[1 : len(rawParam)-1]) // trim \" runes
@@ -307,13 +308,13 @@ func getBlockNumberByRawParam(p *qtum.Qtum, rawParam json.RawMessage, defaultVal
 		return nil, eth.NewInvalidParamsError("invalid parameter format - string or integer is expected")
 	}
 
-	return getBlockNumberByParam(p, param, defaultVal)
+	return getBlockNumberByParam(ctx, p, param, defaultVal)
 }
 
-func getBlockNumberByParam(p *qtum.Qtum, param string, defaultVal bool) (*big.Int, eth.JSONRPCError) {
+func getBlockNumberByParam(ctx context.Context, p *qtum.Qtum, param string, defaultVal bool) (*big.Int, eth.JSONRPCError) {
 	if len(param) < 1 {
 		if defaultVal {
-			res, err := p.GetBlockChainInfo()
+			res, err := p.GetBlockChainInfo(ctx)
 			if err != nil {
 				return nil, eth.NewCallbackError(err.Error())
 			}
@@ -327,7 +328,7 @@ func getBlockNumberByParam(p *qtum.Qtum, param string, defaultVal bool) (*big.In
 
 	switch param {
 	case "latest":
-		res, err := p.GetBlockChainInfo()
+		res, err := p.GetBlockChainInfo(ctx)
 		if err != nil {
 			return nil, eth.NewCallbackError(err.Error())
 		}

@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"math/big"
 
 	"github.com/labstack/echo"
@@ -23,16 +24,16 @@ func (p *ProxyETHGetBlockByNumber) Request(rpcReq *eth.JSONRPCRequest, c echo.Co
 		// TODO: Correct error code?
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}
-	return p.request(req)
+	return p.request(c.Request().Context(), req)
 }
 
-func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*eth.GetBlockByNumberResponse, eth.JSONRPCError) {
-	blockNum, err := getBlockNumberByRawParam(p.Qtum, req.BlockNumber, false)
+func (p *ProxyETHGetBlockByNumber) request(ctx context.Context, req *eth.GetBlockByNumberRequest) (*eth.GetBlockByNumberResponse, eth.JSONRPCError) {
+	blockNum, err := getBlockNumberByRawParam(ctx, p.Qtum, req.BlockNumber, false)
 	if err != nil {
 		return nil, eth.NewCallbackError("couldn't get block number by parameter")
 	}
 
-	blockHash, jsonErr := proxyETHGetBlockByHash(p, p.Qtum, blockNum)
+	blockHash, jsonErr := proxyETHGetBlockByHash(ctx, p, p.Qtum, blockNum)
 	if jsonErr != nil {
 		return nil, jsonErr
 	}
@@ -47,7 +48,7 @@ func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*e
 		}
 		proxy = &ProxyETHGetBlockByHash{Qtum: p.Qtum}
 	)
-	block, jsonErr := proxy.request(getBlockByHashReq)
+	block, jsonErr := proxy.request(ctx, getBlockByHashReq)
 	if jsonErr != nil {
 		p.GetDebugLogger().Log("function", p.Method(), "msg", "couldn't get block by hash", "err", err)
 		return nil, eth.NewCallbackError("couldn't get block by hash")
@@ -59,8 +60,8 @@ func (p *ProxyETHGetBlockByNumber) request(req *eth.GetBlockByNumberRequest) (*e
 }
 
 // Properly handle unknown blocks
-func proxyETHGetBlockByHash(p ETHProxy, q *qtum.Qtum, blockNum *big.Int) (*qtum.GetBlockHashResponse, eth.JSONRPCError) {
-	resp, err := q.GetBlockHash(blockNum)
+func proxyETHGetBlockByHash(ctx context.Context, p ETHProxy, q *qtum.Qtum, blockNum *big.Int) (*qtum.GetBlockHashResponse, eth.JSONRPCError) {
+	resp, err := q.GetBlockHash(ctx, blockNum)
 	if err != nil {
 		if err == qtum.ErrInvalidParameter {
 			// block doesn't exist, ETH rpc returns null

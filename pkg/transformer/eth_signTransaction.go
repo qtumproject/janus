@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
@@ -27,15 +28,17 @@ func (p *ProxyETHSignTransaction) Request(rawreq *eth.JSONRPCRequest, c echo.Con
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}
 
+	ctx := c.Request().Context()
+
 	if req.IsCreateContract() {
 		p.GetDebugLogger().Log("method", p.Method(), "msg", "transaction is a create contract request")
-		return p.requestCreateContract(&req)
+		return p.requestCreateContract(ctx, &req)
 	} else if req.IsSendEther() {
 		p.GetDebugLogger().Log("method", p.Method(), "msg", "transaction is a send ether request")
-		return p.requestSendToAddress(&req)
+		return p.requestSendToAddress(ctx, &req)
 	} else if req.IsCallContract() {
 		p.GetDebugLogger().Log("method", p.Method(), "msg", "transaction is a call contract request")
-		return p.requestSendToContract(&req)
+		return p.requestSendToContract(ctx, &req)
 	} else {
 		p.GetDebugLogger().Log("method", p.Method(), "msg", "transaction is an unknown request")
 	}
@@ -43,7 +46,7 @@ func (p *ProxyETHSignTransaction) Request(rawreq *eth.JSONRPCRequest, c echo.Con
 	return nil, eth.NewInvalidParamsError("Unknown operation")
 }
 
-func (p *ProxyETHSignTransaction) getRequiredUtxos(from string, neededAmount decimal.Decimal) ([]qtum.RawTxInputs, decimal.Decimal, error) {
+func (p *ProxyETHSignTransaction) getRequiredUtxos(ctx context.Context, from string, neededAmount decimal.Decimal) ([]qtum.RawTxInputs, decimal.Decimal, error) {
 	//convert address to qtum address
 	addr := utils.RemoveHexPrefix(from)
 	base58Addr, err := p.FromHexAddress(addr)
@@ -52,7 +55,7 @@ func (p *ProxyETHSignTransaction) getRequiredUtxos(from string, neededAmount dec
 	}
 	// need to get utxos with txid and vouts. In order to do this we get a list of unspent transactions and begin summing them up
 	var getaddressutxos *qtum.GetAddressUTXOsRequest = &qtum.GetAddressUTXOsRequest{Addresses: []string{base58Addr}}
-	qtumresp, err := p.GetAddressUTXOs(getaddressutxos)
+	qtumresp, err := p.GetAddressUTXOs(ctx, getaddressutxos)
 	if err != nil {
 		return nil, decimal.Decimal{}, err
 	}
@@ -83,7 +86,7 @@ func calculateNeededAmount(value, gasLimit, gasPrice decimal.Decimal) decimal.De
 	return value.Add(gasLimit.Mul(gasPrice))
 }
 
-func (p *ProxyETHSignTransaction) requestSendToContract(ethtx *eth.SendTransactionRequest) (string, eth.JSONRPCError) {
+func (p *ProxyETHSignTransaction) requestSendToContract(ctx context.Context, ethtx *eth.SendTransactionRequest) (string, eth.JSONRPCError) {
 	gasLimit, gasPrice, err := EthGasToQtum(ethtx)
 	if err != nil {
 		return "", eth.NewInvalidParamsError(err.Error())
@@ -104,7 +107,7 @@ func (p *ProxyETHSignTransaction) requestSendToContract(ethtx *eth.SendTransacti
 	}
 	neededAmount := calculateNeededAmount(amount, decimal.NewFromBigInt(gasLimit, 0), newGasPrice)
 
-	inputs, balance, err := p.getRequiredUtxos(ethtx.From, neededAmount)
+	inputs, balance, err := p.getRequiredUtxos(ctx, ethtx.From, neededAmount)
 	if err != nil {
 		return "", eth.NewCallbackError(err.Error())
 	}
@@ -153,7 +156,7 @@ func (p *ProxyETHSignTransaction) requestSendToContract(ethtx *eth.SendTransacti
 	return utils.AddHexPrefix(resp.Hex), nil
 }
 
-func (p *ProxyETHSignTransaction) requestSendToAddress(req *eth.SendTransactionRequest) (string, eth.JSONRPCError) {
+func (p *ProxyETHSignTransaction) requestSendToAddress(ctx context.Context, req *eth.SendTransactionRequest) (string, eth.JSONRPCError) {
 	getQtumWalletAddress := func(addr string) (string, error) {
 		if utils.IsEthHexAddress(addr) {
 			return p.FromHexAddress(utils.RemoveHexPrefix(addr))
@@ -176,7 +179,7 @@ func (p *ProxyETHSignTransaction) requestSendToAddress(req *eth.SendTransactionR
 		return "", eth.NewInvalidParamsError(err.Error())
 	}
 
-	inputs, balance, err := p.getRequiredUtxos(req.From, amount)
+	inputs, balance, err := p.getRequiredUtxos(ctx, req.From, amount)
 	if err != nil {
 		return "", eth.NewCallbackError(err.Error())
 	}
@@ -204,7 +207,7 @@ func (p *ProxyETHSignTransaction) requestSendToAddress(req *eth.SendTransactionR
 	return utils.AddHexPrefix(resp.Hex), nil
 }
 
-func (p *ProxyETHSignTransaction) requestCreateContract(req *eth.SendTransactionRequest) (string, eth.JSONRPCError) {
+func (p *ProxyETHSignTransaction) requestCreateContract(ctx context.Context, req *eth.SendTransactionRequest) (string, eth.JSONRPCError) {
 	gasLimit, gasPrice, err := EthGasToQtum(req)
 	if err != nil {
 		return "", eth.NewInvalidParamsError(err.Error())
@@ -231,7 +234,7 @@ func (p *ProxyETHSignTransaction) requestCreateContract(req *eth.SendTransaction
 	}
 	neededAmount := calculateNeededAmount(decimal.NewFromFloat(0.0), decimal.NewFromBigInt(gasLimit, 0), newGasPrice)
 
-	inputs, balance, err := p.getRequiredUtxos(req.From, neededAmount)
+	inputs, balance, err := p.getRequiredUtxos(ctx, req.From, neededAmount)
 	if err != nil {
 		return "", eth.NewCallbackError(err.Error())
 	}

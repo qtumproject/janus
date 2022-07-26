@@ -1,14 +1,20 @@
 package transformer
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/labstack/echo"
+	"github.com/pkg/errors"
+	"github.com/qtumproject/janus/pkg/blockhash"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
 	"github.com/qtumproject/janus/pkg/utils"
 )
+
+var ErrBlockHashNotConfigured = errors.New("BlockHash database not configured")
+var ErrBlockHashUnknown = errors.New("BlockHash unknown")
 
 // ProxyETHGetBlockByHash implements ETHProxy
 type ProxyETHGetBlockByHash struct {
@@ -25,13 +31,91 @@ func (p *ProxyETHGetBlockByHash) Request(rawreq *eth.JSONRPCRequest, c echo.Cont
 		// TODO: Correct error code?
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}
+
+	blockHash := c.Get("blockHash")
+	bh, ok := blockHash.(*blockhash.BlockHash)
+	if !ok {
+		// ok, do nothing
+	}
+
 	req.BlockHash = utils.RemoveHexPrefix(req.BlockHash)
 
-	return p.request(req)
+	resultChan := make(chan *eth.GetBlockByHashResponse, 2)
+	errorChan := make(chan eth.JSONRPCError, 1)
+	qtumBlockErrorChan := make(chan error, 1)
+	ctx, cancelFunc := context.WithCancel(context.Background())
+	defer cancelFunc()
+
+	go func() {
+		result, err := p.request(ctx, req)
+		if err != nil {
+			errorChan <- err
+			return
+		}
+
+		resultChan <- result
+	}()
+
+	if bh == nil {
+		qtumBlockErrorChan <- ErrBlockHashNotConfigured
+	} else {
+		go func() {
+			qtumBlockHash, err := bh.GetQtumBlockHashContext(ctx, req.BlockHash)
+			if err != nil {
+				qtumBlockErrorChan <- err
+				return
+			}
+
+			if qtumBlockHash == nil {
+				qtumBlockErrorChan <- ErrBlockHashUnknown
+				return
+			}
+
+			request := &eth.GetBlockByHashRequest{
+				BlockHash:       utils.RemoveHexPrefix(*qtumBlockHash),
+				FullTransaction: req.FullTransaction,
+			}
+
+			result, jsonErr := p.request(ctx, request)
+			if jsonErr != nil {
+				qtumBlockErrorChan <- jsonErr.Error()
+				return
+			}
+
+			resultChan <- result
+		}()
+	}
+
+	select {
+	case result := <-resultChan:
+		// TODO: Stop remaining request
+		if result == nil {
+			select {
+			case result := <-resultChan:
+				// backup succeeded
+				return result, nil
+			case <-qtumBlockErrorChan:
+				// backup failed, return original request
+				return nil, nil
+			}
+		} else {
+			return result, nil
+		}
+	case err := <-errorChan:
+		// the main request failed, wait for backup to finish
+		select {
+		case result := <-resultChan:
+			// backup succeeded
+			return result, nil
+		case <-qtumBlockErrorChan:
+			// backup failed, return original request
+			return nil, err
+		}
+	}
 }
 
-func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.GetBlockByHashResponse, eth.JSONRPCError) {
-	blockHeader, err := p.GetBlockHeader(req.BlockHash)
+func (p *ProxyETHGetBlockByHash) request(ctx context.Context, req *eth.GetBlockByHashRequest) (*eth.GetBlockByHashResponse, eth.JSONRPCError) {
+	blockHeader, err := p.GetBlockHeader(ctx, req.BlockHash)
 	if err != nil {
 		if err == qtum.ErrInvalidAddress {
 			// unknown block hash should return {result: null}
@@ -41,7 +125,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 		p.GetDebugLogger().Log("msg", "couldn't get block header", "blockHash", req.BlockHash)
 		return nil, eth.NewCallbackError("couldn't get block header")
 	}
-	block, err := p.GetBlock(req.BlockHash)
+	block, err := p.GetBlock(ctx, req.BlockHash)
 	if err != nil {
 		p.GetDebugLogger().Log("msg", "couldn't get block", "blockHash", req.BlockHash)
 		return nil, eth.NewCallbackError("couldn't get block")
@@ -123,7 +207,7 @@ func (p *ProxyETHGetBlockByHash) request(req *eth.GetBlockByHashRequest) (*eth.G
 
 	if req.FullTransaction {
 		for _, txHash := range block.Txs {
-			tx, err := getTransactionByHash(p.Qtum, txHash)
+			tx, err := getTransactionByHash(ctx, p.Qtum, txHash)
 			if err != nil {
 				p.GetDebugLogger().Log("msg", "Couldn't get transaction by hash", "hash", txHash, "err", err)
 				return nil, eth.NewCallbackError("couldn't get transaction by hash")

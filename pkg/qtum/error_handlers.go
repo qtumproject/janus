@@ -42,10 +42,19 @@ func errWalletNotFoundHandler(ctx context.Context, state *errorState, method *Me
 	}
 
 	req := CreateWalletRequest([]string{"wallet"})
-	_, err := method.CreateWallet(&req)
+	_, err := method.CreateWallet(ctx, &req)
 
 	if err == nil {
 		state.Put("createwallet", true)
+	}
+
+	if err == ErrWalletError {
+		req := LoadWalletRequest([]string{"wallet"})
+		_, err = method.LoadWallet(ctx, &req)
+
+		if err == nil {
+			state.Put("createwallet", true)
+		}
 	}
 
 	return err

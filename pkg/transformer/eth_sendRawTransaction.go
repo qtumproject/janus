@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"context"
+
 	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -29,21 +31,21 @@ func (p *ProxyETHSendRawTransaction) Request(req *eth.JSONRPCRequest, c echo.Con
 		return nil, eth.NewInvalidParamsError("invalid parameter: raw transaction hexed string is empty")
 	}
 
-	return p.request(params)
+	return p.request(c.Request().Context(), params)
 }
 
-func (p *ProxyETHSendRawTransaction) request(params eth.SendRawTransactionRequest) (eth.SendRawTransactionResponse, eth.JSONRPCError) {
+func (p *ProxyETHSendRawTransaction) request(ctx context.Context, params eth.SendRawTransactionRequest) (eth.SendRawTransactionResponse, eth.JSONRPCError) {
 	var (
 		qtumHexedRawTx = utils.RemoveHexPrefix(params[0])
 		req            = qtum.SendRawTransactionRequest([1]string{qtumHexedRawTx})
 	)
 
-	qtumresp, err := p.Qtum.SendRawTransaction(&req)
+	qtumresp, err := p.Qtum.SendRawTransaction(ctx, &req)
 	if err != nil {
 		if err == qtum.ErrVerifyAlreadyInChain {
 			// already committed
 			// we need to send back the tx hash
-			rawTx, err := p.Qtum.DecodeRawTransaction(qtumHexedRawTx)
+			rawTx, err := p.Qtum.DecodeRawTransaction(ctx, qtumHexedRawTx)
 			if err != nil {
 				p.GetErrorLogger().Log("msg", "Error decoding raw transaction for duplicate raw transaction", "err", err)
 				return eth.SendRawTransactionResponse(""), eth.NewCallbackError(err.Error())

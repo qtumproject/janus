@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"context"
+
 	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
 	"github.com/qtumproject/janus/pkg/qtum"
@@ -23,13 +25,13 @@ func (p *ProxyETHGetCode) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (i
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}
 
-	return p.request(&req)
+	return p.request(c.Request().Context(), &req)
 }
 
-func (p *ProxyETHGetCode) request(ethreq *eth.GetCodeRequest) (eth.GetCodeResponse, eth.JSONRPCError) {
+func (p *ProxyETHGetCode) request(ctx context.Context, ethreq *eth.GetCodeRequest) (eth.GetCodeResponse, eth.JSONRPCError) {
 	qtumreq := qtum.GetAccountInfoRequest(utils.RemoveHexPrefix(ethreq.Address))
 
-	qtumresp, err := p.GetAccountInfo(&qtumreq)
+	qtumresp, err := p.GetAccountInfo(ctx, &qtumreq)
 	if err != nil {
 		if err == qtum.ErrInvalidAddress {
 			/**

@@ -25,7 +25,7 @@ func (p *ProxyETHTxCount) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (i
 	if err := unmarshalRequest(rawreq.Params, &req); err != nil {
 		return nil, err
 	}*/
-	qtumresp, err := p.Qtum.GetTransactionCount("", "")
+	qtumresp, err := p.Qtum.GetTransactionCount(c.Request().Context(), "", "")
 	if err != nil {
 		return nil, eth.NewCallbackError(err.Error())
 	}

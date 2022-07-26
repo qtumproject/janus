@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"encoding/json"
 	"math/big"
 
@@ -35,11 +36,11 @@ func (p *ProxyETHGetTransactionByHash) Request(req *eth.JSONRPCRequest, c echo.C
 	qtumReq := &qtum.GetTransactionRequest{
 		TxID: utils.RemoveHexPrefix(string(txHash)),
 	}
-	return p.request(qtumReq)
+	return p.request(c.Request().Context(), qtumReq)
 }
 
-func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) (*eth.GetTransactionByHashResponse, eth.JSONRPCError) {
-	ethTx, err := getTransactionByHash(p.Qtum, req.TxID)
+func (p *ProxyETHGetTransactionByHash) request(ctx context.Context, req *qtum.GetTransactionRequest) (*eth.GetTransactionByHashResponse, eth.JSONRPCError) {
+	ethTx, err := getTransactionByHash(ctx, p.Qtum, req.TxID)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +53,8 @@ func (p *ProxyETHGetTransactionByHash) request(req *qtum.GetTransactionRequest) 
 // since it returns a lot of data including the equivalent of calling GetRawTransaction on every transaction in block.
 // The last point is of particular interest because GetRawTransaction doesn't by default work for every transaction.
 // This would mean fetching a lot of probably unnecessary data, but in this setup query response delay is reasonably the biggest bottleneck anyway
-func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, eth.JSONRPCError) {
-	qtumTx, err := p.GetTransaction(hash)
+func getTransactionByHash(ctx context.Context, p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, eth.JSONRPCError) {
+	qtumTx, err := p.GetTransaction(ctx, hash)
 	var ethTx *eth.GetTransactionByHashResponse
 	if err != nil {
 		if errors.Cause(err) != qtum.ErrInvalidAddress {
@@ -61,12 +62,12 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 			return nil, eth.NewCallbackError(err.Error())
 		}
 		var rawQtumTx *qtum.GetRawTransactionResponse
-		ethTx, rawQtumTx, err = getRewardTransactionByHash(p, hash)
+		ethTx, rawQtumTx, err = getRewardTransactionByHash(ctx, p, hash)
 		if err != nil {
 			if errors.Cause(err) == qtum.ErrInvalidAddress {
 				return nil, nil
 			}
-			rawTx, err := p.GetRawTransaction(hash, false)
+			rawTx, err := p.GetRawTransaction(ctx, hash, false)
 			if err != nil {
 				if errors.Cause(err) == qtum.ErrInvalidAddress {
 					return nil, nil
@@ -91,7 +92,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 
 		// return ethTx, nil
 	}
-	qtumDecodedRawTx, err := p.DecodeRawTransaction(qtumTx.Hex)
+	qtumDecodedRawTx, err := p.DecodeRawTransaction(ctx, qtumTx.Hex)
 	if err != nil {
 		p.GetDebugLogger().Log("msg", "Failed to DecodeRawTransaction", "hex", qtumTx.Hex, "err", err)
 		return nil, eth.NewCallbackError("couldn't get raw transaction")
@@ -115,7 +116,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 	}
 
 	if !qtumTx.IsPending() { // otherwise, the following values must be nulls
-		blockNumber, err := getBlockNumberByHash(p, qtumTx.BlockHash)
+		blockNumber, err := getBlockNumberByHash(ctx, p, qtumTx.BlockHash)
 		if err != nil {
 			p.GetDebugLogger().Log("msg", "Failed to get block number by hash", "hash", qtumTx.BlockHash, "err", err)
 			return nil, eth.NewCallbackError("couldn't get block number by hash")
@@ -156,7 +157,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 			ethTx.From = utils.AddHexPrefix(qtumTxContractInfo.From)
 		} else {
 			// It seems that ExtractContractInfo only looks for OP_SENDER address when assigning From field, so if none is present we handle it like for a non-contract TX
-			ethTx.From, err = getNonContractTxSenderAddress(p, qtumDecodedRawTx)
+			ethTx.From, err = getNonContractTxSenderAddress(ctx, p, qtumDecodedRawTx)
 			if err != nil {
 				p.GetDebugLogger().Log("msg", "Contract tx parsing found no sender address", "tx", qtumDecodedRawTx, "err", err)
 				return nil, eth.NewCallbackError("Contract tx parsing found no sender address, and the fallback function also failed: " + err.Error())
@@ -188,7 +189,7 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 		// TODO: Figure out if following code still cause issues in some cases, see next comment
 
 		// causes issues on coinbase txs, coinbase will not have a sender and so this should be able to fail
-		ethTx.From, _ = getNonContractTxSenderAddress(p, qtumDecodedRawTx)
+		ethTx.From, _ = getNonContractTxSenderAddress(ctx, p, qtumDecodedRawTx)
 
 		// TODO: discuss
 		// ? Does func above return incorrect address for graph-node (len is < 40)
@@ -230,8 +231,8 @@ func getTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashR
 // TODO: Does this need to return eth.JSONRPCError
 // TODO: discuss
 // ? There are `witness` transactions, that is not acquireable nither via `gettransaction`, nor `getrawtransaction`
-func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, *qtum.GetRawTransactionResponse, error) {
-	rawQtumTx, err := p.GetRawTransaction(hash, false)
+func getRewardTransactionByHash(ctx context.Context, p *qtum.Qtum, hash string) (*eth.GetTransactionByHashResponse, *qtum.GetRawTransactionResponse, error) {
+	rawQtumTx, err := p.GetRawTransaction(ctx, hash, false)
 	if err != nil {
 		return nil, nil, errors.WithMessage(err, "couldn't get raw reward transaction")
 	}
@@ -262,13 +263,13 @@ func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionB
 		// geth returns null if the tx is pending
 		return nil, rawQtumTx, nil
 	} else {
-		blockIndex, err := getTransactionIndexInBlock(p, hash, rawQtumTx.BlockHash)
+		blockIndex, err := getTransactionIndexInBlock(ctx, p, hash, rawQtumTx.BlockHash)
 		if err != nil {
 			return nil, nil, errors.WithMessage(err, "couldn't get transaction index in block")
 		}
 		ethTx.TransactionIndex = hexutil.EncodeUint64(uint64(blockIndex))
 
-		blockNumber, err := getBlockNumberByHash(p, rawQtumTx.BlockHash)
+		blockNumber, err := getBlockNumberByHash(ctx, p, rawQtumTx.BlockHash)
 		if err != nil {
 			return nil, nil, errors.WithMessage(err, "couldn't get block number by hash")
 		}
@@ -280,7 +281,7 @@ func getRewardTransactionByHash(p *qtum.Qtum, hash string) (*eth.GetTransactionB
 	for i := range rawQtumTx.Vouts {
 		// TODO: discuss
 		// ! The response may be null, even if txout is presented
-		_, err := p.GetTransactionOut(hash, i, rawQtumTx.IsPending())
+		_, err := p.GetTransactionOut(ctx, hash, i, rawQtumTx.IsPending())
 		if err != nil {
 			return nil, nil, errors.WithMessage(err, "couldn't get transaction out")
 		}

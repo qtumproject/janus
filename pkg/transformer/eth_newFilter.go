@@ -1,6 +1,7 @@
 package transformer
 
 import (
+	"context"
 	"encoding/json"
 
 	"github.com/dcb9/go-ethereum/common/hexutil"
@@ -26,17 +27,17 @@ func (p *ProxyETHNewFilter) Request(rawreq *eth.JSONRPCRequest, c echo.Context) 
 		return nil, eth.NewInvalidParamsError(err.Error())
 	}
 
-	return p.request(&req)
+	return p.request(c.Request().Context(), &req)
 }
 
-func (p *ProxyETHNewFilter) request(ethreq *eth.NewFilterRequest) (*eth.NewFilterResponse, eth.JSONRPCError) {
+func (p *ProxyETHNewFilter) request(ctx context.Context, ethreq *eth.NewFilterRequest) (*eth.NewFilterResponse, eth.JSONRPCError) {
 
-	from, err := getBlockNumberByRawParam(p.Qtum, ethreq.FromBlock, true)
+	from, err := getBlockNumberByRawParam(ctx, p.Qtum, ethreq.FromBlock, true)
 	if err != nil {
 		return nil, err
 	}
 
-	to, err := getBlockNumberByRawParam(p.Qtum, ethreq.ToBlock, true)
+	to, err := getBlockNumberByRawParam(ctx, p.Qtum, ethreq.ToBlock, true)
 	if err != nil {
 		return nil, err
 	}

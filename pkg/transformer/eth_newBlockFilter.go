@@ -1,6 +1,8 @@
 package transformer
 
 import (
+	"context"
+
 	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/labstack/echo"
 	"github.com/qtumproject/janus/pkg/eth"
@@ -18,11 +20,11 @@ func (p *ProxyETHNewBlockFilter) Method() string {
 }
 
 func (p *ProxyETHNewBlockFilter) Request(rawreq *eth.JSONRPCRequest, c echo.Context) (interface{}, eth.JSONRPCError) {
-	return p.request()
+	return p.request(c.Request().Context())
 }
 
-func (p *ProxyETHNewBlockFilter) request() (eth.NewBlockFilterResponse, eth.JSONRPCError) {
-	blockCount, err := p.GetBlockCount()
+func (p *ProxyETHNewBlockFilter) request(ctx context.Context) (eth.NewBlockFilterResponse, eth.JSONRPCError) {
+	blockCount, err := p.GetBlockCount(ctx)
 	if err != nil {
 		return "", eth.NewCallbackError(err.Error())
 	}
