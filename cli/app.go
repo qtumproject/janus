@@ -51,6 +51,7 @@ var (
 	ignoreUnknownTransactions = app.Flag("ignoreTransactions", "[Development] Ignore transactions inside blocks we can't fetch and return responses instead of failing").Default("false").Bool()
 	disableSnipping           = app.Flag("disableSnipping", "[Development] Disable ...snip... in logs").Default("false").Bool()
 	hideQtumdLogs             = app.Flag("hideQtumdLogs", "[Development] Hide QTUMD debug logs").Envar("HIDE_QTUMD_LOGS").Default("false").Bool()
+	qtumTimeout               = app.Flag("timeout", "Configure request timeout duration when communicating with qtumd").Envar("TIMEOUT").Default("10").Int()
 )
 
 func loadAccounts(r io.Reader, l log.Logger) qtum.Accounts {
@@ -143,6 +144,7 @@ func action(pc *kingpin.ParseContext) error {
 		qtum.SetSqlSSL(*sqlSSL),
 		qtum.SetSqlDatabaseName(*sqlDbname),
 		qtum.SetSqlConnectionString(*dbConnectionString),
+		qtum.SetTimeout(*qtumTimeout),
 		qtum.SetAnalytics(qtumRequestAnalytics),
 	)
 	if err != nil {

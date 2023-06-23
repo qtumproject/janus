@@ -28,6 +28,7 @@ var FLAG_GENERATE_ADDRESS_TO = "REGTEST_GENERATE_ADDRESS_TO"
 var FLAG_IGNORE_UNKNOWN_TX = "IGNORE_UNKNOWN_TX"
 var FLAG_DISABLE_SNIPPING_LOGS = "DISABLE_SNIPPING_LOGS"
 var FLAG_HIDE_QTUMD_LOGS = "HIDE_QTUMD_LOGS"
+var FLAG_QTUMD_TIMEOUT = "QTUD_TIMEOUT"
 var FLAG_MATURE_BLOCK_HEIGHT_OVERRIDE = "FLAG_MATURE_BLOCK_HEIGHT_OVERRIDE"
 
 var maximumRequestTime = 10000
@@ -85,25 +86,8 @@ func NewClient(isMain bool, rpcURL string, opts ...func(*Client) error) (*Client
 		return nil, errors.Wrap(err, "Failed to parse rpc url")
 	}
 
-	tr := &http.Transport{
-		MaxIdleConns:        16,
-		MaxIdleConnsPerHost: 16,
-		MaxConnsPerHost:     16,
-		IdleConnTimeout:     60 * time.Second,
-		DisableKeepAlives:   false,
-		DialContext: (&net.Dialer{
-			Timeout: 60 * time.Second,
-		}).DialContext,
-	}
-
-	httpClient := &http.Client{
-		Timeout:   10 * time.Second,
-		Transport: tr,
-	}
-
 	c := &Client{
 		isMain: isMain,
-		doer:   httpClient,
 		URL:    rpcURL,
 		url:    url,
 		logger: log.NewNopLogger(),
@@ -114,6 +98,8 @@ func NewClient(isMain bool, rpcURL string, opts ...func(*Client) error) (*Client
 		flags:  make(map[string]interface{}),
 		cache:  newClientCache(),
 	}
+
+	c.SetTimeout(10)
 
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
@@ -248,10 +234,13 @@ func (c *Client) Do(ctx context.Context, req *JSONRPCRequest) (*SuccessJSONRPCRe
 		fmt.Fprintf(c.logWriter, "=> qtum RPC request\n%s\n", reqBody)
 	}
 
+	start := time.Now()
 	respBody, err := c.do(ctx, bytes.NewReader(reqBody))
+	end := time.Now()
+	duration := end.UnixMilli() - start.UnixMilli()
 	if err != nil {
 		defer c.failure()
-		return nil, errors.Wrap(err, "Client#do")
+		return nil, errors.Wrap(err, fmt.Sprintf("Client#do [%dms]", duration))
 	}
 
 	if c.IsDebugEnabled() && !c.GetFlagBool(FLAG_HIDE_QTUMD_LOGS) {
@@ -265,7 +254,7 @@ func (c *Client) Do(ctx context.Context, req *JSONRPCRequest) (*SuccessJSONRPCRe
 		}
 
 		if err == nil && c.logWriter != nil {
-			fmt.Fprintf(c.logWriter, "<= qtum RPC response\n%s\n", formattedBodyStr)
+			fmt.Fprintf(c.logWriter, "<= qtum RPC response [%dms]\n%s\n", duration, formattedBodyStr)
 		}
 	}
 
@@ -356,6 +345,29 @@ func (c *Client) do(ctx context.Context, body io.Reader) ([]byte, error) {
 		return nil, errors.Wrap(err, "ioutil error in qtum client package")
 	}
 	return reader, nil
+}
+
+func (c *Client) SetTimeout(timeout int) {
+	c.mutex.Lock()
+	defer c.mutex.Unlock()
+
+	tr := &http.Transport{
+		MaxIdleConns:        16,
+		MaxIdleConnsPerHost: 16,
+		MaxConnsPerHost:     16,
+		IdleConnTimeout:     60 * time.Second,
+		DisableKeepAlives:   false,
+		DialContext: (&net.Dialer{
+			Timeout: 60 * time.Second,
+		}).DialContext,
+	}
+
+	fmt.Printf("******************* TIMEOUT ******************* %d\n", timeout)
+
+	c.doer = &http.Client{
+		Timeout:   time.Duration(timeout) * time.Second,
+		Transport: tr,
+	}
 }
 
 func (c *Client) SetFlag(key string, value interface{}) {
@@ -476,6 +488,13 @@ func SetDisableSnippingQtumRpcOutput(disable bool) func(*Client) error {
 func SetHideQtumdLogs(hide bool) func(*Client) error {
 	return func(c *Client) error {
 		c.SetFlag(FLAG_HIDE_QTUMD_LOGS, hide)
+		return nil
+	}
+}
+
+func SetTimeout(timeout int) func(*Client) error {
+	return func(c *Client) error {
+		c.SetTimeout(timeout)
 		return nil
 	}
 }
