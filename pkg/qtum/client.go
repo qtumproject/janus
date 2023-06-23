@@ -97,7 +97,7 @@ func NewClient(isMain bool, rpcURL string, opts ...func(*Client) error) (*Client
 	}
 
 	httpClient := &http.Client{
-		Timeout:   10 * time.Second,
+		Timeout:   120 * time.Second,
 		Transport: tr,
 	}
 
@@ -233,7 +233,7 @@ func (c *Client) RequestWithContext(ctx context.Context, method string, params i
 	return nil
 }
 
-func (c *Client) Do(ctx context.Context, req *JSONRPCRequest) (*SuccessJSONRPCResult, error) {
+func (c *Client) Do(ctx context.Context, req *JSONRPCRequest, timeout time.Duration, lateResponse *chan<- *SuccessJSONRPCResult) (*SuccessJSONRPCResult, error) {
 	reqBody, err := json.MarshalIndent(req, "", "  ")
 	if err != nil {
 		defer c.failure()
@@ -248,11 +248,48 @@ func (c *Client) Do(ctx context.Context, req *JSONRPCRequest) (*SuccessJSONRPCRe
 		fmt.Fprintf(c.logWriter, "=> qtum RPC request\n%s\n", reqBody)
 	}
 
-	respBody, err := c.do(ctx, bytes.NewReader(reqBody))
+	timeoutCtx, cancelTimeoutCtx := context.WithTimeout(ctx, timeout)
+	doerContext, doerCancel := context.WithCancel(c.ctx)
+
+	doerRespBody := make(chan []byte)
+	doerErr := make(chan error)
+
+	go func() {
+		respBody, err := c.do(doerContext, bytes.NewReader(reqBody))
+		select {
+		case <-ctx.Done():
+			// function already returned
+			if err != nil {
+				// ignore
+			} else if lateResponse != nil {
+				res := c.processResponse(respBody)
+				*lateResponse <- res
+			}
+		default:
+			// context closed
+		}
+	}()
+
+	var respBody []byte
+
+	select {
+	case respBody = <-doerRespBody:
+	case err = <-doerErr:
+	}
+
 	if err != nil {
 		defer c.failure()
 		return nil, errors.Wrap(err, "Client#do")
 	}
+
+	res := c.processResponse(respBody)
+
+	defer c.success()
+	return res, nil
+}
+
+func (c *Client) processResponse(respBody []byte) *SuccessJSONRPCResult {
+	debugLogger := c.GetDebugLogger()
 
 	if c.IsDebugEnabled() && !c.GetFlagBool(FLAG_HIDE_QTUMD_LOGS) {
 		formattedBody, err := ReformatJSON(respBody)
@@ -292,7 +329,6 @@ func (c *Client) Do(ctx context.Context, req *JSONRPCRequest) (*SuccessJSONRPCRe
 		return nil, err
 	}
 
-	defer c.success()
 	return res, nil
 }
 

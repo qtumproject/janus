@@ -27,7 +27,7 @@ const (
 	QtumMethodDecoderawtransaction = "decoderawtransaction"
 )
 
-var cachable_methods = []string{
+var cachableMethods = []string{
 	QtumMethodGetblock,
 	// QtumMethodGetblockhash,
 	// QtumMethodGetblockheader,
@@ -37,6 +37,14 @@ var cachable_methods = []string{
 	// QtumMethodGettransaction,
 	QtumMethodGettxout,
 	QtumMethodDecoderawtransaction,
+}
+
+var cachableMethodsMap = make(map[string]bool)
+
+func init() {
+	for _, method := range cachableMethods {
+		cachableMethodsMap[method] = true
+	}
 }
 
 // stores the rpc response for 'method' and 'params' in the cache
@@ -61,16 +69,19 @@ func newClientCache() *clientCache {
 
 // checks if the method should be cached
 func (cache *clientCache) isCachable(method string) bool {
-	for _, m := range cachable_methods {
-		if m == method {
-			return true
-		}
-	}
-	return false
+	return cachableMethodsMap[method]
+}
+
+func (cache *clientCache) storeResponse(method string, params interface{}, response []byte) error {
+	return cache.storeResponseFor(method, params, response, nil)
 }
 
 // stores the rpc response for 'method' and 'params' in the cache
-func (cache *clientCache) storeResponse(method string, params interface{}, response []byte) error {
+func (cache *clientCache) storeResponseFor(method string, params interface{}, response []byte, length *time.Duration) error {
+	if length == nil {
+		zero := time.Second * 0
+		length = &zero
+	}
 	parambytes, err := json.Marshal(params)
 	if err != nil {
 		return errors.New("failed to marshal params")
@@ -84,7 +95,7 @@ func (cache *clientCache) storeResponse(method string, params interface{}, respo
 	}
 	if _, ok := responses[string(parambytes)]; !ok {
 		responses[string(parambytes)] = response
-		cache.setFlushResponseTimer(method, parambytes)
+		cache.setFlushResponseTimer(method, parambytes, *length)
 	}
 	return nil
 }
@@ -106,7 +117,11 @@ func (cache *clientCache) getResponse(method string, params interface{}) ([]byte
 }
 
 // set a timer to flush the cached rpc response for 'method' and 'parambytes'
-func (cache *clientCache) setFlushResponseTimer(method string, parambytes []byte) {
+func (cache *clientCache) setFlushResponseTimer(method string, parambytes []byte, length time.Duration) {
+	if length == 0 {
+		length = CACHABLE_METHOD_CACHE_TIMEOUT
+	}
+
 	go func() {
 		// TODO check if this works as expected
 		var done <-chan struct{}
@@ -116,7 +131,7 @@ func (cache *clientCache) setFlushResponseTimer(method string, parambytes []byte
 			done = context.Background().Done()
 		}
 		select {
-		case <-time.After(CACHABLE_METHOD_CACHE_TIMEOUT):
+		case <-time.After(length):
 			cache.getDebugLogger().Log("msg", "flushing cache", "reason", "cache timeout", "method", method)
 		case <-done:
 			cache.getDebugLogger().Log("msg", "flushing cache", "reason", "context canceled", "method", method)
