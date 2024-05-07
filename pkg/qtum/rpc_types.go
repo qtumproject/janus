@@ -1753,7 +1753,7 @@ type (
 		}
 	*/
 	GetAddressBalanceRequest struct {
-		Address string
+		Addresses []string `json:"addresses"`
 	}
 
 	GetAddressBalanceResponse struct {
@@ -1764,8 +1764,8 @@ type (
 )
 
 func (req *GetAddressBalanceRequest) MarshalJSON() ([]byte, error) {
-	params := []interface{}{
-		req.Address,
+	params := []map[string][]string{
+		{"addresses": req.Addresses},
 	}
 	return json.Marshal(params)
 }
