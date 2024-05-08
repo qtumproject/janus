@@ -48,7 +48,9 @@ func (p *ProxyETHGetBalance) Request(rawreq *eth.JSONRPCRequest, c echo.Context)
 			return nil, eth.NewCallbackError(err.Error())
 		}
 
-		qtumreq := qtum.GetAddressBalanceRequest{Address: base58Addr}
+		qtumreq := qtum.GetAddressBalanceRequest{
+			Addresses: []string{base58Addr},
+		}
 		qtumresp, err := p.GetAddressBalance(c.Request().Context(), &qtumreq)
 		if err != nil {
 			if err == qtum.ErrInvalidAddress {
