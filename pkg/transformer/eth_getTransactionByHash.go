@@ -100,8 +100,11 @@ func getTransactionByHash(ctx context.Context, p *qtum.Qtum, hash string) (*eth.
 
 	if ethTx == nil {
 		ethTx = &eth.GetTransactionByHashResponse{
-			Hash:  utils.AddHexPrefix(qtumDecodedRawTx.ID),
-			Nonce: "0x0",
+			Hash:             utils.AddHexPrefix(qtumDecodedRawTx.ID),
+			Nonce:            "0x0",
+			TransactionIndex: "",
+			BlockHash:        "",
+			BlockNumber:      "",
 
 			// Added for go-ethereum client and graph-node support
 			R: "0xf000000000000000000000000000000000000000000000000000000000000000",

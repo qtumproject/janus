@@ -275,6 +275,28 @@ type (
 	}
 )
 
+func (tx *GetTransactionByHashResponse) MarshalJSON() ([]byte, error) {
+	type Alias GetTransactionByHashResponse
+	return json.Marshal(&struct {
+		BlockHash        interface{} `json:"blockHash"`
+		BlockNumber      interface{} `json:"blockNumber"`
+		TransactionIndex interface{} `json:"transactionIndex"`
+		*Alias
+	}{
+		BlockHash:        nullIfEmpty(tx.BlockHash),
+		BlockNumber:      nullIfEmpty(tx.BlockNumber),
+		TransactionIndex: nullIfEmpty(tx.TransactionIndex),
+		Alias:            (*Alias)(tx),
+	})
+}
+
+func nullIfEmpty(s string) interface{} {
+	if s == "" {
+		return nil
+	}
+	return s
+}
+
 func (r *GetTransactionByHashRequest) UnmarshalJSON(data []byte) error {
 	var params []interface{}
 	if err := json.Unmarshal(data, &params); err != nil {
